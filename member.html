@@ -193,7 +193,7 @@
         function renderRedeemGrid(){
             const m=getMember(),d=document.getElementById("redeemGrid");
             d.innerHTML=REDEEM_ITEMS.map(item=>{
-                const disabled=(m.miles||0)<item.miles;
+                const disabled=!m||(m.miles||0)<item.miles;
                 return '<div class="bg-black/40 border border-gold/20 rounded-global p-4 text-center flex flex-col items-center">'+
                     '<i class="fa '+item.icon+' text-gold text-3xl mb-2"></i>'+
                     '<p class="font-bold">'+item.name+'</p>'+
