@@ -4,84 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0F2B5B',
-                        gold: '#C8A97E',
-                        bgPage: '#F8F7F2',
-                        success: '#2E8B57',
-                        danger: '#B22222',
-                        textGray: '#666666',
-                        textDark: '#333333'
-                    },
-                    fontFamily: {
-                        sans: ['"Microsoft YaHei"', '"Source Han Sans CN"', 'Arial', 'sans-serif']
-                    },
-                    borderRadius: {
-                        global: '8px'
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body{background:#F8F7F2;font-family:"Microsoft YaHei",Arial,sans-serif;}
-        .nav-glass{backdrop-filter:blur(8px);background-color:rgba(15,43,91,0.75);}
-        .card-hover{transition:all 0.3s;}
-        .card-hover:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}
-        .btn-hover{transition:all 0.3s;}
-        .btn-hover:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.15);}
-        .btn-hover:active{transform:scale(0.98);}
-        html{scroll-behavior:smooth;}
-    </style>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
-    <header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-2 text-white">
-                <i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i>
-                <span class="text-xl font-bold">老牧师航空</span>
-            </a>
-            <nav class="hidden lg:flex gap-6 text-white text-[15px]">
-                <a href="index.html" class="hover:text-gold transition-colors">首页</a>
-                <a href="booking.html" class="hover:text-gold transition-colors">机票预订</a>
-                <a href="flight.html" class="hover:text-gold transition-colors">航班动态</a>
-                <a href="cart.html" class="hover:text-gold transition-colors">购物车</a>
-                <a href="order.html" class="hover:text-gold transition-colors">我的订单</a>
-                <a href="policy.html" class="hover:text-gold transition-colors">服务指南</a>
-                <a href="about.html" class="hover:text-gold transition-colors">关于我们</a>
-                <a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>
-            </nav>
-            <div class="hidden lg:flex items-center gap-4 text-white text-sm">
-                <a href="cart.html" class="hover:text-gold">
-                    <i class="fa fa-shopping-cart"></i>
-                    <span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span>
-                </a>
-                <span><i class="fa fa-phone"></i> 400-888-9999</span>
-            </div>
-            <button id="menuBtn" class="lg:hidden text-white text-2xl">
-                <i class="fa fa-bars"></i>
-            </button>
-        </div>
-        <div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white">
-            <div class="flex flex-col gap-3">
-                <a href="index.html">首页</a>
-                <a href="booking.html">机票预订</a>
-                <a href="flight.html">航班动态</a>
-                <a href="cart.html">购物车</a>
-                <a href="order.html">我的订单</a>
-                <a href="policy.html">服务指南</a>
-                <a href="about.html">关于我们</a>
-                <a href="customer.html">在线客服</a>
-            </div>
-        </div>
-    </header>
-
+    <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
         <div class="bg-primary rounded-global p-10 text-white text-center my-6">
             <h1 class="text-[32px] font-bold mb-4">欢迎来到老牧师航空</h1>
@@ -109,68 +38,19 @@
         <div class="bg-white p-6 rounded-global shadow-lg mt-10">
             <h3 class="text-xl font-bold text-primary mb-4">热门航线快速查询</h3>
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div class="text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('北京','广州')">北京 → 广州</div>
-                <div class="text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('上海','纽约')">上海 → 纽约</div>
-                <div class="text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('北京','迪拜')">北京 → 迪拜</div>
-                <div class="text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('上海','悉尼')">上海 → 悉尼</div>
-                <div class="text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('北京','新加坡')">北京 → 新加坡</div>
-                <div class="text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('上海','伦敦')">上海 → 伦敦</div>
+                <button type="button" class="w-full text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('北京','广州')">北京 → 广州</button>
+                <button type="button" class="w-full text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('上海','纽约')">上海 → 纽约</button>
+                <button type="button" class="w-full text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('北京','迪拜')">北京 → 迪拜</button>
+                <button type="button" class="w-full text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('上海','悉尼')">上海 → 悉尼</button>
+                <button type="button" class="w-full text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('北京','新加坡')">北京 → 新加坡</button>
+                <button type="button" class="w-full text-center p-4 border rounded-global card-hover cursor-pointer" onclick="quickSearch('上海','伦敦')">上海 → 伦敦</button>
             </div>
         </div>
     </main>
-
-    <footer class="bg-primary text-white pt-12 pb-6">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-                <div>
-                    <h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4>
-                    <p class="text-sm opacity-80">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p>
-                </div>
-                <div>
-                    <h4 class="text-gold font-bold text-lg mb-4">出行政策</h4>
-                    <ul class="space-y-2 text-sm opacity-80">
-                        <li><a href="policy.html">退改签政策</a></li>
-                        <li><a href="policy.html">行李规定</a></li>
-                        <li><a href="policy.html">登机须知</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-gold font-bold text-lg mb-4">快速链接</h4>
-                    <ul class="space-y-2 text-sm opacity-80">
-                        <li><a href="about.html">关于我们</a></li>
-                        <li><a href="customer.html">客服中心</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-gold font-bold text-lg mb-4">联系我们</h4>
-                    <p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p>
-                </div>
-            </div>
-            <hr class="border-white/20 mb-6">
-            <div class="text-center text-sm opacity-75">
-                <p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p>
-            </div>
-        </div>
-    </footer>
-
+    <div id="siteFooter"></div>
+    <script src="assets/data.js"></script>
+    <script src="assets/common.js"></script>
     <script>
-        const nav = document.getElementById('mainNav');
-        window.addEventListener('scroll',()=>{
-            if(window.scrollY>50){
-                nav.classList.remove('nav-glass');
-                nav.style.backgroundColor='#0F2B5B';
-            }else{
-                nav.classList.add('nav-glass');
-            }
-        });
-        const menuBtn=document.getElementById('menuBtn');
-        const mobileMenu=document.getElementById('mobileMenu');
-        menuBtn.addEventListener('click',()=>{
-            mobileMenu.classList.toggle('hidden');
-        });
-        function getCart(){return JSON.parse(localStorage.getItem("airCart")||"[]");}
-        function updateCartBadge(){const badge=document.getElementById("cartBadge");if(badge)badge.textContent=getCart().length;}
-        updateCartBadge();
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
     </script>
 </body>

@@ -4,33 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的订单 | 老牧师航空</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#0F2B5B',gold:'#C8A97E',bgPage:'#F8F7F2',success:'#2E8B57',danger:'#B22222',textGray:'#666666',textDark:'#333333'},fontFamily:{sans:['"Microsoft YaHei"','Arial','sans-serif']},borderRadius:{global:'8px'}}}}</script>
-    <style>body{background:#F8F7F2;font-family:"Microsoft YaHei",Arial,sans-serif;}.nav-glass{backdrop-filter:blur(8px);background-color:rgba(15,43,91,0.75);}.card-hover{transition:all 0.3s;}.card-hover:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}.btn-hover{transition:all 0.3s;}.btn-hover:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.15);}.btn-hover:active{transform:scale(0.98);}</style>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
-    <header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold">老牧师航空</span></a>
-            <nav class="hidden lg:flex gap-6 text-white text-[15px]"><a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a></nav>
-            <div class="hidden lg:flex items-center gap-4 text-white text-sm"><a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><span><i class="fa fa-phone"></i> 400-888-9999</span></div>
-            <button id="menuBtn" class="lg:hidden text-white text-2xl"><i class="fa fa-bars"></i></button>
-        </div>
-        <div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white"><div class="flex flex-col gap-3"><a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a></div></div>
-    </header>
+    <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
         <h2 class="text-[26px] font-bold text-primary mb-8">我的订单</h2>
         <div id="orderList"></div>
     </main>
-    <footer class="bg-primary text-white pt-12 pb-6"><div class="container mx-auto px-4"><div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10"><div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm opacity-80">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div><div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="policy.html">退改签政策</a></li><li><a href="policy.html">行李规定</a></li><li><a href="policy.html">登机须知</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="about.html">关于我们</a></li><li><a href="customer.html">客服中心</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div></div><hr class="border-white/20 mb-6"><div class="text-center text-sm opacity-75"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div></div></footer>
+    <div id="changeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-lg p-6 rounded-global">
+            <h3 class="text-xl font-bold text-primary mb-4">免费改签</h3>
+            <div id="changeInfo" class="mb-4 text-sm"></div>
+            <div><label class="block mb-1">选择新出发日期</label><select id="changeDate" class="w-full border px-4 py-3 rounded-global"></select></div>
+            <div class="flex gap-4 mt-6">
+                <button onclick="closeChange()" class="flex-1 border py-3 rounded-global">取消</button>
+                <button onclick="confirmChange()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认改签</button>
+            </div>
+        </div>
+    </div>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js"></script>
+    <script src="assets/common.js"></script>
     <script>
-        const nav=document.getElementById('mainNav');window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='#0F2B5B';}else{nav.classList.add('nav-glass');}});
-        document.getElementById('menuBtn').addEventListener('click',()=>{document.getElementById('mobileMenu').classList.toggle('hidden');});
-        function getCart(){return JSON.parse(localStorage.getItem("airCart")||"[]");}const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;
-        function renderOrderList(){let orders=JSON.parse(localStorage.getItem("airOrders")||"[]");let d=document.getElementById("orderList");const now=Date.now();if(orders.length===0){d.innerHTML='<div class="bg-white p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}let h="";orders.forEach((item,index)=>{const overOneMin=(now-item.createTime)>60000;let btn="";if(item.status!=='已退票'){if(overOneMin){btn='<button disabled class="mt-4 px-4 py-2 bg-gray-400 text-white rounded-global cursor-not-allowed">购票已超过1分钟，不可退票</button>';}else{btn='<button onclick="refundOrder('+index+')" class="mt-4 px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票</button>';}}else{btn="<div class='mt-4 text-gray-500'>已完成退票</div>";}let sc=item.status==='已退票'?'text-danger':item.status==='已完成'?'text-success':'text-orange-500';h+='<div class="bg-white p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between"><span>订单号：'+item.orderId+'</span><span class="'+sc+'">'+item.status+'</span></div><hr class="my-3"><p>航班：'+item.flightNo+' &nbsp;&nbsp; '+item.start+'→'+item.end+'</p><p>日期：'+item.date+' '+item.time+'</p><p>舱位：'+item.cabin+'</p><p>乘客：'+item.username+'</p><p>金额：¥'+item.price+'</p>'+btn+'</div>';});d.innerHTML=h;}
-        function refundOrder(idx){if(!confirm("⚠️ 退票确认！一旦退票将按照退改签规则扣费，确认继续申请退票吗？"))return;let orders=JSON.parse(localStorage.getItem("airOrders")||"[]");orders[idx].status="已退票";localStorage.setItem("airOrders",JSON.stringify(orders));renderOrderList();}
+        let changeIdx=null;
+        // 状态实时计算：支付后 5 秒自动视为已完成（不再依赖定时器）
+        function resolveStatus(item){
+            if(item.status==='已退票')return '已退票';
+            if(item.status==='支付处理中'&&Date.now()-item.createTime>5000)return '已完成';
+            return item.status;
+        }
+        // 按起飞时间窗口计算手续费比例（与政策页一致）
+        function refundRate(item){
+            const depMs=parseFlightTime(item.date,item.time).depMs;
+            const hoursLeft=(depMs-Date.now())/3600000;
+            if(hoursLeft>24)return 0.15;
+            if(hoursLeft>4)return 0.30;
+            return 0.50;
+        }
+        function renderOrderList(){
+            let orders=loadOrders(),d=document.getElementById("orderList");
+            if(orders.length===0){d.innerHTML='<div class="bg-white p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}
+            let h="";
+            orders.forEach((item,index)=>{
+                const status=resolveStatus(item);
+                const sc=status==='已退票'?'text-danger':status==='已完成'?'text-success':'text-orange-500';
+                let actions='';
+                if(status==='已退票'){
+                    actions='<div class="mt-4 text-gray-500">已退票，手续费 ¥'+(item.fee||0)+'，已退还 ¥'+(item.refundAmount||0)+'</div>';
+                }else if(status==='支付处理中'){
+                    actions='<div class="mt-4 text-gray-500 text-sm">订单支付处理中，约5秒后自动完成，请稍候刷新查看。</div>';
+                }else{
+                    const rate=refundRate(item);
+                    const fee=Math.round(item.price*rate);
+                    const refund=item.price-fee;
+                    actions='<div class="mt-4 flex flex-wrap gap-3">'+
+                        '<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>'+
+                        '<button onclick="refundOrder('+index+')" class="px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票（手续费'+rate*100+'% · 退¥'+refund+'）</button>'+
+                        '</div>';
+                }
+                h+='<div class="bg-white p-6 rounded-global shadow-lg mb-4">'+
+                    '<div class="flex justify-between"><span>订单号：'+esc(item.orderId)+'</span><span class="'+sc+'">'+status+'</span></div>'+
+                    '<hr class="my-3">'+
+                    '<p>航班：'+esc(item.flightNo)+' &nbsp;&nbsp; '+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                    '<p>日期：'+esc(item.date)+' '+esc(item.time)+'</p>'+
+                    '<p>舱位：'+esc(item.cabin)+'</p>'+
+                    '<p>乘客：'+esc(item.username)+'</p>'+
+                    '<p>金额：¥'+item.price+'</p>'+actions+
+                    '</div>';
+            });
+            d.innerHTML=h;
+        }
+        function refundOrder(idx){
+            let orders=loadOrders(),item=orders[idx];
+            const rate=refundRate(item),fee=Math.round(item.price*rate),refund=item.price-fee;
+            if(!confirm('确认申请退票？\n按当前起飞时间窗口，手续费 ¥'+fee+'（票价'+rate*100+'%），实退 ¥'+refund+'。'))return;
+            item.status="已退票";item.fee=fee;item.refundAmount=refund;
+            saveOrders(orders);renderOrderList();
+        }
+        function openChange(idx){
+            let orders=loadOrders(),item=orders[idx];
+            if(item.changed){alert("该订单已免费改签过一次，机会已用完。");return;}
+            changeIdx=idx;
+            const dates=[...new Set(searchFlights({start:item.start,end:item.end}).map(f=>f.date))].sort();
+            document.getElementById("changeDate").innerHTML=dates.map(d=>'<option value="'+d+'">'+d+'</option>').join('');
+            document.getElementById("changeInfo").innerHTML='<p>原航班：'+esc(item.flightNo)+'（'+esc(item.date)+' '+esc(item.time)+'）</p><p>航线：'+esc(item.start)+' → '+esc(item.end)+'（'+esc(item.cabin)+'）</p><p class="text-sm text-textGray mt-1">同等舱位免费改签一次，差价多退少补；特价机票不可退改。</p>';
+            document.getElementById("changeModal").classList.remove("hidden");
+        }
+        function confirmChange(){
+            let orders=loadOrders(),item=orders[changeIdx];
+            const date=document.getElementById("changeDate").value;
+            const f=searchFlights({start:item.start,end:item.end,date:date})[0];
+            if(!f){alert("该日期暂无可用航班，请重新选择。");return;}
+            item.flightNo=f.no;item.date=f.date;item.time=f.time;item.changed=true;
+            saveOrders(orders);
+            document.getElementById("changeModal").classList.add("hidden");
+            renderOrderList();
+            alert("改签成功！已为您改至 "+f.date+" "+f.time+"，票价无差价。");
+        }
+        function closeChange(){document.getElementById("changeModal").classList.add("hidden");}
         renderOrderList();
+        // 若仍有“支付处理中”的订单，6 秒后自动重渲染一次（状态始终按创建时间实时计算，不写死）
+        setTimeout(function(){if(loadOrders().some(o=>o.status==='支付处理中'))renderOrderList();},6000);
     </script>
 </body>
 </html>

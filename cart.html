@@ -4,21 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>购物车 | 老牧师航空</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>tailwind.config={theme:{extend:{colors:{primary:'#0F2B5B',gold:'#C8A97E',bgPage:'#F8F7F2',success:'#2E8B57',danger:'#B22222',textGray:'#666666',textDark:'#333333'},fontFamily:{sans:['"Microsoft YaHei"','Arial','sans-serif']},borderRadius:{global:'8px'}}}}</script>
-    <style>body{background:#F8F7F2;font-family:"Microsoft YaHei",Arial,sans-serif;}.nav-glass{backdrop-filter:blur(8px);background-color:rgba(15,43,91,0.75);}.card-hover{transition:all 0.3s;}.card-hover:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}.btn-hover{transition:all 0.3s;}.btn-hover:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.15);}.btn-hover:active{transform:scale(0.98);}</style>
+    <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
-    <header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold">老牧师航空</span></a>
-            <nav class="hidden lg:flex gap-6 text-white text-[15px]"><a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a></nav>
-            <div class="hidden lg:flex items-center gap-4 text-white text-sm"><a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><span><i class="fa fa-phone"></i> 400-888-9999</span></div>
-            <button id="menuBtn" class="lg:hidden text-white text-2xl"><i class="fa fa-bars"></i></button>
-        </div>
-        <div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white"><div class="flex flex-col gap-3"><a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a></div></div>
-    </header>
+    <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
         <h2 class="text-[26px] font-bold text-primary mb-8">购物车</h2>
         <div id="cartList"></div>
@@ -34,18 +26,51 @@
             <div class="flex gap-4 mt-6"><button onclick="closePaymentModal()" class="flex-1 border py-3 rounded-global">返回</button><button id="paySubmitBtn" onclick="confirmPayment()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认支付</button></div>
         </div>
     </div>
-    <footer class="bg-primary text-white pt-12 pb-6"><div class="container mx-auto px-4"><div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10"><div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm opacity-80">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div><div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="policy.html">退改签政策</a></li><li><a href="policy.html">行李规定</a></li><li><a href="policy.html">登机须知</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="about.html">关于我们</a></li><li><a href="customer.html">客服中心</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div></div><hr class="border-white/20 mb-6"><div class="text-center text-sm opacity-75"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div></div></footer>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js"></script>
+    <script src="assets/common.js"></script>
     <script>
-        const nav=document.getElementById('mainNav');window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='#0F2B5B';}else{nav.classList.add('nav-glass');}});
-        document.getElementById('menuBtn').addEventListener('click',()=>{document.getElementById('mobileMenu').classList.toggle('hidden');});
-        function getCart(){return JSON.parse(localStorage.getItem("airCart")||"[]");}
-        function saveCart(c){localStorage.setItem("airCart",JSON.stringify(c));const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;}
-        const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;
-        function renderCartList(){let c=getCart();let d=document.getElementById("cartList");if(c.length===0){d.innerHTML='<div class="bg-white p-6 rounded-global shadow-lg">购物车为空，请先去预订航班。</div>';return;}let total=c.reduce((s,i)=>s+i.price,0);let h="";c.forEach((item,index)=>{h+='<div class="bg-white p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between flex-wrap gap-3"><div><p class="font-bold">'+item.flightNo+'｜'+item.start+'→'+item.end+'</p><p class="text-sm text-textGray">'+item.date+' '+item.time+'</p><p class="text-sm">舱位：'+item.cabin+'</p><p class="text-sm">乘客：'+item.username+'</p><p class="text-danger font-bold mt-2">¥'+item.price+'</p></div><button onclick="removeFromCart('+index+')" class="text-danger border border-danger px-3 py-1 rounded-global text-sm btn-hover">删除</button></div></div>';});h+='<div class="bg-white p-6 rounded-global shadow-lg mt-6"><div class="flex justify-between items-center mb-4"><span class="text-lg font-bold">购物车总计</span><span class="text-danger text-2xl font-bold">¥'+total+'</span></div><button onclick="openPaymentModal()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">立即支付</button></div>';d.innerHTML=h;}
+        function renderCartList(){
+            let c=getCart(),d=document.getElementById("cartList");
+            if(c.length===0){d.innerHTML='<div class="bg-white p-6 rounded-global shadow-lg">购物车为空，请先去预订航班。</div>';return;}
+            let total=c.reduce((s,i)=>s+i.price,0),h="";
+            c.forEach((item,index)=>{
+                h+='<div class="bg-white p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between flex-wrap gap-3">'+
+                    '<div><p class="font-bold">'+esc(item.flightNo)+'｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                    '<p class="text-sm text-textGray">'+esc(item.date)+' '+esc(item.time)+'</p>'+
+                    '<p class="text-sm">舱位：'+esc(item.cabin)+'</p>'+
+                    '<p class="text-sm">乘客：'+esc(item.username)+'</p>'+
+                    '<p class="text-danger font-bold mt-2">¥'+item.price+'</p></div>'+
+                    '<button onclick="removeFromCart('+index+')" class="text-danger border border-danger px-3 py-1 rounded-global text-sm btn-hover">删除</button>'+
+                    '</div></div>';
+            });
+            h+='<div class="bg-white p-6 rounded-global shadow-lg mt-6"><div class="flex justify-between items-center mb-4"><span class="text-lg font-bold">购物车总计</span><span class="text-danger text-2xl font-bold">¥'+total+'</span></div><button onclick="openPaymentModal()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">立即支付</button></div>';
+            d.innerHTML=h;
+        }
         function removeFromCart(i){let c=getCart();c.splice(i,1);saveCart(c);renderCartList();}
-        function openPaymentModal(){let c=getCart();if(c.length===0){alert("购物车为空，无法支付");return;}let total=c.reduce((s,i)=>s+i.price,0);document.getElementById("paymentInfo").innerHTML='<p>待支付机票：'+c.length+' 张</p><p class="text-danger font-bold text-lg mt-2">支付金额：¥'+total+'</p>';document.getElementById("paymentModal").classList.remove("hidden");}
+        function openPaymentModal(){
+            let c=getCart();if(c.length===0){alert("购物车为空，无法支付");return;}
+            let total=c.reduce((s,i)=>s+i.price,0);
+            document.getElementById("paymentInfo").innerHTML='<p>待支付机票：'+c.length+' 张</p><p class="text-danger font-bold text-lg mt-2">支付金额：¥'+total+'</p>';
+            document.getElementById("paymentModal").classList.remove("hidden");
+        }
         function closePaymentModal(){document.getElementById("paymentModal").classList.add("hidden");document.getElementById("payAccount").value="";}
-        async function confirmPayment(){let c=getCart();let acc=document.getElementById("payAccount").value.trim();let btn=document.getElementById("paySubmitBtn");let total=c.reduce((s,i)=>s+i.price,0);if(!acc){alert("请输入支付账号/手机号");return;}if(total>1000){if(!confirm("您即将支付¥"+total+"，金额大于1000元，请再次确认是否付款？"))return;}btn.disabled=true;btn.innerText="支付加载中，请稍候...";await new Promise(r=>setTimeout(r,3000));let orders=JSON.parse(localStorage.getItem("airOrders")||"[]");const ts=Date.now();c.forEach(item=>{orders.push({orderId:"ORD"+Date.now()+Math.floor(Math.random()*1000),flightNo:item.flightNo,start:item.start,end:item.end,date:item.date,time:item.time,cabin:item.cabin,price:item.price,username:item.username,idcard:item.idcard,status:"支付处理中",createTime:ts});});localStorage.setItem("airOrders",JSON.stringify(orders));localStorage.removeItem("airCart");alert("支付成功！订单正在处理，2分钟后状态自动更新为【已完成】");btn.disabled=false;btn.innerText="确认支付";closePaymentModal();const cb=document.getElementById("cartBadge");if(cb)cb.textContent="0";setTimeout(()=>{let os=JSON.parse(localStorage.getItem("airOrders")||"[]");os.forEach(o=>{if(o.status==="支付处理中")o.status="已完成";});localStorage.setItem("airOrders",JSON.stringify(os));},120000);location.href="order.html";}
+        async function confirmPayment(){
+            let c=getCart(),acc=document.getElementById("payAccount").value.trim(),btn=document.getElementById("paySubmitBtn");
+            let total=c.reduce((s,i)=>s+i.price,0);
+            if(!acc){alert("请输入支付账号/手机号");return;}
+            if(total>1000){if(!confirm("您即将支付¥"+total+"，金额大于1000元，请再次确认是否付款？"))return;}
+            btn.disabled=true;btn.innerText="支付加载中，请稍候...";
+            await new Promise(r=>setTimeout(r,3000));
+            let orders=loadOrders();const ts=Date.now();
+            c.forEach(item=>{orders.push({orderId:"ORD"+ts+Math.floor(Math.random()*1000),flightNo:item.flightNo,start:item.start,end:item.end,date:item.date,time:item.time,cabin:item.cabin,price:item.price,username:item.username,idcard:item.idcard,status:"支付处理中",createTime:ts});});
+            saveOrders(orders);
+            localStorage.removeItem("airCart");
+            updateCartBadge();
+            alert("支付成功！订单已生成，稍后可在【我的订单】查看。");
+            btn.disabled=false;btn.innerText="确认支付";
+            location.href="order.html";
+        }
         renderCartList();
     </script>
 </body>
