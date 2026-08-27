@@ -23,6 +23,10 @@
                 <label class="block mb-1">优惠券（会员里程兑换）</label>
                 <select id="couponSelect" class="w-full border px-4 py-3 rounded-global" onchange="updatePayInfo()"></select>
             </div>
+            <div id="railSeatRow" class="hidden mb-4">
+                <label class="block mb-1">铁路坐席（空铁联运）</label>
+                <div id="railSeatList" class="space-y-2"></div>
+            </div>
             <div class="space-y-4">
                 <div><label class="block mb-1">支付方式</label><select id="payMethod" class="w-full border px-4 py-3 rounded-global"><option>微信支付</option><option>支付宝</option><option>银行卡</option></select></div>
                 <div><label class="block mb-1">支付卡号/手机号</label><input id="payAccount" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入支付账号"></div>
@@ -34,6 +38,8 @@
     <script src="assets/data.js?v=20260827b"></script>
     <script src="assets/common.js?v=20260827b"></script>
     <script>
+        const TRAIN_SEAT_KEYS=['second','first','business'];
+        const TRAIN_SEAT_NAME={second:'二等座',first:'一等座',business:'商务座'};
         function renderCartList(){
             let c=getCart(),d=document.getElementById("cartList");
             if(c.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">购物车为空，请先去预订航班。</div>';return;}
@@ -69,6 +75,40 @@
                 sel.innerHTML='<option value="0">不使用优惠券</option>'+coupons.map(x=>'<option value="'+esc(x.code)+'">¥'+x.value+' 代金券（'+esc(x.code)+'）</option>').join('');
             }
             document.getElementById("paymentModal").classList.remove("hidden");
+            renderPayRailSeats();
+            updatePayInfo();
+        }
+        // 付款时选择铁路坐席（空铁联运）
+        function renderPayRailSeats(){
+            const c=getCart(),row=document.getElementById("railSeatRow"),list=document.getElementById("railSeatList");
+            const rails=c.map((it,i)=>({it,i})).filter(x=>x.it.type==="railair");
+            if(rails.length===0){row.classList.add("hidden");list.innerHTML="";return;}
+            row.classList.remove("hidden");
+            list.innerHTML=rails.map(({it,i})=>{
+                const tp=it.trainPrice||{second:60,first:100,business:180};
+                const cur=it.trainSeatPrice||tp.second;
+                const curKey=cur===tp.first?'first':(cur===tp.business?'business':'second');
+                const curName=it.trainSeat||TRAIN_SEAT_NAME[curKey];
+                return '<div class="bg-black/20 border border-gold/20 rounded-global p-3">'+
+                    '<p class="text-xs text-textGray mb-2"><i class="fa fa-train text-gold"></i> 高铁 '+esc(it.trainNo)+' '+esc(it.trainFrom)+'→'+esc(it.trainTo)+'　当前：<span class="text-gold">'+esc(curName)+'</span></p>'+
+                    '<div class="flex flex-wrap gap-2">'+
+                    TRAIN_SEAT_KEYS.map(k=>
+                        '<button type="button" onclick="pickPaySeat('+i+',\''+k+'\')" class="px-3 py-1 rounded text-xs '+(k===curKey?'bg-gold text-primary font-bold':'border border-gold/50 text-textGray btn-hover')+'">'+TRAIN_SEAT_NAME[k]+' ¥'+tp[k]+'</button>').join(' ')+
+                    '</div></div>';
+            }).join('');
+        }
+        function pickPaySeat(idx,key){
+            const c=getCart(),it=c[idx];
+            if(!it||it.type!=="railair")return;
+            const tp=it.trainPrice||{second:60,first:100,business:180};
+            const oldP=it.trainSeatPrice||tp.second;
+            const newP=tp[key];
+            const diff=newP-oldP;
+            it.price=Math.max(0,Math.round((it.price||0)+diff));
+            it.trainSeat=TRAIN_SEAT_NAME[key];
+            it.trainSeatPrice=newP;
+            saveCart(c);
+            renderPayRailSeats();
             updatePayInfo();
         }
         function updatePayInfo(){
