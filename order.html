@@ -94,12 +94,25 @@
         }
         function refundOrder(idx){
             let orders=loadOrders(),item=orders[idx];
+            if(!item)return;
+            if(resolveStatus(item)==='已退票'){showToast("该订单已退票，无需重复操作。");return;}
             const base=(item.payPrice!=null?item.payPrice:item.price);
             const rate=refundRate(item),fee=Math.round(base*rate),refund=base-fee;
             showConfirm('确认申请退票？<br>按当前起飞时间窗口，手续费 ¥'+fee+'（票价'+rate*100+'%），实退 ¥'+refund+'。',function(){
                 item.status="已退票";item.fee=fee;item.refundAmount=refund;
-                saveOrders(orders);renderOrderList();
-                showToast("退票成功");
+                saveOrders(orders);
+                // 回退该订单已累积的会员里程（防"购票刷里程再退票"）
+                let milesBack=0;
+                const m=getMember();
+                if(m&&item.memberCardNo&&item.milesEarned){
+                    milesBack=item.milesEarned;
+                    m.miles=Math.max(0,(m.miles||0)-milesBack);
+                    m.totalMiles=Math.max(0,(m.totalMiles||0)-milesBack);
+                    m.level=ffpLevel(m.totalMiles).cur.name;
+                    saveMember(m);
+                }
+                renderOrderList();
+                showToast("退票成功"+(milesBack?"，已回退 "+milesBack+" 里程。":"。"));
             });
         }
         function openChange(idx){
