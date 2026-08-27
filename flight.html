@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>航班动态 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#0F2B5B',gold:'#C8A97E',bgPage:'#F8F7F2',success:'#2E8B57',danger:'#B22222',textGray:'#666666',textDark:'#333333'},fontFamily:{sans:['"Microsoft YaHei"','Arial','sans-serif']},borderRadius:{global:'8px'}}}}</script>
+    <style>body{background:#F8F7F2;font-family:"Microsoft YaHei",Arial,sans-serif;}.nav-glass{backdrop-filter:blur(8px);background-color:rgba(15,43,91,0.75);}.card-hover{transition:all 0.3s;}.card-hover:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}.btn-hover{transition:all 0.3s;}.btn-hover:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.15);}.btn-hover:active{transform:scale(0.98);}</style>
+</head>
+<body class="text-textDark">
+    <header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold">老牧师航空</span></a>
+            <nav class="hidden lg:flex gap-6 text-white text-[15px]"><a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a></nav>
+            <div class="hidden lg:flex items-center gap-4 text-white text-sm"><a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><span><i class="fa fa-phone"></i> 400-888-9999</span></div>
+            <button id="menuBtn" class="lg:hidden text-white text-2xl"><i class="fa fa-bars"></i></button>
+        </div>
+        <div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white"><div class="flex flex-col gap-3"><a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a></div></div>
+    </header>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <h2 class="text-[26px] font-bold text-primary mb-8">航班动态</h2>
+        <div class="bg-white p-6 rounded-global shadow-lg">
+            <label class="block mb-2">输入航班号</label>
+            <input id="searchFlightNo" type="text" class="w-full border px-4 py-3 rounded-global mb-4" placeholder="例如：LMS001">
+            <button onclick="queryFlightStatus()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">查询航班状态</button>
+            <div id="statusResult" class="mt-6"></div>
+        </div>
+    </main>
+    <footer class="bg-primary text-white pt-12 pb-6"><div class="container mx-auto px-4"><div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10"><div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm opacity-80">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div><div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="policy.html">退改签政策</a></li><li><a href="policy.html">行李规定</a></li><li><a href="policy.html">登机须知</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="about.html">关于我们</a></li><li><a href="customer.html">客服中心</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div></div><hr class="border-white/20 mb-6"><div class="text-center text-sm opacity-75"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div></div></footer>
+    <script>
+        const nav=document.getElementById('mainNav');window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='#0F2B5B';}else{nav.classList.add('nav-glass');}});
+        document.getElementById('menuBtn').addEventListener('click',()=>{document.getElementById('mobileMenu').classList.toggle('hidden');});
+        function getCart(){return JSON.parse(localStorage.getItem("airCart")||"[]");}const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;
+        let routeTemplate=[{start:"北京",end:"广州",time:"08:00-10:40"},{start:"北京",end:"西安",time:"09:00-10:50"},{start:"上海",end:"拉萨",time:"08:30-13:20"},{start:"北京",end:"新加坡",time:"00:10-06:00"},{start:"上海",end:"纽约",time:"11:00-14:30+1"},{start:"上海",end:"悉尼",time:"20:00-07:20+1"},{start:"北京",end:"迪拜",time:"15:00-20:10"},{start:"北京",end:"阿布扎比",time:"14:20-19:35"},{start:"多哈",end:"迪拜",time:"10:00-11:05"},{start:"北京",end:"上海",time:"07:30-09:50"},{start:"北京",end:"深圳",time:"08:20-11:10"},{start:"上海",end:"广州",time:"09:10-11:35"},{start:"广州",end:"成都",time:"10:00-12:10"},{start:"成都",end:"北京",time:"11:20-13:45"},{start:"深圳",end:"上海",time:"14:00-16:20"},{start:"杭州",end:"北京",time:"15:10-17:15"},{start:"上海",end:"曼谷",time:"23:00-02:40+1"},{start:"广州",end:"吉隆坡",time:"01:20-04:10"},{start:"北京",end:"东京",time:"08:10-12:00"},{start:"上海",end:"首尔",time:"09:30-12:10"},{start:"上海",end:"伦敦",time:"12:00-17:30"},{start:"北京",end:"巴黎",time:"14:10-19:20"},{start:"上海",end:"法兰克福",time:"11:30-17:00"},{start:"北京",end:"洛杉矶",time:"16:00-12:40+1"},{start:"广州",end:"多伦多",time:"22:00-06:10+2"},{start:"北京",end:"墨尔本",time:"21:00-08:15+1"},{start:"上海",end:"多哈",time:"20:30-01:45+1"}];
+        let fullRoutes=[];routeTemplate.forEach(r=>{fullRoutes.push(r);fullRoutes.push({start:r.end,end:r.start,time:r.time});});
+        let flightList=[],fi=1;for(let day=1;day<=30;day++){let d=new Date();d.setDate(d.getDate()+day);let dStr=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');fullRoutes.forEach(rt=>{flightList.push({no:"LMS"+String(fi).padStart(3,'0'),start:rt.start,end:rt.end,date:dStr,time:rt.time});fi++;});}
+        function queryFlightStatus(){let no=document.getElementById("searchFlightNo").value.trim().toUpperCase();let f=flightList.find(x=>x.no===no);let r=document.getElementById("statusResult");if(!f){r.innerHTML='<p class="text-danger">未查询到此航班</p>';return;}r.innerHTML='<div class="p-4 border rounded-global"><p>航班号：'+f.no+'</p><p>航线：'+f.start+'→'+f.end+'</p><p>起飞日期：'+f.date+'</p><p>计划时间：'+f.time+'</p><p class="text-success font-bold mt-2">当前状态：正常计划</p></div>';}
+    </script>
+</body>
+</html>
