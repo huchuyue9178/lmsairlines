@@ -51,6 +51,7 @@
             if(orders.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}
             let h="";
             orders.forEach((item,index)=>{
+                const isRA=item.type==="railair";
                 const status=resolveStatus(item);
                 const sc=status==='已退票'?'text-danger':status==='已完成'?'text-success':'text-orange-500';
                 let actions='';
@@ -63,19 +64,28 @@
                     const base=(item.payPrice!=null?item.payPrice:item.price);
                     const fee=Math.round(base*rate);
                     const refund=base-fee;
+                    const changeBtn=isRA
+                        ?'<span class="self-center text-textGray text-sm">空铁联运暂不支持在线改签，如需调整行程请联系客服</span>'
+                        :'<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>';
                     actions='<div class="mt-4 flex flex-wrap gap-3">'+
-                        '<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>'+
+                        changeBtn+
                         '<button onclick="refundOrder('+index+')" class="px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票（手续费'+rate*100+'% · 退¥'+refund+'）</button>'+
                         '</div>';
                 }
+                let routeInfo=isRA
+                    ?'<p class="text-gold font-bold"><i class="fa fa-train"></i> 空铁联运：'+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                    '<p class="mt-1"><i class="fa fa-plane text-gold"></i> 航班 '+esc(item.flightNo)+'：'+esc(item.flightStart)+'→'+esc(item.flightEnd)+'</p>'+
+                    '<p class="text-sm text-textGray ml-5">'+esc(item.flightDate)+' '+esc(item.flightTime)+'</p>'+
+                    '<p><i class="fa fa-train text-gold"></i> 高铁 '+esc(item.trainNo)+'：'+esc(item.trainFrom)+'→'+esc(item.trainTo)+'　'+esc(item.trainTime)+'（'+esc(item.trainDur)+'）</p>'
+                    :'<p>航班：'+esc(item.flightNo)+' &nbsp;&nbsp; '+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                    '<p>日期：'+esc(item.date)+' '+esc(item.time)+'</p>';
                 h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
                     '<div class="flex justify-between"><span>订单号：'+esc(item.orderId)+'</span><span class="'+sc+'">'+status+'</span></div>'+
                     '<hr class="my-3">'+
-                    '<p>航班：'+esc(item.flightNo)+' &nbsp;&nbsp; '+esc(item.start)+'→'+esc(item.end)+'</p>'+
-                    '<p>日期：'+esc(item.date)+' '+esc(item.time)+'</p>'+
+                    routeInfo+
                     '<p>舱位：'+esc(item.cabin)+'</p>'+
                     '<p>乘客：'+esc(item.username)+'</p>'+
-                    '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+'</p>'+
+                    '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+(isRA?'（含高铁二等座）':'')+'</p>'+
                     (item.memberCardNo?'<p class="text-gold">会员 '+esc(item.memberCardNo)+' · 获得里程 +'+(item.milesEarned||0)+'</p>':'')+
                     actions+
                     '</div>';
@@ -86,13 +96,16 @@
             let orders=loadOrders(),item=orders[idx];
             const base=(item.payPrice!=null?item.payPrice:item.price);
             const rate=refundRate(item),fee=Math.round(base*rate),refund=base-fee;
-            if(!confirm('确认申请退票？\n按当前起飞时间窗口，手续费 ¥'+fee+'（票价'+rate*100+'%），实退 ¥'+refund+'。'))return;
-            item.status="已退票";item.fee=fee;item.refundAmount=refund;
-            saveOrders(orders);renderOrderList();
+            showConfirm('确认申请退票？<br>按当前起飞时间窗口，手续费 ¥'+fee+'（票价'+rate*100+'%），实退 ¥'+refund+'。',function(){
+                item.status="已退票";item.fee=fee;item.refundAmount=refund;
+                saveOrders(orders);renderOrderList();
+                showToast("退票成功");
+            });
         }
         function openChange(idx){
             let orders=loadOrders(),item=orders[idx];
-            if(item.changed){alert("该订单已免费改签过一次，机会已用完。");return;}
+            if(item.type==="railair"){showToast("空铁联运暂不支持在线改签，如需调整行程请联系客服。");return;}
+            if(item.changed){showToast("该订单已免费改签过一次，机会已用完。");return;}
             changeIdx=idx;
             const dates=[...new Set(searchFlights({start:item.start,end:item.end}).map(f=>f.date))].sort();
             document.getElementById("changeDate").innerHTML=dates.map(d=>'<option value="'+d+'">'+d+'</option>').join('');
@@ -103,12 +116,12 @@
             let orders=loadOrders(),item=orders[changeIdx];
             const date=document.getElementById("changeDate").value;
             const f=searchFlights({start:item.start,end:item.end,date:date})[0];
-            if(!f){alert("该日期暂无可用航班，请重新选择。");return;}
+            if(!f){showToast("该日期暂无可用航班，请重新选择。");return;}
             item.flightNo=f.no;item.date=f.date;item.time=f.time;item.changed=true;
             saveOrders(orders);
             document.getElementById("changeModal").classList.add("hidden");
             renderOrderList();
-            alert("改签成功！已为您改至 "+f.date+" "+f.time+"，票价无差价。");
+            showToast("改签成功！已为您改至 "+f.date+" "+f.time+"，票价无差价。");
         }
         function closeChange(){document.getElementById("changeModal").classList.add("hidden");}
         renderOrderList();

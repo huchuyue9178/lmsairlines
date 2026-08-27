@@ -39,12 +39,19 @@
             if(c.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">购物车为空，请先去预订航班。</div>';return;}
             let total=c.reduce((s,i)=>s+i.price,0),h="";
             c.forEach((item,index)=>{
+                const isRA=item.type==="railair";
+                let body=isRA
+                    ?'<p class="font-bold text-gold"><i class="fa fa-train"></i> 空铁联运｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                    '<p class="text-sm mt-1"><i class="fa fa-plane text-gold"></i> '+esc(item.flightNo)+'　'+esc(item.flightStart)+'→'+esc(item.flightEnd)+'</p>'+
+                    '<p class="text-sm text-textGray ml-4">'+esc(item.flightDate)+' '+esc(item.flightTime)+'</p>'+
+                    '<p class="text-sm"><i class="fa fa-train text-gold"></i> '+esc(item.trainNo)+'　'+esc(item.trainFrom)+'→'+esc(item.trainTo)+'　'+esc(item.trainTime)+'（'+esc(item.trainDur)+'）</p>'
+                    :'<p class="font-bold">'+esc(item.flightNo)+'｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                    '<p class="text-sm text-textGray">'+esc(item.date)+' '+esc(item.time)+'</p>';
                 h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between flex-wrap gap-3">'+
-                    '<div><p class="font-bold">'+esc(item.flightNo)+'｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
-                    '<p class="text-sm text-textGray">'+esc(item.date)+' '+esc(item.time)+'</p>'+
+                    '<div>'+body+
                     '<p class="text-sm">舱位：'+esc(item.cabin)+'</p>'+
                     '<p class="text-sm">乘客：'+esc(item.username)+'</p>'+
-                    '<p class="text-danger font-bold mt-2">¥'+item.price+'</p></div>'+
+                    '<p class="text-danger font-bold mt-2">¥'+item.price+(isRA?'（含高铁二等座）':'')+'</p></div>'+
                     '<button onclick="removeFromCart('+index+')" class="text-danger border border-danger px-3 py-1 rounded-global text-sm btn-hover">删除</button>'+
                     '</div></div>';
             });
@@ -89,7 +96,8 @@
                 const m=getMember();
                 c.forEach(item=>{
                     const payPrice=coupon?Math.max(0,Math.round(item.price-item.price*couponValue/total)):item.price;
-                    orders.push({orderId:"ORD"+ts+Math.floor(Math.random()*1000),flightNo:item.flightNo,start:item.start,end:item.end,date:item.date,time:item.time,cabin:item.cabin,price:item.price,payPrice:payPrice,couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0,username:item.username,idcard:item.idcard,status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0});
+                    const {cartId,...rest}=item;
+                    orders.push(Object.assign({},rest,{orderId:"ORD"+ts+Math.floor(Math.random()*1000),status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0,payPrice:payPrice,couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0}));
                 });
                 if(m){earnMiles(payTotal);}
                 if(coupon){coupon.status="已使用";coupon.usedAt=Date.now();saveCoupons(getCoupons().map(x=>x.code===coupon.code?coupon:x));}

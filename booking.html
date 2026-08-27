@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>机票预订 | 老牧师航空</title>
+    <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="assets/tailwind-config.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
@@ -12,16 +12,39 @@
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <h2 class="text-[26px] font-bold text-gold mb-8">机票预订</h2>
-        <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div><label class="block mb-2">出发城市</label><input id="startCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
-                <div><label class="block mb-2">到达城市</label><input id="endCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：纽约"></div>
-                <div><label class="block mb-2">出发日期</label><input id="flyDate" type="date" class="w-full border px-4 py-3 rounded-global"></div>
-            </div>
-            <button onclick="searchFlight()" class="btn-hover w-full mt-6 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
+        <h2 class="text-[26px] font-bold text-gold mb-4">出行预订</h2>
+        <div class="flex flex-wrap gap-3 mb-8">
+            <button id="tabFlight" onclick="switchTab('flight')" class="px-6 py-2 rounded-global font-bold btn-hover bg-gold text-primary">机票预订</button>
+            <button id="tabRailAir" onclick="switchTab('railair')" class="px-6 py-2 rounded-global font-bold btn-hover bg-card text-gold border border-gold">空铁联运</button>
         </div>
-        <div id="flightResult"></div>
+
+        <!-- 机票 -->
+        <div id="flightPane">
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block mb-2">出发城市</label><input id="startCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
+                    <div><label class="block mb-2">到达城市</label><input id="endCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：纽约"></div>
+                    <div><label class="block mb-2">出发日期</label><input id="flyDate" type="date" class="w-full border px-4 py-3 rounded-global"></div>
+                </div>
+                <button onclick="searchFlight()" class="btn-hover w-full mt-6 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
+            </div>
+            <div id="flightResult"></div>
+        </div>
+
+        <!-- 空铁联运 -->
+        <div id="railAirPane" class="hidden">
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
+                <p class="text-sm text-textGray mb-4"><i class="fa fa-train text-gold"></i> 空铁联运：飞机 + 高铁组合出行，一单搞定两段行程。先飞后铁 / 先铁后飞均可匹配。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div><label class="block mb-2">出发城市</label><input id="raStart" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
+                    <div><label class="block mb-2">到达城市</label><input id="raEnd" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：苏州"></div>
+                    <div><label class="block mb-2">出发日期</label><input id="raDate" type="date" class="w-full border px-4 py-3 rounded-global"></div>
+                </div>
+                <button onclick="searchRailAirUI()" class="btn-hover w-full mt-6 bg-gold text-primary font-bold py-3 rounded-global">搜索空铁联运方案</button>
+            </div>
+            <div id="railAirResult"></div>
+        </div>
+
         <div id="buyModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
                 <h3 class="text-xl font-bold text-gold mb-4">确认加入购物车</h3>
@@ -32,7 +55,7 @@
                 </div>
                 <div class="flex gap-4 mt-6">
                     <button onclick="closeModal()" class="flex-1 border py-3 rounded-global">取消</button>
-                    <button onclick="addToCart()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">加入购物车</button>
+                    <button onclick="confirmAddCart()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">加入购物车</button>
                 </div>
             </div>
         </div>
@@ -42,11 +65,21 @@
     <script src="assets/common.js"></script>
     <script>
         const PAGE_SIZE=8;
-        let currentList=[],shown=0,selectFlight=null,selectCabin="eco";
+        let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,currentRailList=[];
         const params=new URLSearchParams(location.search);
         if(params.get('start'))document.getElementById('startCity').value=params.get('start');
         if(params.get('end'))document.getElementById('endCity').value=params.get('end');
-
+        if(params.get('raStart'))document.getElementById('raStart').value=params.get('raStart');
+        if(params.get('raEnd'))document.getElementById('raEnd').value=params.get('raEnd');
+        function switchTab(t){
+            selectType=t;
+            document.getElementById("flightPane").classList.toggle("hidden",t!=="flight");
+            document.getElementById("railAirPane").classList.toggle("hidden",t!=="railair");
+            const bf=document.getElementById("tabFlight"),br=document.getElementById("tabRailAir");
+            bf.className=t==="flight"?"px-6 py-2 rounded-global font-bold btn-hover bg-gold text-primary":"px-6 py-2 rounded-global font-bold btn-hover bg-card text-gold border border-gold";
+            br.className=t==="railair"?"px-6 py-2 rounded-global font-bold btn-hover bg-gold text-primary":"px-6 py-2 rounded-global font-bold btn-hover bg-card text-gold border border-gold";
+        }
+        // ============ 机票搜索 ============
         function searchFlight(){
             let s=document.getElementById("startCity").value.trim(),e=document.getElementById("endCity").value.trim(),fd=document.getElementById("flyDate").value;
             if(!s&&!e&&!fd){renderFlights(flightList,"全部虚拟航班");return;}
@@ -57,14 +90,12 @@
             }
             renderFlights(filter,"");
         }
-
         function renderFlights(list,title){
             currentList=list;shown=0;
             let html=title?'<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><p class="text-gold font-bold">'+title+'（共 '+list.length+' 个航班）</p></div>':'';
             document.getElementById("flightResult").innerHTML=html;
             appendMore();
         }
-
         function appendMore(){
             const cont=document.getElementById("flightResult");
             const oldBtn=document.getElementById("loadMoreBtn");
@@ -81,7 +112,6 @@
                 cont.appendChild(b);
             }
         }
-
         function flightCardHtml(f){
             return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
                 '<div class="flex flex-wrap justify-between items-center mb-3"><span class="font-bold text-lg">'+f.no+'</span><span>'+f.start+' <i class="fa fa-plane mx-2 text-gold"></i> '+f.end+'</span><span>'+f.date+' '+f.time+'</span></div>'+
@@ -92,10 +122,9 @@
                 '<button onclick="openBuy(\''+f.no+'\',\'first\')" class="border py-2 rounded-global btn-hover">头等舱 ¥'+f.price.first+'</button>'+
                 '</div></div>';
         }
-
         function openBuy(no,cabin){
-            selectFlight=findFlight(no);selectCabin=cabin;
-            if(!selectFlight){alert("未找到该航班，请刷新后重试");return;}
+            selectFlight=findFlight(no);selectCabin=cabin;selectType="flight";selectPlan=null;
+            if(!selectFlight){showToast("未找到该航班，请刷新后重试");return;}
             let p=selectFlight.price[cabin];
             document.getElementById("modalInfo").innerHTML='<p>航班号：'+selectFlight.no+'</p><p>航线：'+selectFlight.start+' → '+selectFlight.end+'</p><p>日期时间：'+selectFlight.date+' '+selectFlight.time+'</p><p>舱位：'+cabinNameMap[cabin]+'</p><p class="text-danger font-bold">票价：¥'+p+'</p>';
             document.getElementById("buyModal").classList.remove("hidden");
@@ -104,19 +133,97 @@
             document.getElementById("buyModal").classList.add("hidden");
             document.getElementById("userName").value="";
             document.getElementById("userIdCard").value="";
-            selectFlight=null;selectCabin="eco";
+            selectFlight=null;selectCabin="eco";selectPlan=null;
+        }
+        function confirmAddCart(){
+            if(selectType==="railair"){addRailToCart();}else{addToCart();}
         }
         function addToCart(){
-            if(!selectFlight){alert("请先选择要预订的航班");return;}
+            if(!selectFlight){showToast("请先选择要预订的航班");return;}
             let u=document.getElementById("userName").value.trim(),id=document.getElementById("userIdCard").value.trim();
-            if(!u||!id){alert("请填写乘客姓名和证件号码");return;}
+            if(!u||!id){showToast("请填写乘客姓名和证件号码");return;}
             let c=getCart();
             c.push({cartId:"CART"+Date.now()+Math.floor(Math.random()*1000),flightNo:selectFlight.no,start:selectFlight.start,end:selectFlight.end,date:selectFlight.date,time:selectFlight.time,cabin:cabinNameMap[selectCabin],price:selectFlight.price[selectCabin],username:u,idcard:id});
             saveCart(c);
-            alert("已加入购物车");
+            showToast("已加入购物车");
             closeModal();
         }
-        if(params.get('start')||params.get('end')){searchFlight();}
+        // ============ 空铁联运 ============
+        function searchRailAirUI(){
+            const s=document.getElementById("raStart").value.trim();
+            const e=document.getElementById("raEnd").value.trim();
+            const d=document.getElementById("raDate").value;
+            const cont=document.getElementById("railAirResult");
+            if(!s||!e){cont.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">请输入出发与到达城市。</div>';return;}
+            currentRailList=searchRailAir({start:s,end:e,date:d});
+            if(currentRailList.length===0){
+                cont.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">'+
+                    '<p class="mb-2">暂未找到 "'+esc(s)+' → '+esc(e)+'" 的空铁联运方案。</p>'+
+                    '<p class="text-sm text-textGray mb-3">可尝试：北京→珠海、深圳→杭州、成都→天津、北京→苏州、珠海→上海、天津→巴黎、苏州→纽约、石家庄→深圳</p>'+
+                    '<button onclick="switchTab(\'flight\')" class="btn-hover bg-gold text-primary font-bold px-6 py-2 rounded-global">去查机票</button>'+
+                    '</div>';
+                return;
+            }
+            cont.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><p class="text-gold font-bold">为您找到 '+currentRailList.length+' 个空铁联运方案</p></div>';
+            currentRailList.forEach(p=>{cont.insertAdjacentHTML('beforeend',railAirCardHtml(p));});
+        }
+        function railAirCardHtml(p){
+            const f=p.flight,t=p.train;
+            const railFrom=p.type==="airRail"?t.from:t.to;
+            const railTo=p.type==="airRail"?t.to:t.from;
+            const tag=p.type==="airRail"?'<i class="fa fa-plane text-gold"></i> 先飞后铁':'<i class="fa fa-train text-gold"></i> 先铁后飞';
+            return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
+                '<div class="flex flex-wrap justify-between items-center mb-3">'+
+                    '<span class="font-bold text-lg">'+tag+'</span>'+
+                    '<span>'+esc(p.start)+' → '+esc(p.end)+'</span>'+
+                    '<span class="text-sm text-textGray">全程约 '+p.totalDur+' 小时（含约 2h 中转衔接）</span>'+
+                '</div>'+
+                '<div class="space-y-2 text-sm">'+
+                    '<div class="flex flex-wrap items-center gap-2 bg-black/20 p-3 rounded-global"><i class="fa fa-plane text-gold"></i><b>航班</b> '+esc(f.no)+'　'+esc(f.start)+' → '+esc(f.end)+'　'+esc(p.date)+' '+esc(f.time)+'</div>'+
+                    '<div class="flex flex-wrap items-center gap-2 bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i><b>高铁</b> '+esc(t.no)+'　'+esc(railFrom)+' → '+esc(railTo)+'　'+esc(t.time)+'（'+esc(t.dur)+'）二等座 ¥'+t.price.second+'</div>'+
+                '</div>'+
+                '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'eco\')" class="border py-2 rounded-global btn-hover">经济舱 ¥'+(f.price.eco+t.price.second)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'superEco\')" class="border py-2 rounded-global btn-hover">超级经济舱 ¥'+(f.price.superEco+t.price.second)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'business\')" class="border py-2 rounded-global btn-hover">商务舱 ¥'+(f.price.business+t.price.second)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'first\')" class="border py-2 rounded-global btn-hover">头等舱 ¥'+(f.price.first+t.price.second)+'</button>'+
+                '</div>'+
+            '</div>';
+        }
+        function openRailBuy(id,cabin){
+            const p=currentRailList.find(x=>x.id===id);
+            if(!p){showToast("未找到该联运方案，请重新搜索");return;}
+            selectPlan=p;selectCabin=cabin;selectType="railair";selectFlight=null;
+            const f=p.flight,t=p.train,price=f.price[cabin]+t.price.second;
+            const railFrom=p.type==="airRail"?t.from:t.to;
+            const railTo=p.type==="airRail"?t.to:t.from;
+            document.getElementById("modalInfo").innerHTML=
+                '<p class="text-gold font-bold">空铁联运 · '+(p.type==="airRail"?"先飞后铁":"先铁后飞")+'　'+esc(p.start)+' → '+esc(p.end)+'</p>'+
+                '<hr class="my-2">'+
+                '<p><i class="fa fa-plane text-gold"></i> 航班 '+esc(f.no)+'：'+esc(f.start)+' → '+esc(f.end)+'</p>'+
+                '<p class="text-sm text-textGray ml-5">'+esc(p.date)+' '+esc(f.time)+'　'+cabinNameMap[cabin]+' ¥'+f.price[cabin]+'</p>'+
+                '<p><i class="fa fa-train text-gold"></i> 高铁 '+esc(t.no)+'：'+esc(railFrom)+' → '+esc(railTo)+'</p>'+
+                '<p class="text-sm text-textGray ml-5">'+esc(t.time)+'（'+esc(t.dur)+'）高铁二等座 ¥'+t.price.second+'</p>'+
+                '<p class="text-danger font-bold mt-2">总价：¥'+price+'</p>';
+            document.getElementById("buyModal").classList.remove("hidden");
+        }
+        function addRailToCart(){
+            if(!selectPlan){showToast("请先选择联运方案");return;}
+            let u=document.getElementById("userName").value.trim(),id=document.getElementById("userIdCard").value.trim();
+            if(!u||!id){showToast("请填写乘客姓名和证件号码");return;}
+            const p=selectPlan,f=p.flight,t=p.train;
+            const price=f.price[selectCabin]+t.price.second;
+            let c=getCart();
+            c.push({cartId:"CART"+Date.now()+Math.floor(Math.random()*1000),type:"railair",
+                flightNo:f.no,flightStart:f.start,flightEnd:f.end,flightDate:p.date,flightTime:f.time,
+                trainNo:t.no,trainFrom:(p.type==="airRail"?t.from:t.to),trainTo:(p.type==="airRail"?t.to:t.from),trainTime:t.time,trainDur:t.dur,
+                start:p.start,end:p.end,date:p.date,time:f.time,cabin:cabinNameMap[selectCabin],price:price,username:u,idcard:id});
+            saveCart(c);
+            showToast("空铁联运方案已加入购物车");
+            closeModal();
+        }
+        if(params.get('mode')==='railair'){switchTab('railair');searchRailAirUI();}
+        else if(params.get('start')||params.get('end')){searchFlight();}
     </script>
 </body>
 </html>
