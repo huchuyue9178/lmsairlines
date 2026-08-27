@@ -95,7 +95,7 @@
                     ?'<p class="text-gold font-bold"><i class="fa fa-train"></i> 空铁联运：'+esc(item.start)+'→'+esc(item.end)+'</p>'+
                     '<p class="mt-1"><i class="fa fa-plane text-gold"></i> 航班 '+esc(item.flightNo)+'：'+esc(item.flightStart)+'→'+esc(item.flightEnd)+'</p>'+
                     '<p class="text-sm text-textGray ml-5">'+esc(item.flightDate)+' '+esc(item.flightTime)+'</p>'+
-                    '<p><i class="fa fa-train text-gold"></i> 高铁 '+esc(item.trainNo)+'：'+esc(item.trainFrom)+'→'+esc(item.trainTo)+'　'+esc(item.trainTime)+'（'+esc(item.trainDur)+'）</p>'
+                    '<p><i class="fa fa-train text-gold"></i> 高铁 '+esc(item.trainNo)+'：'+esc(item.trainFrom)+'→'+esc(item.trainTo)+'　'+esc(item.trainTime)+'（'+esc(item.trainDur)+'）　<span class="text-gold">'+esc(item.trainSeat||'二等座')+'</span></p>'
                     :'<p>航班：'+esc(item.flightNo)+' &nbsp;&nbsp; '+esc(item.start)+'→'+esc(item.end)+'</p>'+
                     '<p>日期：'+esc(item.date)+' '+esc(item.time)+'</p>';
                 h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
@@ -104,7 +104,7 @@
                     routeInfo+
                     '<p>舱位：'+esc(item.cabin)+'</p>'+
                     '<p>乘客：'+esc(item.username)+'</p>'+
-                    '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+(isRA?'（含高铁二等座）':'')+'</p>'+
+                    '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+(isRA?'（含高铁'+esc(item.trainSeat||'二等座')+'）':'')+'</p>'+
                     (item.cabinChange?'<p class="text-sm '+(item.cabinChange.type==='upgrade'?'text-danger':'text-success')+'"><i class="fa '+(item.cabinChange.type==='upgrade'?'fa-level-up':'fa-level-down')+'"></i> '+esc(item.cabinChange.fromCabin)+' → '+esc(item.cabinChange.toCabin)+'：'+(item.cabinChange.type==='upgrade'?'补差价 ¥'+item.cabinChange.diff:'退回差价 ¥'+item.cabinChange.diff)+'</p>':'')+
                     (item.memberCardNo?'<p class="text-gold">会员 '+esc(item.memberCardNo)+' · 获得里程 +'+(item.milesEarned||0)+'</p>':'')+
                     actions+

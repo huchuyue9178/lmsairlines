@@ -43,7 +43,7 @@
                 '<p class="mt-2"><i class="fa fa-calendar text-gold"></i> '+esc(o.date)+' '+esc(o.time)+'</p>'+
                 '<p><i class="fa fa-user text-gold"></i> 乘客：'+esc(o.username)+'　<i class="fa fa-tag text-gold"></i> 舱位：'+esc(o.cabin)+'</p>';
             if(isRA){
-                h+='<p class="mt-1 text-sm"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+' '+esc(o.trainFrom)+'→'+esc(o.trainTo)+' 无需值机，请凭身份证到站刷证进站。</p>';
+                h+='<p class="mt-1 text-sm"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+' '+esc(o.trainFrom)+'→'+esc(o.trainTo)+'（'+esc(o.trainSeat||'二等座')+'）无需值机，请凭身份证到站刷证进站。</p>';
             }
             h+='</div>';
             return h;
@@ -132,7 +132,7 @@
                 '</div>'+
                 '<p class="mt-4 text-xs text-textGray bg-black/20 p-3 rounded-global">请于登机时间（起飞前 40 分钟）前抵达 '+esc(o.gate)+' 登机口，并出示有效证件与登机牌；未及时登机可能无法乘机。</p>'+
                 (hasActiveBenefit('baggage')?'<p class="mt-2 text-xs text-success bg-black/20 p-3 rounded-global"><i class="fa fa-suitcase text-gold"></i> 已含超额行李权益：额外 20kg 免费行李。</p>':'')+
-                (o.type==='railair'?'<p class="mt-2 text-xs text-textGray bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+'（'+esc(o.trainFrom)+'→'+esc(o.trainTo)+'）无需线上值机，凭身份证进站乘车。</p>':'')+
+                (o.type==='railair'?'<p class="mt-2 text-xs text-textGray bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+'（'+esc(o.trainFrom)+'→'+esc(o.trainTo)+'，'+esc(o.trainSeat||'二等座')+'）无需线上值机，凭身份证进站乘车。</p>':'')+
                 '<div class="flex flex-wrap gap-3 mt-5">'+
                     '<button onclick="window.print()" class="flex-1 border border-gold text-gold py-3 rounded-global btn-hover"><i class="fa fa-print"></i> 打印登机牌</button>'+
                     '<button onclick="cancelCheckinFlow()" class="flex-1 border py-3 rounded-global btn-hover text-textGray">取消值机</button>'+

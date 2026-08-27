@@ -44,14 +44,14 @@
                     ?'<p class="font-bold text-gold"><i class="fa fa-train"></i> 空铁联运｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
                     '<p class="text-sm mt-1"><i class="fa fa-plane text-gold"></i> '+esc(item.flightNo)+'　'+esc(item.flightStart)+'→'+esc(item.flightEnd)+'</p>'+
                     '<p class="text-sm text-textGray ml-4">'+esc(item.flightDate)+' '+esc(item.flightTime)+'</p>'+
-                    '<p class="text-sm"><i class="fa fa-train text-gold"></i> '+esc(item.trainNo)+'　'+esc(item.trainFrom)+'→'+esc(item.trainTo)+'　'+esc(item.trainTime)+'（'+esc(item.trainDur)+'）</p>'
+                    '<p class="text-sm"><i class="fa fa-train text-gold"></i> '+esc(item.trainNo)+'　'+esc(item.trainFrom)+'→'+esc(item.trainTo)+'　'+esc(item.trainTime)+'（'+esc(item.trainDur)+'）　'+esc(item.trainSeat||'二等座')+'</p>'
                     :'<p class="font-bold">'+esc(item.flightNo)+'｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
                     '<p class="text-sm text-textGray">'+esc(item.date)+' '+esc(item.time)+'</p>';
                 h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between flex-wrap gap-3">'+
                     '<div>'+body+
                     '<p class="text-sm">舱位：'+esc(item.cabin)+'</p>'+
                     '<p class="text-sm">乘客：'+esc(item.username)+'</p>'+
-                    '<p class="text-danger font-bold mt-2">¥'+item.price+(isRA?'（含高铁二等座）':'')+'</p></div>'+
+                    '<p class="text-danger font-bold mt-2">¥'+item.price+(isRA?'（含高铁'+esc(item.trainSeat||'二等座')+'）':'')+'</p></div>'+
                     '<button onclick="removeFromCart('+index+')" class="text-danger border border-danger px-3 py-1 rounded-global text-sm btn-hover">删除</button>'+
                     '</div></div>';
             });

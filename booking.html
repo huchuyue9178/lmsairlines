@@ -66,6 +66,12 @@
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,currentRailList=[];
+        // 铁路端坐席选择（每个方案独立记忆，默认二等座）
+        const TRAIN_SEAT_KEYS=['second','first','business'];
+        const TRAIN_SEAT_NAME={second:'二等座',first:'一等座',business:'商务座'};
+        let trainSeatMap={};
+        function railSeatOf(id){return trainSeatMap[id]||'second';}
+        function pickTrainSeat(id,key){trainSeatMap[id]=key;renderRailAirList();}
         const params=new URLSearchParams(location.search);
         if(params.get('start'))document.getElementById('startCity').value=params.get('start');
         if(params.get('end'))document.getElementById('endCity').value=params.get('end');
@@ -164,6 +170,10 @@
                     '</div>';
                 return;
             }
+            renderRailAirList();
+        }
+        function renderRailAirList(){
+            const cont=document.getElementById("railAirResult");
             cont.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><p class="text-gold font-bold">为您找到 '+currentRailList.length+' 个空铁联运方案</p></div>';
             currentRailList.forEach(p=>{cont.insertAdjacentHTML('beforeend',railAirCardHtml(p));});
         }
@@ -172,6 +182,7 @@
             const railFrom=p.type==="airRail"?t.from:t.to;
             const railTo=p.type==="airRail"?t.to:t.from;
             const tag=p.type==="airRail"?'<i class="fa fa-plane text-gold"></i> 先飞后铁':'<i class="fa fa-train text-gold"></i> 先铁后飞';
+            const seatKey=railSeatOf(p.id),seatPrice=t.price[seatKey];
             return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
                 '<div class="flex flex-wrap justify-between items-center mb-3">'+
                     '<span class="font-bold text-lg">'+tag+'</span>'+
@@ -180,13 +191,15 @@
                 '</div>'+
                 '<div class="space-y-2 text-sm">'+
                     '<div class="flex flex-wrap items-center gap-2 bg-black/20 p-3 rounded-global"><i class="fa fa-plane text-gold"></i><b>航班</b> '+esc(f.no)+'　'+esc(f.start)+' → '+esc(f.end)+'　'+esc(p.date)+' '+esc(f.time)+'</div>'+
-                    '<div class="flex flex-wrap items-center gap-2 bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i><b>高铁</b> '+esc(t.no)+'　'+esc(railFrom)+' → '+esc(railTo)+'　'+esc(t.time)+'（'+esc(t.dur)+'）二等座 ¥'+t.price.second+'</div>'+
+                    '<div class="flex flex-wrap items-center gap-2 bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i><b>高铁</b> '+esc(t.no)+'　'+esc(railFrom)+' → '+esc(railTo)+'　'+esc(t.time)+'（'+esc(t.dur)+'）</div>'+
+                    '<div class="flex flex-wrap items-center gap-2 bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i> 坐席：'+TRAIN_SEAT_KEYS.map(k=>
+                        '<button onclick="pickTrainSeat(\''+p.id+'\',\''+k+'\')" class="px-2 py-1 rounded text-xs '+(k===seatKey?'bg-gold text-primary font-bold':'border border-gold/50 text-textGray btn-hover')+'">'+TRAIN_SEAT_NAME[k]+' ¥'+t.price[k]+'</button>').join(' ')+'</div>'+
                 '</div>'+
                 '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">'+
-                '<button onclick="openRailBuy(\''+p.id+'\',\'eco\')" class="border py-2 rounded-global btn-hover">经济舱 ¥'+(f.price.eco+t.price.second)+'</button>'+
-                '<button onclick="openRailBuy(\''+p.id+'\',\'superEco\')" class="border py-2 rounded-global btn-hover">超级经济舱 ¥'+(f.price.superEco+t.price.second)+'</button>'+
-                '<button onclick="openRailBuy(\''+p.id+'\',\'business\')" class="border py-2 rounded-global btn-hover">商务舱 ¥'+(f.price.business+t.price.second)+'</button>'+
-                '<button onclick="openRailBuy(\''+p.id+'\',\'first\')" class="border py-2 rounded-global btn-hover">头等舱 ¥'+(f.price.first+t.price.second)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'eco\')" class="border py-2 rounded-global btn-hover">经济舱 ¥'+(f.price.eco+seatPrice)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'superEco\')" class="border py-2 rounded-global btn-hover">超级经济舱 ¥'+(f.price.superEco+seatPrice)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'business\')" class="border py-2 rounded-global btn-hover">商务舱 ¥'+(f.price.business+seatPrice)+'</button>'+
+                '<button onclick="openRailBuy(\''+p.id+'\',\'first\')" class="border py-2 rounded-global btn-hover">头等舱 ¥'+(f.price.first+seatPrice)+'</button>'+
                 '</div>'+
             '</div>';
         }
@@ -194,7 +207,7 @@
             const p=currentRailList.find(x=>x.id===id);
             if(!p){showToast("未找到该联运方案，请重新搜索");return;}
             selectPlan=p;selectCabin=cabin;selectType="railair";selectFlight=null;
-            const f=p.flight,t=p.train,price=f.price[cabin]+t.price.second;
+            const f=p.flight,t=p.train,seatKey=railSeatOf(p.id),seatPrice=t.price[seatKey],price=f.price[cabin]+seatPrice;
             const railFrom=p.type==="airRail"?t.from:t.to;
             const railTo=p.type==="airRail"?t.to:t.from;
             document.getElementById("modalInfo").innerHTML=
@@ -203,7 +216,7 @@
                 '<p><i class="fa fa-plane text-gold"></i> 航班 '+esc(f.no)+'：'+esc(f.start)+' → '+esc(f.end)+'</p>'+
                 '<p class="text-sm text-textGray ml-5">'+esc(p.date)+' '+esc(f.time)+'　'+cabinNameMap[cabin]+' ¥'+f.price[cabin]+'</p>'+
                 '<p><i class="fa fa-train text-gold"></i> 高铁 '+esc(t.no)+'：'+esc(railFrom)+' → '+esc(railTo)+'</p>'+
-                '<p class="text-sm text-textGray ml-5">'+esc(t.time)+'（'+esc(t.dur)+'）高铁二等座 ¥'+t.price.second+'</p>'+
+                '<p class="text-sm text-textGray ml-5">'+esc(t.time)+'（'+esc(t.dur)+'）'+TRAIN_SEAT_NAME[seatKey]+' ¥'+seatPrice+'</p>'+
                 '<p class="text-danger font-bold mt-2">总价：¥'+price+'</p>';
             document.getElementById("buyModal").classList.remove("hidden");
         }
@@ -212,11 +225,13 @@
             let u=document.getElementById("userName").value.trim(),id=document.getElementById("userIdCard").value.trim();
             if(!u||!id){showToast("请填写乘客姓名和证件号码");return;}
             const p=selectPlan,f=p.flight,t=p.train;
-            const price=f.price[selectCabin]+t.price.second;
+            const seatKey=railSeatOf(p.id),seatPrice=t.price[seatKey];
+            const price=f.price[selectCabin]+seatPrice;
             let c=getCart();
             c.push({cartId:"CART"+Date.now()+Math.floor(Math.random()*1000),type:"railair",
                 flightNo:f.no,flightStart:f.start,flightEnd:f.end,flightDate:p.date,flightTime:f.time,
                 trainNo:t.no,trainFrom:(p.type==="airRail"?t.from:t.to),trainTo:(p.type==="airRail"?t.to:t.from),trainTime:t.time,trainDur:t.dur,
+                trainSeat:TRAIN_SEAT_NAME[seatKey],trainSeatPrice:seatPrice,
                 start:p.start,end:p.end,date:p.date,time:f.time,cabin:cabinNameMap[selectCabin],price:price,username:u,idcard:id});
             saveCart(c);
             showToast("空铁联运方案已加入购物车");
