@@ -158,6 +158,8 @@ function redeemItem(id){
     const m=getMember();
     if(!m){showToast("请先登录会员再兑换");return;}
     if((m.miles||0)<item.miles){showToast("可用里程不足 "+item.miles+"，暂时无法兑换。");return;}
+    // 实物商品：打开收货信息表单（由会员中心页面提供）
+    if(item.type==="goods"&&typeof openShippingForm==="function"){openShippingForm(item);return;}
     showConfirm('确认用 '+item.miles+' 里程兑换「'+item.name+'」？',function(){
         m.miles-=item.miles;saveMember(m);
         if(item.type==="coupon"){

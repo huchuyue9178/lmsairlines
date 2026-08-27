@@ -106,6 +106,22 @@
         </div>
     </main>
     <div id="siteFooter"></div>
+    <!-- 实物兑换收货信息表单 -->
+    <div id="shippingModal" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4">
+        <div class="bg-card card-gold rounded-global shadow-2xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-truck mr-2"></i>填写收货信息</h3>
+            <p class="text-xs text-textGray mb-4" id="shippingItemDesc"></p>
+            <div class="space-y-3">
+                <div><label class="block mb-1 text-sm">收件人姓名</label><input id="shipName" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入收件人姓名"></div>
+                <div><label class="block mb-1 text-sm">手机号码</label><input id="shipPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="11位手机号"></div>
+                <div><label class="block mb-1 text-sm">详细地址</label><textarea id="shipAddress" class="w-full border px-4 py-3 rounded-global" rows="3" placeholder="省/市/区 + 详细街道门牌号"></textarea></div>
+            </div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="cancelShipping()" class="flex-1 border border-textGray text-textGray py-3 rounded-global btn-hover">取消</button>
+                <button onclick="submitShipping()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认兑换</button>
+            </div>
+        </div>
+    </div>
     <script src="assets/data.js?v=20260827b"></script>
     <script src="assets/common.js?v=20260827b"></script>
     <script>
@@ -194,19 +210,40 @@
         }
         function renderBenefits(){
             const b=getBenefits(),d=document.getElementById("benefitList");
-            if(b.length===0){d.innerHTML='<p class="text-textGray">暂无出行权益。兑换超额行李、贵宾厅、优先安检、Wi-Fi、联名好物等后，可在这里查看与核销。</p>';return;}
+            if(b.length===0){d.innerHTML='<p class="text-textGray">暂无权益。兑换超额行李、贵宾厅、优先安检、Wi-Fi、联名好物等后，可在这里查看与管理。</p>';return;}
             d.innerHTML=b.map((x,i)=>{
-                let action='';
-                if(x.status==='可使用'){
-                    action='<button onclick="useBenefit('+i+')" class="mt-2 px-4 py-1.5 rounded-global text-xs font-bold bg-gold text-primary btn-hover">核销使用</button>';
-                }else if(x.status==='待领取'){
-                    action='<button onclick="receiveBenefit('+i+')" class="mt-2 px-4 py-1.5 rounded-global text-xs font-bold border border-gold text-gold btn-hover">确认领取</button>';
+                let action='',extra='';
+                const isGoods=x.type==='goods';
+                const activeStatus=['可使用','待发货','已发货','待领取'];
+                const statusColor=activeStatus.includes(x.status)?'text-success':'text-textGray';
+                if(isGoods&&x.shipping){
+                    extra='<div class="mt-2 text-xs text-textGray bg-black/30 p-2 rounded-global">'+
+                        '<p><i class="fa fa-user text-gold"></i> 收件人：'+esc(x.shipping.name)+'　'+esc(x.shipping.phone)+'</p>'+
+                        '<p class="mt-1"><i class="fa fa-map-marker text-gold"></i> '+esc(x.shipping.address)+'</p>'+
+                        (x.tracking?'<p class="mt-1 text-success"><i class="fa fa-truck text-gold"></i> 物流单号：'+esc(x.tracking)+'</p>':'')+
+                        '</div>';
+                }
+                if(isGoods){
+                    if(x.status==='待发货'){
+                        action='<div class="flex gap-2 mt-2">'+
+                            '<button onclick="cancelGoods('+i+')" class="flex-1 px-3 py-1.5 rounded-global text-xs font-bold border border-danger text-danger btn-hover">取消兑换</button>'+
+                            '<button onclick="shipGoods('+i+')" class="flex-1 px-3 py-1.5 rounded-global text-xs font-bold bg-gold text-primary btn-hover">模拟发货</button></div>';
+                    }else if(x.status==='已发货'){
+                        action='<button onclick="receiveGoods('+i+')" class="mt-2 w-full px-4 py-1.5 rounded-global text-xs font-bold bg-gold text-primary btn-hover">确认收货</button>';
+                    }
+                }else{
+                    if(x.status==='可使用'){
+                        action='<button onclick="useBenefit('+i+')" class="mt-2 px-4 py-1.5 rounded-global text-xs font-bold bg-gold text-primary btn-hover">核销使用</button>';
+                    }else if(x.status==='待领取'){
+                        action='<button onclick="receiveBenefit('+i+')" class="mt-2 px-4 py-1.5 rounded-global text-xs font-bold border border-gold text-gold btn-hover">确认领取</button>';
+                    }
                 }
                 return '<div class="bg-black/50 border border-gold/30 rounded-global p-4">'+
                     '<div class="flex items-center gap-3"><i class="fa '+x.icon+' text-gold text-2xl"></i><div><p class="font-bold">'+esc(x.name)+'</p>'+
                     '<p class="text-xs text-textGray">'+esc(x.desc)+'</p></div></div>'+
                     '<div class="flex justify-between items-center mt-2"><span class="text-xs text-textGray">权益码 '+esc(x.code)+'</span>'+
-                    '<span class="text-sm '+(x.status==='可使用'||x.status==='待领取'?'text-success':'text-textGray')+'">'+x.status+'</span></div>'+
+                    '<span class="text-sm '+statusColor+'">'+x.status+'</span></div>'+
+                    extra+
                     '<div class="text-center">'+action+'</div>'+
                     '</div>';
             }).join('');
@@ -224,6 +261,64 @@
             b.status='已领取';b.usedAt=Date.now();
             saveBenefits(list);renderBenefits();
             showToast("「"+b.name+"」已确认领取，请在机场领取处出示权益码 "+b.code+"。");
+        }
+        // ---- 实物商品邮寄流程 ----
+        let _shippingItem=null;
+        function openShippingForm(item){
+            _shippingItem=item;
+            document.getElementById("shippingItemDesc").textContent='兑换「'+item.name+'」需 '+item.miles+' 里程，实物将邮寄到以下地址';
+            document.getElementById("shipName").value='';
+            document.getElementById("shipPhone").value='';
+            document.getElementById("shipAddress").value='';
+            document.getElementById("shippingModal").classList.remove("hidden");
+        }
+        function cancelShipping(){
+            document.getElementById("shippingModal").classList.add("hidden");
+            _shippingItem=null;
+        }
+        function submitShipping(){
+            const name=document.getElementById("shipName").value.trim();
+            const phone=document.getElementById("shipPhone").value.trim();
+            const address=document.getElementById("shipAddress").value.trim();
+            if(!name){showToast("请填写收件人姓名");return;}
+            if(!/^1\d{10}$/.test(phone)){showToast("请输入11位有效手机号");return;}
+            if(!address){showToast("请填写详细地址");return;}
+            const item=_shippingItem;if(!item)return;
+            const m=getMember();
+            if((m.miles||0)<item.miles){showToast("可用里程不足");cancelShipping();return;}
+            m.miles-=item.miles;saveMember(m);
+            const b={itemId:item.id,name:item.name,desc:item.desc,type:item.type,icon:item.icon,miles:item.miles,
+                code:genBenefitCode("GK"),status:"待发货",createdAt:Date.now(),
+                shipping:{name:name,phone:phone,address:address}};
+            const list=getBenefits();list.push(b);saveBenefits(list);
+            cancelShipping();
+            if(typeof renderPage==="function")renderPage();
+            showToast("兑换成功！「"+item.name+"」将尽快发货，可在【我的权益】查看物流。");
+        }
+        function shipGoods(index){
+            const list=getBenefits(),b=list[index];
+            if(!b||b.status!=="待发货")return;
+            b.status="已发货";b.tracking="SF"+Date.now().toString().slice(-10);b.shippedAt=Date.now();
+            saveBenefits(list);renderBenefits();
+            showToast("已发货，物流单号 "+b.tracking);
+        }
+        function receiveGoods(index){
+            const list=getBenefits(),b=list[index];
+            if(!b||b.status!=="已发货")return;
+            b.status="已签收";b.receivedAt=Date.now();
+            saveBenefits(list);renderBenefits();
+            showToast("已确认收货，感谢您的兑换！");
+        }
+        function cancelGoods(index){
+            const list=getBenefits(),b=list[index];
+            if(!b||b.status!=="待发货")return;
+            showConfirm("确认取消兑换「"+b.name+"」？将退回 "+b.miles+" 里程。",function(){
+                const m=getMember();
+                if(m){m.miles=(m.miles||0)+b.miles;saveMember(m);}
+                list.splice(index,1);saveBenefits(list);
+                if(typeof renderPage==="function")renderPage();
+                showToast("已取消兑换，退回 "+b.miles+" 里程。");
+            });
         }
         function renderMiles(m){
             const orders=loadOrders().filter(o=>o.memberCardNo===m.cardNo);
