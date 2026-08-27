@@ -107,6 +107,13 @@
             const fresh=loadOrders().find(o=>o.orderId===curOrder.orderId);
             if(fresh)curOrder=fresh;
             const o=curOrder;
+            // 兼容老数据：已值机但缺少登机口/登机时间时自动生成并保存
+            if(o.checkedIn&&(!o.gate||!o.boardTime)){
+                if(!o.gate)o.gate=genBoardingGate(o.flightNo);
+                if(!o.boardTime)o.boardTime=genBoardTime(o.date,o.time);
+                const all=loadOrders(),idx=all.findIndex(x=>x.orderId===o.orderId);
+                if(idx>=0){all[idx]=o;saveOrders(all);}
+            }
             const pass='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-6">'+
                 '<div class="flex justify-between items-center"><div><p class="text-xl font-bold text-gold">老牧师航空</p><p class="text-xs text-textGray">BOARDING PASS · 登机牌</p></div>'+
                 '<span class="px-3 py-1 rounded-global border border-success text-success text-xs font-bold">已值机</span></div>'+
