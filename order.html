@@ -32,12 +32,6 @@
     <script>
         let changeIdx=null;
 
-        // 状态实时计算：支付后 5 秒自动视为已完成（不再依赖定时器）
-        function resolveStatus(item){
-            if(item.status==='已退票')return '已退票';
-            if(item.status==='支付处理中'&&Date.now()-item.createTime>5000)return '已完成';
-            return item.status;
-        }
         // 按起飞时间窗口计算手续费比例（与政策页一致）
         function refundRate(item){
             const depMs=parseFlightTime(item.date,item.time).depMs;
@@ -67,9 +61,14 @@
                     const changeBtn=isRA
                         ?'<span class="self-center text-textGray text-sm">空铁联运暂不支持在线改签，如需调整行程请联系客服</span>'
                         :'<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>';
+                    const ckLink='checkin.html?orderId='+encodeURIComponent(item.orderId);
+                    const ckBtn=item.checkedIn
+                        ?'<button onclick="location.href=\''+ckLink+'\'" class="px-4 py-2 bg-gold text-primary font-bold rounded-global btn-hover">已值机 · '+esc(item.seat)+'（查看登机牌）</button>'
+                        :'<button onclick="location.href=\''+ckLink+'\'" class="px-4 py-2 bg-gold text-primary font-bold rounded-global btn-hover"><i class="fa fa-qrcode"></i> 在线值机</button>';
                     actions='<div class="mt-4 flex flex-wrap gap-3">'+
                         changeBtn+
                         '<button onclick="refundOrder('+index+')" class="px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票（手续费'+rate*100+'% · 退¥'+refund+'）</button>'+
+                        ckBtn+
                         '</div>';
                 }
                 let routeInfo=isRA
@@ -100,6 +99,7 @@
             const rate=refundRate(item),fee=Math.round(base*rate),refund=base-fee;
             showConfirm('确认申请退票？<br>按当前起飞时间窗口，手续费 ¥'+fee+'（票价'+rate*100+'%），实退 ¥'+refund+'。',function(){
                 item.status="已退票";item.fee=fee;item.refundAmount=refund;
+                item.checkedIn=false;delete item.seat;delete item.gate;delete item.boardTime;
                 saveOrders(orders);
                 // 回退该订单已累积的会员里程（防"购票刷里程再退票"）
                 let milesBack=0;
@@ -131,6 +131,7 @@
             const f=searchFlights({start:item.start,end:item.end,date:date})[0];
             if(!f){showToast("该日期暂无可用航班，请重新选择。");return;}
             item.flightNo=f.no;item.date=f.date;item.time=f.time;item.changed=true;
+            item.checkedIn=false;delete item.seat;delete item.gate;delete item.boardTime;
             saveOrders(orders);
             document.getElementById("changeModal").classList.add("hidden");
             renderOrderList();

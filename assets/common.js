@@ -134,3 +134,46 @@ function showConfirm(msg,onOk){
     d.querySelector('[data-a="ok"]').onclick=function(){d.remove();onOk&&onOk();};
     document.body.appendChild(d);
 }
+
+// ---- 线上值机：座位图 / 登机口 / 登机牌 ----
+function seatMapForCabin(cabin){
+    if(cabin==='头等舱')return {rows:4,letters:['A','C','D','F']};
+    if(cabin==='商务舱')return {rows:6,letters:['A','C','D','F']};
+    return {rows:12,letters:['A','B','C','D','E','F']};
+}
+// 该航班已被值机占用的座位（含已退票之外的所有订单）
+function getCheckedSeats(flightNo,date){
+    return loadOrders().filter(o=>o.checkedIn&&o.flightNo===flightNo&&o.date===date).map(o=>o.seat).filter(Boolean);
+}
+// 按航班号确定性生成登机口（如 C07）
+function genBoardingGate(flightNo){
+    let h=0;for(let i=0;i<flightNo.length;i++)h=(h*31+flightNo.charCodeAt(i))%100;
+    return 'C'+String(h%20+1).padStart(2,'0');
+}
+// 登机时间 = 起飞前 40 分钟
+function genBoardTime(flightDate,flightTime){
+    const arr=parseFlightTime(flightDate,flightTime).depMs;
+    const t=new Date(arr-40*60000);
+    return String(t.getHours()).padStart(2,'0')+':'+String(t.getMinutes()).padStart(2,'0');
+}
+// 值机/取消值机：返回 true 表示成功
+function doCheckin(orderId,seat){
+    const orders=loadOrders(),item=orders.find(o=>o.orderId===orderId);
+    if(!item)return false;
+    item.checkedIn=true;item.seat=seat;item.gate=genBoardingGate(item.flightNo);
+    item.boardTime=genBoardTime(item.date,item.time);item.checkinTime=Date.now();
+    saveOrders(orders);return true;
+}
+function cancelCheckin(orderId){
+    const orders=loadOrders(),item=orders.find(o=>o.orderId===orderId);
+    if(!item)return false;
+    item.checkedIn=false;delete item.seat;delete item.gate;delete item.boardTime;delete item.checkinTime;
+    saveOrders(orders);return true;
+}
+
+// ---- 订单状态实时解析（支付后 5 秒自动视为已完成，全局共享） ----
+function resolveStatus(item){
+    if(item.status==='已退票')return '已退票';
+    if(item.status==='支付处理中'&&Date.now()-item.createTime>5000)return '已完成';
+    return item.status;
+}

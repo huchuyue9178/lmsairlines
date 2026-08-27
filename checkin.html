@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线值机 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <h2 class="text-[26px] font-bold text-gold mb-8">线上值机</h2>
+        <div id="checkinBox"></div>
+        <div id="boardingPass" class="hidden"></div>
+    </main>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+        let curOrder=null,selectedSeat=null;
+        const orderId=new URLSearchParams(location.search).get('orderId');
+        function init(){
+            const box=document.getElementById("checkinBox");
+            const orders=loadOrders();
+            curOrder=orders.find(o=>o.orderId===orderId);
+            if(!curOrder){box.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">未找到该订单，请从【我的订单】选择要值机的订单。</div>';return;}
+            const status=resolveStatus(curOrder);
+            if(status==='已退票'){box.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">该订单已退票，无法办理值机。</div>';return;}
+            if(status==='支付处理中'){box.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">订单支付处理中，请稍候刷新后再办理值机。</div>';return;}
+            if(curOrder.checkedIn){renderBoardingPass();return;}
+            renderSeatSelect();
+        }
+        function orderInfoHtml(){
+            const o=curOrder,isRA=o.type==="railair";
+            let h='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-6">'+
+                '<div class="flex justify-between flex-wrap gap-2"><span class="font-bold text-lg text-gold">'+esc(o.flightNo)+'　'+esc(o.start)+' <i class="fa fa-plane mx-2"></i> '+esc(o.end)+'</span><span class="text-sm text-textGray">订单号：'+esc(o.orderId)+'</span></div>'+
+                '<p class="mt-2"><i class="fa fa-calendar text-gold"></i> '+esc(o.date)+' '+esc(o.time)+'</p>'+
+                '<p><i class="fa fa-user text-gold"></i> 乘客：'+esc(o.username)+'　<i class="fa fa-tag text-gold"></i> 舱位：'+esc(o.cabin)+'</p>';
+            if(isRA){
+                h+='<p class="mt-1 text-sm"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+' '+esc(o.trainFrom)+'→'+esc(o.trainTo)+' 无需值机，请凭身份证到站刷证进站。</p>';
+            }
+            h+='</div>';
+            return h;
+        }
+        function renderSeatSelect(){
+            const o=curOrder,map=seatMapForCabin(o.cabin);
+            const taken=getCheckedSeats(o.flightNo,o.date);
+            let seatGrid='';
+            for(let r=1;r<=map.rows;r++){
+                seatGrid+='<div class="flex items-center justify-center gap-2 mb-2">';
+                map.letters.forEach((L,i)=>{
+                    const seat=r+L;
+                    const isTaken=taken.indexOf(seat)>-1;
+                    if(i===2&&map.letters.length===6)seatGrid+='<div class="w-8"></div>'; // 3-3 过道
+                    if(i===2&&map.letters.length===4)seatGrid+='<div class="w-8"></div>'; // 2-2 过道
+                    seatGrid+='<button onclick="'+(isTaken?'':'pickSeat(\''+seat+'\')')+'" '+
+                        (isTaken?'disabled':'')+
+                        ' class="seat-btn w-10 h-10 rounded text-xs font-bold '+
+                        (isTaken?'bg-black/40 text-textGray cursor-not-allowed':'border border-gold/50 text-textDark btn-hover')+
+                        '" data-seat="'+seat+'">'+seat+'</button>';
+                });
+                seatGrid+='</div>';
+            }
+            const box=document.getElementById("checkinBox");
+            box.innerHTML=orderInfoHtml()+
+                '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-6">'+
+                '<h3 class="text-lg font-bold text-gold mb-4"><i class="fa fa-chair"></i> 选择座位（'+esc(o.cabin)+'）</h3>'+
+                '<div class="text-sm text-textGray mb-4 flex flex-wrap gap-4">'+
+                    '<span><i class="fa fa-square text-gold"></i> 可选</span>'+
+                    '<span><i class="fa fa-square text-gray-600"></i> 已占</span>'+
+                    '<span>靠窗：A / F（3-3）、A / F（2-2）</span>'+
+                '</div>'+
+                '<div class="overflow-x-auto"><div class="min-w-[420px]">'+seatGrid+'</div></div>'+
+                '<p class="mt-4 text-sm text-textGray">已选座位：<span id="selSeat" class="text-gold font-bold">未选择</span></p>'+
+                '<button onclick="confirmCheckin()" id="ckBtn" disabled class="btn-hover w-full mt-4 bg-gold text-primary font-bold py-3 rounded-global opacity-50 cursor-not-allowed">请先选择座位</button>'+
+                '</div>';
+        }
+        function pickSeat(seat){
+            selectedSeat=seat;
+            document.querySelectorAll('.seat-btn').forEach(b=>{
+                const on=b.dataset.seat===seat;
+                b.className='seat-btn w-10 h-10 rounded text-xs font-bold '+
+                    (b.disabled?'bg-black/40 text-textGray cursor-not-allowed':
+                    (on?'bg-gold text-primary font-bold border border-gold':'border border-gold/50 text-textDark btn-hover'));
+            });
+            document.getElementById("selSeat").textContent=seat;
+            const btn=document.getElementById("ckBtn");
+            btn.disabled=false;btn.classList.remove("opacity-50","cursor-not-allowed");btn.innerText='确认值机（座位 '+seat+'）';
+        }
+        function confirmCheckin(){
+            if(!selectedSeat)return;
+            if(doCheckin(curOrder.orderId,selectedSeat)){
+                showToast("值机成功！座位 "+selectedSeat+"，请提前到达登机口。");
+                renderBoardingPass();
+            }else{
+                showToast("值机失败，请重试。");
+            }
+        }
+        function renderBoardingPass(){
+            // 重新加载订单，确保拿到值机后的最新数据（seat/gate/boardTime）
+            const fresh=loadOrders().find(o=>o.orderId===curOrder.orderId);
+            if(fresh)curOrder=fresh;
+            const o=curOrder;
+            const pass='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-6">'+
+                '<div class="flex justify-between items-center"><div><p class="text-xl font-bold text-gold">老牧师航空</p><p class="text-xs text-textGray">BOARDING PASS · 登机牌</p></div>'+
+                '<span class="px-3 py-1 rounded-global border border-success text-success text-xs font-bold">已值机</span></div>'+
+                '<hr class="my-4 border-dashed">'+
+                '<div class="grid grid-cols-2 md:grid-cols-4 gap-4">'+
+                    '<div><p class="text-xs text-textGray">航班号</p><p class="font-bold text-lg">'+esc(o.flightNo)+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">乘客</p><p class="font-bold text-lg">'+esc(o.username)+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">舱位</p><p class="font-bold text-lg">'+esc(o.cabin)+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">座位</p><p class="font-bold text-lg text-gold">'+esc(o.seat)+'</p></div>'+
+                    '<div class="col-span-2"><p class="text-xs text-textGray">航线</p><p class="font-bold">'+esc(o.start)+' <i class="fa fa-plane mx-1 text-gold"></i> '+esc(o.end)+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">日期</p><p class="font-bold">'+esc(o.date)+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">起飞时间</p><p class="font-bold">'+esc(o.time.split('-')[0])+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">登机口</p><p class="font-bold text-gold text-lg">'+esc(o.gate)+'</p></div>'+
+                    '<div><p class="text-xs text-textGray">登机时间</p><p class="font-bold">'+esc(o.boardTime)+'</p></div>'+
+                    '<div class="col-span-2"><p class="text-xs text-textGray">会员</p><p class="font-bold">'+(getMember()&&o.memberCardNo?(getMember().level+' · '+o.memberCardNo):'非会员')+'</p></div>'+
+                '</div>'+
+                '<p class="mt-4 text-xs text-textGray bg-black/20 p-3 rounded-global">请于登机时间（起飞前 40 分钟）前抵达 '+esc(o.gate)+' 登机口，并出示有效证件与登机牌；未及时登机可能无法乘机。</p>'+
+                (o.type==='railair'?'<p class="mt-2 text-xs text-textGray bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+'（'+esc(o.trainFrom)+'→'+esc(o.trainTo)+'）无需线上值机，凭身份证进站乘车。</p>':'')+
+                '<div class="flex flex-wrap gap-3 mt-5">'+
+                    '<button onclick="window.print()" class="flex-1 border border-gold text-gold py-3 rounded-global btn-hover"><i class="fa fa-print"></i> 打印登机牌</button>'+
+                    '<button onclick="cancelCheckinFlow()" class="flex-1 border py-3 rounded-global btn-hover text-textGray">取消值机</button>'+
+                '</div></div>';
+            document.getElementById("checkinBox").innerHTML='';
+            document.getElementById("boardingPass").innerHTML=pass;
+            document.getElementById("boardingPass").classList.remove("hidden");
+        }
+        function cancelCheckinFlow(){
+            showConfirm('确认取消值机？座位 '+curOrder.seat+' 将释放，可重新选座。',function(){
+                cancelCheckin(curOrder.orderId);
+                document.getElementById("boardingPass").classList.add("hidden");
+                selectedSeat=null;
+                renderSeatSelect();
+                showToast("已取消值机，请重新选择座位。");
+            });
+        }
+        init();
+    </script>
+</body>
+</html>
