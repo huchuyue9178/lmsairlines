@@ -1,4 +1,4 @@
-body{background:#F8F7F2;font-family:"Microsoft YaHei",Arial,sans-serif;}
+body{background:#000000;font-family:"Microsoft YaHei",Arial,sans-serif;}
 .nav-glass{backdrop-filter:blur(8px);background-color:rgba(15,43,91,0.75);}
 .card-hover{transition:all 0.3s;}
 .card-hover:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}

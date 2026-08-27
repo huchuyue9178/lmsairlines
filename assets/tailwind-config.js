@@ -1,1 +1,1 @@
-tailwind.config = {theme:{extend:{colors:{primary:'#0F2B5B',gold:'#C8A97E',bgPage:'#F8F7F2',success:'#2E8B57',danger:'#B22222',textGray:'#666666',textDark:'#333333'},fontFamily:{sans:['"Microsoft YaHei"','"Source Han Sans CN"','Arial','sans-serif']},borderRadius:{global:'8px'}}}}
+tailwind.config = {theme:{extend:{colors:{primary:'#0F2B5B',gold:'#C8A97E',bgPage:'#000000',success:'#2E8B57',danger:'#B22222',textGray:'#666666',textDark:'#333333'},fontFamily:{sans:['"Microsoft YaHei"','"Source Han Sans CN"','Arial','sans-serif']},borderRadius:{global:'8px'}}}}
