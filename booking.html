@@ -46,6 +46,7 @@
         const params=new URLSearchParams(location.search);
         if(params.get('start'))document.getElementById('startCity').value=params.get('start');
         if(params.get('end'))document.getElementById('endCity').value=params.get('end');
+
         function searchFlight(){
             let s=document.getElementById("startCity").value.trim(),e=document.getElementById("endCity").value.trim(),fd=document.getElementById("flyDate").value;
             if(!s&&!e&&!fd){renderFlights(flightList,"全部虚拟航班");return;}
@@ -56,12 +57,14 @@
             }
             renderFlights(filter,"");
         }
+
         function renderFlights(list,title){
             currentList=list;shown=0;
             let html=title?'<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><p class="text-gold font-bold">'+title+'（共 '+list.length+' 个航班）</p></div>':'';
             document.getElementById("flightResult").innerHTML=html;
             appendMore();
         }
+
         function appendMore(){
             const cont=document.getElementById("flightResult");
             const oldBtn=document.getElementById("loadMoreBtn");
@@ -78,6 +81,7 @@
                 cont.appendChild(b);
             }
         }
+
         function flightCardHtml(f){
             return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
                 '<div class="flex flex-wrap justify-between items-center mb-3"><span class="font-bold text-lg">'+f.no+'</span><span>'+f.start+' <i class="fa fa-plane mx-2 text-gold"></i> '+f.end+'</span><span>'+f.date+' '+f.time+'</span></div>'+
@@ -88,6 +92,7 @@
                 '<button onclick="openBuy(\''+f.no+'\',\'first\')" class="border py-2 rounded-global btn-hover">头等舱 ¥'+f.price.first+'</button>'+
                 '</div></div>';
         }
+
         function openBuy(no,cabin){
             selectFlight=findFlight(no);selectCabin=cabin;
             if(!selectFlight){alert("未找到该航班，请刷新后重试");return;}

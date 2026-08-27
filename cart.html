@@ -19,6 +19,10 @@
         <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
             <h3 class="text-xl font-bold text-gold mb-4">在线支付</h3>
             <div id="paymentInfo" class="mb-4 text-sm"></div>
+            <div id="couponRow" class="hidden mb-4">
+                <label class="block mb-1">优惠券（会员里程兑换）</label>
+                <select id="couponSelect" class="w-full border px-4 py-3 rounded-global" onchange="updatePayInfo()"></select>
+            </div>
             <div class="space-y-4">
                 <div><label class="block mb-1">支付方式</label><select id="payMethod" class="w-full border px-4 py-3 rounded-global"><option>微信支付</option><option>支付宝</option><option>银行卡</option></select></div>
                 <div><label class="block mb-1">支付卡号/手机号</label><input id="payAccount" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入支付账号"></div>
@@ -49,27 +53,55 @@
         }
         function removeFromCart(i){let c=getCart();c.splice(i,1);saveCart(c);renderCartList();}
         function openPaymentModal(){
-            let c=getCart();if(c.length===0){alert("购物车为空，无法支付");return;}
+            let c=getCart();if(c.length===0){showToast("购物车为空，无法支付");return;}
             let total=c.reduce((s,i)=>s+i.price,0);
-            document.getElementById("paymentInfo").innerHTML='<p>待支付机票：'+c.length+' 张</p><p class="text-danger font-bold text-lg mt-2">支付金额：¥'+total+'</p>';
+            const coupons=availableCoupons(),cr=document.getElementById("couponRow"),sel=document.getElementById("couponSelect");
+            if(coupons.length===0){cr.classList.add("hidden");sel.innerHTML="";}
+            else{
+                cr.classList.remove("hidden");
+                sel.innerHTML='<option value="0">不使用优惠券</option>'+coupons.map(x=>'<option value="'+esc(x.code)+'">¥'+x.value+' 代金券（'+esc(x.code)+'）</option>').join('');
+            }
             document.getElementById("paymentModal").classList.remove("hidden");
+            updatePayInfo();
+        }
+        function updatePayInfo(){
+            let c=getCart(),total=c.reduce((s,i)=>s+i.price,0);
+            const sel=document.getElementById("couponSelect");
+            const code=sel&&sel.value?sel.value:"0";
+            const coupon=code==="0"?null:getCoupons().find(x=>x.code===code);
+            const pay=coupon?Math.max(0,total-coupon.value):total;
+            document.getElementById("paymentInfo").innerHTML='<p>待支付机票：'+c.length+' 张</p>'+(coupon?'<p class="text-success">优惠券抵扣：-¥'+coupon.value+'</p>':'')+'<p class="text-danger font-bold text-lg mt-2">实付金额：¥'+pay+'</p>';
         }
         function closePaymentModal(){document.getElementById("paymentModal").classList.add("hidden");document.getElementById("payAccount").value="";}
         async function confirmPayment(){
             let c=getCart(),acc=document.getElementById("payAccount").value.trim(),btn=document.getElementById("paySubmitBtn");
             let total=c.reduce((s,i)=>s+i.price,0);
-            if(!acc){alert("请输入支付账号/手机号");return;}
-            if(total>1000){if(!confirm("您即将支付¥"+total+"，金额大于1000元，请再次确认是否付款？"))return;}
-            btn.disabled=true;btn.innerText="支付加载中，请稍候...";
-            await new Promise(r=>setTimeout(r,3000));
-            let orders=loadOrders();const ts=Date.now();
-            c.forEach(item=>{orders.push({orderId:"ORD"+ts+Math.floor(Math.random()*1000),flightNo:item.flightNo,start:item.start,end:item.end,date:item.date,time:item.time,cabin:item.cabin,price:item.price,username:item.username,idcard:item.idcard,status:"支付处理中",createTime:ts});});
-            saveOrders(orders);
-            localStorage.removeItem("airCart");
-            updateCartBadge();
-            alert("支付成功！订单已生成，稍后可在【我的订单】查看。");
-            btn.disabled=false;btn.innerText="确认支付";
-            location.href="order.html";
+            const sel=document.getElementById("couponSelect");
+            const code=sel&&sel.value?sel.value:"0";
+            const coupon=code==="0"?null:getCoupons().find(x=>x.code===code);
+            const couponValue=coupon?coupon.value:0;
+            const payTotal=Math.max(0,total-couponValue);
+            if(!acc){showToast("请输入支付账号/手机号");return;}
+            const doPay=async function(){
+                btn.disabled=true;btn.innerText="支付加载中，请稍候...";
+                await new Promise(r=>setTimeout(r,3000));
+                let orders=loadOrders();const ts=Date.now();
+                const m=getMember();
+                c.forEach(item=>{
+                    const payPrice=coupon?Math.max(0,Math.round(item.price-item.price*couponValue/total)):item.price;
+                    orders.push({orderId:"ORD"+ts+Math.floor(Math.random()*1000),flightNo:item.flightNo,start:item.start,end:item.end,date:item.date,time:item.time,cabin:item.cabin,price:item.price,payPrice:payPrice,couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0,username:item.username,idcard:item.idcard,status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0});
+                });
+                if(m){earnMiles(payTotal);}
+                if(coupon){coupon.status="已使用";coupon.usedAt=Date.now();saveCoupons(getCoupons().map(x=>x.code===coupon.code?coupon:x));}
+                saveOrders(orders);
+                localStorage.removeItem("airCart");
+                updateCartBadge();
+                showToast("支付成功！"+(m?"已累积 "+Math.round(payTotal)+" 里程。":"（登录会员可累积里程）")+"订单已生成，稍后可在【我的订单】查看。");
+                btn.disabled=false;btn.innerText="确认支付";
+                setTimeout(function(){location.href="order.html";},1600);
+            };
+            if(payTotal>1000){showConfirm("您即将支付 ¥"+payTotal+"，金额大于 1000 元，请再次确认是否付款？",doPay);}
+            else{doPay();}
         }
         renderCartList();
     </script>

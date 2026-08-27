@@ -28,9 +28,11 @@ const routeTemplate=[
     {start:"北京",end:"墨尔本",time:"21:00-08:15+1",price:{eco:3750,superEco:4580,business:8400,first:14800}},
     {start:"上海",end:"多哈",time:"20:30-01:45+1",price:{eco:3250,superEco:3980,business:7450,first:12800}}
 ];
+
 // 每条航线补反向航班（往返）
 const fullRoutes=[];
 routeTemplate.forEach(r=>{fullRoutes.push(r);fullRoutes.push({start:r.end,end:r.start,time:r.time,price:r.price});});
+
 // 生成未来 30 天航班
 function generateFlightList(){
     const list=[];let fi=1;
@@ -42,8 +44,10 @@ function generateFlightList(){
     return list;
 }
 const flightList=generateFlightList();
+
 function findFlight(no){return flightList.find(x=>x.no===no);}
 function searchFlights(opt){opt=opt||{};return flightList.filter(f=>(!opt.start||f.start===opt.start)&&(!opt.end||f.end===opt.end)&&(!opt.date||f.date===opt.date));}
+
 // 解析起飞/到达时间戳（支持跨天 +1/+2）
 function parseFlightTime(dateStr,timeStr){
     const parts=timeStr.split("-");
@@ -54,4 +58,5 @@ function parseFlightTime(dateStr,timeStr){
     if(plus)arrMs+=Number(plus[1])*86400000;
     return {depMs,arrMs};
 }
+
 const cabinNameMap={eco:"经济舱",superEco:"超级经济舱",business:"商务舱",first:"头等舱"};

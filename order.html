@@ -31,6 +31,7 @@
     <script src="assets/common.js"></script>
     <script>
         let changeIdx=null;
+
         // 状态实时计算：支付后 5 秒自动视为已完成（不再依赖定时器）
         function resolveStatus(item){
             if(item.status==='已退票')return '已退票';
@@ -59,8 +60,9 @@
                     actions='<div class="mt-4 text-textGray text-sm">订单支付处理中，约5秒后自动完成，请稍候刷新查看。</div>';
                 }else{
                     const rate=refundRate(item);
-                    const fee=Math.round(item.price*rate);
-                    const refund=item.price-fee;
+                    const base=(item.payPrice!=null?item.payPrice:item.price);
+                    const fee=Math.round(base*rate);
+                    const refund=base-fee;
                     actions='<div class="mt-4 flex flex-wrap gap-3">'+
                         '<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>'+
                         '<button onclick="refundOrder('+index+')" class="px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票（手续费'+rate*100+'% · 退¥'+refund+'）</button>'+
@@ -73,14 +75,17 @@
                     '<p>日期：'+esc(item.date)+' '+esc(item.time)+'</p>'+
                     '<p>舱位：'+esc(item.cabin)+'</p>'+
                     '<p>乘客：'+esc(item.username)+'</p>'+
-                    '<p>金额：¥'+item.price+'</p>'+actions+
+                    '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+'</p>'+
+                    (item.memberCardNo?'<p class="text-gold">会员 '+esc(item.memberCardNo)+' · 获得里程 +'+(item.milesEarned||0)+'</p>':'')+
+                    actions+
                     '</div>';
             });
             d.innerHTML=h;
         }
         function refundOrder(idx){
             let orders=loadOrders(),item=orders[idx];
-            const rate=refundRate(item),fee=Math.round(item.price*rate),refund=item.price-fee;
+            const base=(item.payPrice!=null?item.payPrice:item.price);
+            const rate=refundRate(item),fee=Math.round(base*rate),refund=base-fee;
             if(!confirm('确认申请退票？\n按当前起飞时间窗口，手续费 ¥'+fee+'（票价'+rate*100+'%），实退 ¥'+refund+'。'))return;
             item.status="已退票";item.fee=fee;item.refundAmount=refund;
             saveOrders(orders);renderOrderList();

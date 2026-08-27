@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>会员中心 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <h2 class="text-[26px] font-bold text-gold mb-2">会员中心</h2>
+        <p class="text-textGray mb-8">老牧师航空常旅客计划 · 消费即累积里程，里程可兑换代金券</p>
+
+        <!-- 未登录：介绍 + 注册/登录 -->
+        <div id="guestArea">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+                    <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-diamond mr-2"></i>常旅客等级权益</h3>
+                    <div class="space-y-3 text-sm">
+                        <p><span class="font-bold">普卡</span>：注册即享 · 里程累积、会员专属客服、会员价购票</p>
+                        <p><span class="font-bold">银卡</span>（1万里程）：优先值机、额外10%里程加成、生日礼遇</p>
+                        <p><span class="font-bold">金卡</span>（3万里程）：免费选座、贵宾安检通道、额外25%里程、优先登机</p>
+                        <p><span class="font-bold">铂金卡</span>（6万里程）：贵宾休息室、免费升舱券×1/年、额外50%里程</p>
+                        <p><span class="font-bold">钻石卡</span>（10万里程）：专属行程管家、无限贵宾休息室、额外100%里程</p>
+                        <p class="text-textGray mt-2">每消费 ¥1 累积 1 里程，购买机票支付后自动到账。</p>
+                    </div>
+                </div>
+                <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+                    <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-user-plus mr-2"></i>注册会员</h3>
+                    <div class="space-y-4">
+                        <div><label class="block mb-1">会员姓名</label><input id="regName" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入姓名"></div>
+                        <div><label class="block mb-1">手机号码</label><input id="regPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="11位手机号"></div>
+                        <button onclick="regMember()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">注册并开通会员</button>
+                    </div>
+                    <hr class="my-6 border-white/10">
+                    <h3 class="text-lg font-bold text-gold mb-4"><i class="fa fa-sign-in mr-2"></i>已有会员？登录</h3>
+                    <div class="space-y-4">
+                        <div><label class="block mb-1">会员卡号</label><input id="loginCard" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="如 LMSF0001"></div>
+                        <div><label class="block mb-1">手机号码</label><input id="loginPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="注册时手机号"></div>
+                        <button onclick="loginMember()" class="btn-hover w-full border border-gold text-gold font-bold py-3 rounded-global">登录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 已登录：会员信息 -->
+        <div id="memberAreaMain" class="hidden space-y-8">
+            <div class="bg-card card-gold p-8 rounded-global shadow-lg">
+                <div class="flex flex-wrap justify-between items-center gap-6">
+                    <div>
+                        <p class="text-textGray text-sm mb-1">会员卡号</p>
+                        <p id="mCardNo" class="font-mono text-lg"></p>
+                        <p id="mName" class="text-2xl font-bold mt-1"></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-textGray text-sm mb-1">当前等级</p>
+                        <p id="mLevel" class="text-3xl font-bold text-gold"></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-textGray text-sm mb-1">累计里程</p>
+                        <p id="mTotal" class="text-3xl font-bold text-gold"></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-textGray text-sm mb-1">可用里程</p>
+                        <p id="mMiles" class="text-3xl font-bold"></p>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <div class="flex justify-between text-sm text-textGray mb-2">
+                        <span id="mLevelHint"></span>
+                        <span id="mProgressText"></span>
+                    </div>
+                    <div class="w-full h-3 bg-black/60 rounded-global overflow-hidden">
+                        <div id="mProgress" class="h-full bg-gold rounded-global transition-all" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <button onclick="redeemCoupon()" id="redeemBtn" class="btn-hover bg-gold text-primary font-bold px-6 py-3 rounded-global">用 1000 里程兑换 ¥50 代金券</button>
+                    <button onclick="doLogout()" class="btn-hover border border-danger text-danger font-bold px-6 py-3 rounded-global">退出登录</button>
+                </div>
+                <p id="couponTip" class="text-sm text-textGray mt-3"></p>
+            </div>
+
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-cube mr-2"></i>我的优惠券</h3>
+                <div id="couponList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-list mr-2"></i>里程明细（来源于购票订单）</h3>
+                <div id="milesList" class="space-y-3"></div>
+            </div>
+        </div>
+    </main>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js"></script>
+    <script src="assets/common.js"></script>
+    <script>
+        const LV_COLORS={普卡:'text-white',银卡:'text-gray-300',金卡:'text-gold',铂金卡:'text-amber-300',钻石卡:'text-cyan-300'};
+        const LV_DESC={普卡:'注册即享 · 里程累积、会员专属客服、会员价购票',银卡:'1万里程 · 优先值机、额外10%里程加成、生日礼遇',金卡:'3万里程 · 免费选座、贵宾安检通道、额外25%里程、优先登机',铂金卡:'6万里程 · 贵宾休息室、升舱券×1/年、额外50%里程',钻石卡:'10万里程 · 专属管家、无限休息室、额外100%里程'};
+        function genCardNo(){
+            let seq=Number(localStorage.getItem("ffpSeq")||"0")+1;
+            localStorage.setItem("ffpSeq",String(seq));
+            return "LMSF"+String(seq).padStart(4,'0');
+        }
+        function regMember(){
+            const name=document.getElementById("regName").value.trim();
+            const phone=document.getElementById("regPhone").value.trim();
+            if(!name){showToast("请填写会员姓名");return;}
+            if(!/^1\d{10}$/.test(phone)){showToast("请输入 11 位有效手机号");return;}
+            if(getMember()){showToast("您已登录会员，请先退出再注册新会员。");return;}
+            const m={name:name,phone:phone,cardNo:genCardNo(),level:"普卡",miles:0,totalMiles:0,joinedAt:Date.now()};
+            saveMember(m);
+            showToast("注册成功！您的会员卡号为 "+m.cardNo+"，已自动登录。");
+            renderPage();
+        }
+        function loginMember(){
+            const card=document.getElementById("loginCard").value.trim().toUpperCase();
+            const phone=document.getElementById("loginPhone").value.trim();
+            // 演示项目：从订单中找回该卡号，或直接按卡号登录（本地无服务端，按卡号+手机号校验）
+            const saved=localStorage.getItem("ffpMember");
+            if(saved){
+                const cur=JSON.parse(saved);
+                if(cur.cardNo===card&&cur.phone===phone){renderPage();return;}
+            }
+            showToast("未找到匹配的会员卡号与手机号。演示环境支持通过注册流程创建会员。");
+        }
+        function doLogout(){logoutMember();renderPage();showToast("已退出登录。");}
+        function redeemCoupon(){
+            const m=getMember();
+            if(!m){return;}
+            if((m.miles||0)<1000){showToast("可用里程不足 1000，暂时无法兑换。");return;}
+            m.miles-=1000;saveMember(m);
+            const coupons=getCoupons();
+            coupons.push({code:"C"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
+            saveCoupons(coupons);
+            renderPage();
+            showToast("兑换成功！已获得 ¥50 代金券，可在支付时选择使用。");
+        }
+        function renderPage(){
+            const m=getMember();
+            document.getElementById("guestArea").classList.toggle("hidden",!!m);
+            const main=document.getElementById("memberAreaMain");
+            main.classList.toggle("hidden",!m);
+            if(!m)return;
+            const lv=ffpLevel(m.totalMiles);
+            document.getElementById("mCardNo").textContent=m.cardNo;
+            document.getElementById("mName").textContent=m.name+"  ·  加入于 "+new Date(m.joinedAt).toLocaleDateString("zh-CN");
+            const lvEl=document.getElementById("mLevel");
+            lvEl.textContent=lv.cur.name;
+            lvEl.className="text-3xl font-bold "+LV_COLORS[lv.cur.name];
+            document.getElementById("mTotal").textContent=m.totalMiles.toLocaleString();
+            document.getElementById("mMiles").textContent=(m.miles||0).toLocaleString();
+            document.getElementById("mLevelHint").textContent=LV_DESC[lv.cur.name];
+            if(lv.next){
+                const pct=Math.min(100,Math.round(m.totalMiles/lv.next.min*100));
+                document.getElementById("mProgress").style.width=pct+"%";
+                document.getElementById("mProgressText").textContent="距"+lv.next.name+"还需 "+(lv.next.min-m.totalMiles).toLocaleString()+" 里程";
+            }else{
+                document.getElementById("mProgress").style.width="100%";
+                document.getElementById("mProgressText").textContent="已达最高等级，尊享全部权益";
+            }
+            const redeemBtn=document.getElementById("redeemBtn");
+            redeemBtn.disabled=(m.miles||0)<1000;
+            redeemBtn.style.opacity=(m.miles||0)<1000?"0.5":"1";
+            document.getElementById("couponTip").textContent="当前可用里程 "+(m.miles||0).toLocaleString()+"，每 1000 里程可兑换 ¥50 代金券";
+            renderCoupons();
+            renderMiles(m);
+        }
+        function renderCoupons(){
+            const c=getCoupons(),d=document.getElementById("couponList");
+            if(c.length===0){d.innerHTML='<p class="text-textGray">暂无优惠券。用里程兑换后，支付机票时可选券抵扣。</p>';return;}
+            d.innerHTML=c.map(x=>'<div class="bg-black/50 border border-gold/30 rounded-global p-4 flex justify-between items-center"><div><p class="font-bold text-gold">¥'+x.value+' 代金券</p><p class="text-xs text-textGray">券号 '+esc(x.code)+'</p></div><span class="text-sm '+(x.status==='可用'?'text-success':'text-textGray')+'">'+x.status+'</span></div>').join('');
+        }
+        function renderMiles(m){
+            const orders=loadOrders().filter(o=>o.memberCardNo===m.cardNo);
+            const d=document.getElementById("milesList");
+            if(orders.length===0){d.innerHTML='<p class="text-textGray">暂无里程记录。登录会员购票并支付成功后，里程将自动累积。</p>';return;}
+            d.innerHTML=orders.slice().reverse().map(o=>'<div class="flex justify-between items-center bg-black/40 rounded-global px-4 py-3"><div><p class="font-bold">'+esc(o.flightNo)+' '+esc(o.start)+'→'+esc(o.end)+'</p><p class="text-xs text-textGray">'+esc(o.date)+' '+esc(o.time)+' · 实付 ¥'+(o.payPrice!=null?o.payPrice:o.price)+'</p></div><span class="text-gold font-bold">+'+(o.milesEarned||0)+' 里程</span></div>').join('');
+        }
+        renderPage();
+    </script>
+</body>
+</html>
