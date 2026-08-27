@@ -26,12 +26,28 @@
             </div>
         </div>
     </div>
+    <div id="cabinModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
+            <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-exchange mr-2"></i>升舱 / 降舱</h3>
+            <div id="cabinInfo" class="mb-4 text-sm"></div>
+            <div id="cabinOptions" class="space-y-2 mb-4"></div>
+            <div id="cabinSummary" class="mb-4 text-sm"></div>
+            <div class="flex gap-4">
+                <button onclick="closeCabinChange()" class="flex-1 border py-3 rounded-global">取消</button>
+                <button onclick="confirmCabinChange()" id="cabinConfirmBtn" disabled class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover opacity-50 cursor-not-allowed">请选择舱位</button>
+            </div>
+        </div>
+    </div>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20260827b"></script>
     <script src="assets/common.js?v=20260827b"></script>
     <script>
         let changeIdx=null;
-
+        let cabinIdx=null,cabinTargetKey=null;
+        // 舱位顺序与映射（用于升/降舱价格多退少补）
+        const CABIN_ORDER=['eco','superEco','business','first'];
+        const CABIN_KEY={经济舱:'eco',超级经济舱:'superEco',商务舱:'business',头等舱:'first'};
+        const CABIN_NAME={eco:'经济舱',superEco:'超级经济舱',business:'商务舱',first:'头等舱'};
         // 按起飞时间窗口计算手续费比例（与政策页一致）
         function refundRate(item){
             const depMs=parseFlightTime(item.date,item.time).depMs;
@@ -61,12 +77,16 @@
                     const changeBtn=isRA
                         ?'<span class="self-center text-textGray text-sm">空铁联运暂不支持在线改签，如需调整行程请联系客服</span>'
                         :'<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>';
+                    const cabinBtn=isRA
+                        ?''
+                        :'<button onclick="openCabinChange('+index+')" class="px-4 py-2 border border-gold text-gold rounded-global btn-hover"><i class="fa fa-exchange"></i> 升舱/降舱</button>';
                     const ckLink='checkin.html?orderId='+encodeURIComponent(item.orderId);
                     const ckBtn=item.checkedIn
                         ?'<button onclick="location.href=\''+ckLink+'\'" class="px-4 py-2 bg-gold text-primary font-bold rounded-global btn-hover">已值机 · '+esc(item.seat)+'（查看登机牌）</button>'
                         :'<button onclick="location.href=\''+ckLink+'\'" class="px-4 py-2 bg-gold text-primary font-bold rounded-global btn-hover"><i class="fa fa-qrcode"></i> 在线值机</button>';
                     actions='<div class="mt-4 flex flex-wrap gap-3">'+
                         changeBtn+
+                        cabinBtn+
                         '<button onclick="refundOrder('+index+')" class="px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票（手续费'+rate*100+'% · 退¥'+refund+'）</button>'+
                         ckBtn+
                         '</div>';
@@ -85,6 +105,7 @@
                     '<p>舱位：'+esc(item.cabin)+'</p>'+
                     '<p>乘客：'+esc(item.username)+'</p>'+
                     '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+(isRA?'（含高铁二等座）':'')+'</p>'+
+                    (item.cabinChange?'<p class="text-sm '+(item.cabinChange.type==='upgrade'?'text-danger':'text-success')+'"><i class="fa '+(item.cabinChange.type==='upgrade'?'fa-level-up':'fa-level-down')+'"></i> '+esc(item.cabinChange.fromCabin)+' → '+esc(item.cabinChange.toCabin)+'：'+(item.cabinChange.type==='upgrade'?'补差价 ¥'+item.cabinChange.diff:'退回差价 ¥'+item.cabinChange.diff)+'</p>':'')+
                     (item.memberCardNo?'<p class="text-gold">会员 '+esc(item.memberCardNo)+' · 获得里程 +'+(item.milesEarned||0)+'</p>':'')+
                     actions+
                     '</div>';
@@ -138,6 +159,96 @@
             showToast("改签成功！已为您改至 "+f.date+" "+f.time+"，票价无差价。");
         }
         function closeChange(){document.getElementById("changeModal").classList.add("hidden");}
+        // ---- 升舱/降舱：价格多退少补 ----
+        function getFlightPrice(item){
+            const f=findFlight(item.flightNo);
+            if(f&&f.price)return f.price;
+            const alt=searchFlights({start:item.start,end:item.end})[0];
+            return alt?alt.price:null;
+        }
+        function openCabinChange(idx){
+            const orders=loadOrders(),item=orders[idx];
+            if(item.type==="railair"){showToast("空铁联运暂不支持在线升降舱，如需调整请联系客服。");return;}
+            if(resolveStatus(item)==='已退票'){showToast("该订单已退票，无法调整舱位。");return;}
+            if(resolveStatus(item)==='支付处理中'){showToast("订单支付处理中，请稍候再操作。");return;}
+            const price=getFlightPrice(item);
+            if(!price){showToast("未获取到该航班舱位价格，暂无法调整。");return;}
+            cabinIdx=idx;cabinTargetKey=null;
+            const curKey=CABIN_KEY[item.cabin]||'eco';
+            const curPrice=price[curKey];
+            const base=item.payPrice!=null?item.payPrice:item.price;
+            document.getElementById("cabinInfo").innerHTML=
+                '<p>航班：'+esc(item.flightNo)+'　'+esc(item.start)+'→'+esc(item.end)+'</p>'+
+                '<p>当前舱位：<span class="text-gold font-bold">'+esc(item.cabin)+'</span>　标价 ¥'+curPrice+'　实付 ¥'+base+'</p>';
+            document.getElementById("cabinOptions").innerHTML=CABIN_ORDER.map(key=>{
+                const name=CABIN_NAME[key],p=price[key];
+                const diff=Math.round(p-curPrice);
+                const same=key===curKey;
+                const diffTxt=same?'（当前舱位）':(diff>0?'<span class="text-danger">补差价 +¥'+diff+'</span>':'<span class="text-success">退差价 -¥'+Math.abs(diff)+'</span>');
+                return '<label class="flex items-center gap-3 bg-black/40 border border-gold/20 rounded-global px-4 py-3 cursor-pointer hover:border-gold transition-colors'+(same?' opacity-60':'')+'">'+
+                    '<input type="radio" name="cabinPick" value="'+key+'" data-diff="'+diff+'" data-price="'+p+'" '+(same?'disabled':'')+' onchange="pickCabin(this)">'+
+                    '<span class="font-bold flex-1">'+name+'</span>'+
+                    '<span class="text-sm text-textGray">¥'+p+'</span>'+
+                    '<span class="text-xs">'+diffTxt+'</span>'+
+                    '</label>';
+            }).join('');
+            document.getElementById("cabinSummary").innerHTML='<p class="text-textGray">选择目标舱位后显示差价：升舱需补差价，降舱退回差价（多退少补）。</p>';
+            const btn=document.getElementById("cabinConfirmBtn");
+            btn.disabled=true;
+            btn.className="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover opacity-50 cursor-not-allowed";
+            btn.innerText="请选择舱位";
+            document.getElementById("cabinModal").classList.remove("hidden");
+        }
+        function pickCabin(el){
+            const orders=loadOrders(),item=orders[cabinIdx];
+            const key=el.value,diff=Number(el.dataset.diff);
+            const base=item.payPrice!=null?item.payPrice:item.price;
+            const newPay=base+diff;
+            cabinTargetKey=key;
+            document.getElementById("cabinSummary").innerHTML=
+                '<p>当前实付：¥'+base+'　→　新舱位：'+CABIN_NAME[key]+'（新实付 ¥'+newPay+'）</p>'+
+                (diff>0?'<p class="text-danger font-bold text-lg mt-1">需补差价：+¥'+diff+'</p>'
+                       :'<p class="text-success font-bold text-lg mt-1">退回差价：-¥'+Math.abs(diff)+'</p>');
+            const btn=document.getElementById("cabinConfirmBtn");
+            btn.disabled=false;
+            btn.className="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover";
+            btn.innerText=diff>0?'确认升舱并补差价 ¥'+diff:'确认降舱并退回差价 ¥'+Math.abs(diff);
+        }
+        function confirmCabinChange(){
+            if(!cabinTargetKey)return;
+            const orders=loadOrders(),item=orders[cabinIdx];
+            const price=getFlightPrice(item);
+            const curKey=CABIN_KEY[item.cabin]||'eco';
+            const diff=Math.round(price[cabinTargetKey]-price[curKey]);
+            const base=item.payPrice!=null?item.payPrice:item.price;
+            const newPay=Math.max(0,base+diff);
+            const oldMiles=item.milesEarned||0;
+            const newMiles=Math.round(newPay);
+            const fromCabin=item.cabin;
+            const toCabin=CABIN_NAME[cabinTargetKey];
+            const diffAmt=Math.abs(diff);
+            showConfirm('确认将舱位由【'+fromCabin+'】调整至【'+toCabin+'】？<br>'+(diff>0?'需补差价 ¥'+diffAmt:'退回差价 ¥'+diffAmt)+'（多退少补），调整后原座位将释放，需重新值机。',function(){
+                item.cabin=toCabin;
+                item.price=price[cabinTargetKey];
+                item.payPrice=newPay;
+                item.milesEarned=newMiles;
+                item.cabinChange={type:diff>0?'upgrade':'downgrade',fromCabin:fromCabin,toCabin:toCabin,diff:diffAmt,oldPayPrice:base,newPayPrice:newPay,changedAt:Date.now()};
+                item.checkedIn=false;delete item.seat;delete item.gate;delete item.boardTime;delete item.checkinTime;
+                saveOrders(orders);
+                const m=getMember();
+                if(m&&item.memberCardNo){
+                    const delta=newMiles-oldMiles;
+                    if(delta>0){m.miles=(m.miles||0)+delta;m.totalMiles=(m.totalMiles||0)+delta;}
+                    else if(delta<0){m.miles=Math.max(0,(m.miles||0)+delta);m.totalMiles=Math.max(0,(m.totalMiles||0)+delta);}
+                    m.level=ffpLevel(m.totalMiles).cur.name;
+                    saveMember(m);
+                }
+                document.getElementById("cabinModal").classList.add("hidden");
+                renderOrderList();
+                showToast("舱位调整成功！"+(diff>0?'已补差价 ¥'+diffAmt+'，':'已退回差价 ¥'+diffAmt+'，')+"请重新选择座位办理值机。");
+            });
+        }
+        function closeCabinChange(){document.getElementById("cabinModal").classList.add("hidden");cabinTargetKey=null;}
         renderOrderList();
         // 若仍有“支付处理中”的订单，6 秒后自动重渲染一次（状态始终按创建时间实时计算，不写死）
         setTimeout(function(){if(loadOrders().some(o=>o.status==='支付处理中'))renderOrderList();},6000);
