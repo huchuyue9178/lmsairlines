@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线客服 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#0F2B5B',gold:'#C8A97E',bgPage:'#F8F7F2',success:'#2E8B57',danger:'#B22222',textGray:'#666666',textDark:'#333333'},fontFamily:{sans:['"Microsoft YaHei"','Arial','sans-serif']},borderRadius:{global:'8px'}}}}</script>
+    <style>body{background:#F8F7F2;font-family:"Microsoft YaHei",Arial,sans-serif;}.nav-glass{backdrop-filter:blur(8px);background-color:rgba(15,43,91,0.75);}.card-hover{transition:all 0.3s;}.card-hover:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.1);}.btn-hover{transition:all 0.3s;}.btn-hover:hover{transform:scale(1.02);box-shadow:0 4px 12px rgba(0,0,0,0.15);}.btn-hover:active{transform:scale(0.98);}</style>
+</head>
+<body class="text-textDark">
+    <header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold">老牧师航空</span></a>
+            <nav class="hidden lg:flex gap-6 text-white text-[15px]"><a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a></nav>
+            <div class="hidden lg:flex items-center gap-4 text-white text-sm"><a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><span><i class="fa fa-phone"></i> 400-888-9999</span></div>
+            <button id="menuBtn" class="lg:hidden text-white text-2xl"><i class="fa fa-bars"></i></button>
+        </div>
+        <div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white"><div class="flex flex-col gap-3"><a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a></div></div>
+    </header>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <h2 class="text-[26px] font-bold text-primary mb-8">客服中心</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-primary mb-4">人工客服</h3>
+                <p class="text-lg mb-3"><i class="fa fa-phone text-gold mr-2"></i>客服热线：400-888-9999</p>
+                <p class="text-textGray mb-6">服务时间：每日 07:00 — 23:00</p>
+                <button class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">开启在线智能客服</button>
+            </div>
+            <div class="bg-white p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-primary mb-4">投诉与建议</h3>
+                <div class="space-y-4">
+                    <div><label class="block text-sm text-textGray mb-1">您的姓名</label><input type="text" class="w-full border rounded-global px-4 py-3 focus:border-gold outline-none"></div>
+                    <div><label class="block text-sm text-textGray mb-1">联系电话</label><input type="tel" class="w-full border rounded-global px-4 py-3 focus:border-gold outline-none"></div>
+                    <div><label class="block text-sm text-textGray mb-1">反馈内容</label><textarea rows="4" class="w-full border rounded-global px-4 py-3 focus:border-gold outline-none"></textarea></div>
+                    <button onclick="alert('反馈已提交，感谢您的建议！')" class="btn-hover w-full bg-primary text-white font-bold py-3 rounded-global">提交反馈</button>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-global shadow-lg mt-8">
+            <h3 class="text-xl font-bold text-primary mb-4">常见自助问题</h3>
+            <div class="space-y-3">
+                <p class="font-medium">Q：如何办理退票改签？</p>
+                <p class="text-textGray">A：登录我的订单页面，找到对应航班点击退票改签按钮即可提交申请。购票超过1分钟不可申请退票。</p>
+                <p class="font-medium">Q：行李超重收费标准？</p>
+                <p class="text-textGray">A：行李收费详情查看【服务指南-行李托运政策】</p>
+                <p class="font-medium">Q：如何开具行程单发票？</p>
+                <p class="text-textGray">A：航班出行结束后，前往订单详情页申请开具。</p>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-primary text-white pt-12 pb-6"><div class="container mx-auto px-4"><div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10"><div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm opacity-80">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div><div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="policy.html">退改签政策</a></li><li><a href="policy.html">行李规定</a></li><li><a href="policy.html">登机须知</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="about.html">关于我们</a></li><li><a href="customer.html">客服中心</a></li></ul></div><div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div></div><hr class="border-white/20 mb-6"><div class="text-center text-sm opacity-75"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div></div></footer>
+    <script>
+        const nav=document.getElementById('mainNav');window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='#0F2B5B';}else{nav.classList.add('nav-glass');}});
+        document.getElementById('menuBtn').addEventListener('click',()=>{document.getElementById('mobileMenu').classList.toggle('hidden');});
+        function getCart(){return JSON.parse(localStorage.getItem("airCart")||"[]");}const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;
+    </script>
+</body>
+</html>
