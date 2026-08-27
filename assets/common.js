@@ -172,7 +172,7 @@ function redeemItem(id){
         }else{
             const b={itemId:item.id,name:item.name,desc:item.desc,type:item.type,icon:item.icon,miles:item.miles,
                 code:genBenefitCode(item.type==="goods"?"GK":item.type==="voucher"?"CF":"LF"),
-                status:item.type==="goods"?"待领取":"可使用",createdAt:Date.now()};
+                status:item.type==="goods"?"待发货":"可使用",createdAt:Date.now()};
             const list=getBenefits();list.push(b);saveBenefits(list);
         }
         if(typeof renderMemberCenter==="function")renderMemberCenter();

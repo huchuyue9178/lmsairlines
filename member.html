@@ -210,6 +210,10 @@
         }
         function renderBenefits(){
             const b=getBenefits(),d=document.getElementById("benefitList");
+            // 数据迁移：老版本实物商品状态为"待领取"，统一迁移为"待发货"
+            let migrated=false;
+            b.forEach(x=>{if(x.type==='goods'&&x.status==='待领取'){x.status='待发货';migrated=true;}});
+            if(migrated)saveBenefits(b);
             if(b.length===0){d.innerHTML='<p class="text-textGray">暂无权益。兑换超额行李、贵宾厅、优先安检、Wi-Fi、联名好物等后，可在这里查看与管理。</p>';return;}
             d.innerHTML=b.map((x,i)=>{
                 let action='',extra='';
@@ -297,7 +301,7 @@
         }
         function shipGoods(index){
             const list=getBenefits(),b=list[index];
-            if(!b||b.status!=="待发货")return;
+            if(!b||(b.status!=="待发货"&&b.status!=="待领取"))return;
             b.status="已发货";b.tracking="SF"+Date.now().toString().slice(-10);b.shippedAt=Date.now();
             saveBenefits(list);renderBenefits();
             showToast("已发货，物流单号 "+b.tracking);
@@ -311,7 +315,7 @@
         }
         function cancelGoods(index){
             const list=getBenefits(),b=list[index];
-            if(!b||b.status!=="待发货")return;
+            if(!b||(b.status!=="待发货"&&b.status!=="待领取"))return;
             showConfirm("确认取消兑换「"+b.name+"」？将退回 "+b.miles+" 里程。",function(){
                 const m=getMember();
                 if(m){m.miles=(m.miles||0)+b.miles;saveMember(m);}
