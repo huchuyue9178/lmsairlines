@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特殊服务申请 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js?v=20260827b"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20260827b">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <h2 class="text-[26px] font-bold text-gold mb-2">特殊服务申请</h2>
+        <p class="text-textGray mb-8">定制特殊餐食、特殊旅客、无陪伴儿童、宠物上机、大容量电池托运等出行服务，提交后由客服审核确认。</p>
+
+        <!-- 服务类型选择 -->
+        <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
+            <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-th-large mr-2"></i>选择服务类型</h3>
+            <div id="serviceGrid" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
+        </div>
+
+        <!-- 申请表单 -->
+        <div id="formArea" class="hidden bg-card card-gold p-6 rounded-global shadow-lg mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gold"><i id="formIcon" class="fa mr-2"></i><span id="formTitle"></span></h3>
+                <button onclick="closeForm()" class="text-textGray hover:text-gold text-2xl"><i class="fa fa-times"></i></button>
+            </div>
+            <p id="formDesc" class="text-sm text-textGray mb-4"></p>
+            <div class="mb-4">
+                <label class="block mb-1 text-sm">关联航班 <span class="text-danger">*</span></label>
+                <select id="appOrder" class="w-full border px-4 py-3 rounded-global"></select>
+                <p id="orderHint" class="text-xs text-textGray mt-1 hidden"></p>
+            </div>
+            <div id="dynamicFields" class="space-y-3"></div>
+            <div class="flex gap-3 mt-5">
+                <button onclick="closeForm()" class="flex-1 border border-textGray text-textGray py-3 rounded-global btn-hover">取消</button>
+                <button onclick="submitApplication()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">提交申请</button>
+            </div>
+        </div>
+
+        <!-- 我的申请记录 -->
+        <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+            <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-list-alt mr-2"></i>我的申请记录</h3>
+            <div id="appList" class="space-y-3"></div>
+        </div>
+    </main>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js?v=20260827b"></script>
+    <script src="assets/common.js?v=20260827b"></script>
+    <script>
+        const SPECIAL_FORMS={
+            meal:{name:"定制特殊餐食",icon:"fa-cutlery",desc:"素食/清真/婴儿餐等特殊餐食定制，需在起飞前24小时申请",
+                fields:[
+                    {key:"mealType",label:"餐食类型",type:"select",options:["素食餐","清真餐","犹太餐","婴儿餐","儿童餐","低钠餐","糖尿病餐","水果餐","其他"],required:true},
+                    {key:"passengerName",label:"乘客姓名",type:"text",required:true},
+                    {key:"remark",label:"特殊要求",type:"textarea",required:false}
+                ]},
+            passenger:{name:"特殊旅客申请",icon:"fa-wheelchair",desc:"轮椅/担架/残障旅客等特殊协助服务",
+                fields:[
+                    {key:"serviceType",label:"服务类型",type:"select",options:["轮椅服务","担架服务","视力障碍协助","听力障碍协助","其他"],required:true},
+                    {key:"passengerName",label:"乘客姓名",type:"text",required:true},
+                    {key:"needPickup",label:"是否需要机场接送",type:"select",options:["不需要","需要"],required:false},
+                    {key:"remark",label:"详细说明",type:"textarea",required:false}
+                ]},
+            child:{name:"无陪伴儿童申请",icon:"fa-child",desc:"5-12岁儿童无成人陪伴乘机服务，需提前48小时申请",
+                fields:[
+                    {key:"childName",label:"儿童姓名",type:"text",required:true},
+                    {key:"childAge",label:"儿童年龄",type:"number",required:true},
+                    {key:"senderName",label:"送机人姓名",type:"text",required:true},
+                    {key:"senderPhone",label:"送机人电话",type:"tel",required:true},
+                    {key:"receiverName",label:"接机人姓名",type:"text",required:true},
+                    {key:"receiverPhone",label:"接机人电话",type:"tel",required:true},
+                    {key:"remark",label:"特殊说明",type:"textarea",required:false}
+                ]},
+            pet:{name:"宠物上机申请",icon:"fa-paw",desc:"猫/狗等宠物随机托运申请，需提供疫苗证明",
+                fields:[
+                    {key:"petType",label:"宠物类型",type:"select",options:["猫","狗","其他"],required:true},
+                    {key:"petBreed",label:"宠物品种",type:"text",required:true},
+                    {key:"petWeight",label:"宠物体重(kg)",type:"number",required:true},
+                    {key:"cageSize",label:"笼具尺寸(长×宽×高cm)",type:"text",required:true},
+                    {key:"vaccinated",label:"疫苗接种",type:"select",options:["已接种","未接种"],required:true},
+                    {key:"ownerName",label:"主人姓名",type:"text",required:true},
+                    {key:"ownerPhone",label:"主人电话",type:"tel",required:true},
+                    {key:"remark",label:"备注",type:"textarea",required:false}
+                ]},
+            battery:{name:"大容量电池托运申请",icon:"fa-battery-full",desc:"锂电池/充电宝等大容量电池托运，需符合航空安全规定",
+                fields:[
+                    {key:"batteryType",label:"电池类型",type:"select",options:["锂电池","充电宝","镍氢电池","其他"],required:true},
+                    {key:"capacity",label:"额定容量(Wh)",type:"number",required:true},
+                    {key:"quantity",label:"数量",type:"number",required:true},
+                    {key:"purpose",label:"用途说明",type:"text",required:true},
+                    {key:"passengerName",label:"乘客姓名",type:"text",required:true},
+                    {key:"passengerPhone",label:"乘客电话",type:"tel",required:true}
+                ]}
+        };
+        let currentType=null;
+
+        function renderServiceGrid(){
+            const d=document.getElementById("serviceGrid");
+            d.innerHTML=Object.entries(SPECIAL_FORMS).map(([k,v])=>
+                '<div onclick="openForm(\''+k+'\')" class="bg-black/40 border border-gold/20 rounded-global p-4 text-center cursor-pointer hover:border-gold transition-colors">'+
+                '<i class="fa '+v.icon+' text-gold text-3xl mb-2"></i>'+
+                '<p class="font-bold text-sm">'+v.name+'</p>'+
+                '</div>'
+            ).join('');
+        }
+        function openForm(type){
+            currentType=type;
+            const cfg=SPECIAL_FORMS[type];
+            document.getElementById("formIcon").className="fa "+cfg.icon+" mr-2";
+            document.getElementById("formTitle").textContent=cfg.name;
+            document.getElementById("formDesc").textContent=cfg.desc;
+            // 关联航班下拉
+            const orders=loadOrders().filter(o=>resolveStatus(o)==="已完成");
+            const sel=document.getElementById("appOrder");
+            const hint=document.getElementById("orderHint");
+            if(orders.length===0){
+                sel.innerHTML='<option value="">暂无已支付订单</option>';
+                sel.disabled=true;
+                hint.textContent="请先购买机票并完成支付后，再申请特殊服务。";
+                hint.classList.remove("hidden");
+            }else{
+                sel.innerHTML='<option value="">请选择关联航班</option>'+orders.map(o=>
+                    '<option value="'+o.orderId+'">'+o.flightNo+' '+o.start+'→'+o.end+' ('+o.date+')</option>'
+                ).join('');
+                sel.disabled=false;
+                hint.classList.add("hidden");
+            }
+            // 动态字段
+            const d=document.getElementById("dynamicFields");
+            d.innerHTML=cfg.fields.map(f=>{
+                let input='';
+                const req=f.required?'<span class="text-danger">*</span>':'';
+                if(f.type==="select"){
+                    input='<select id="f_'+f.key+'" class="w-full border px-4 py-3 rounded-global">'+
+                        '<option value="">请选择'+f.label+'</option>'+f.options.map(o=>'<option value="'+o+'">'+o+'</option>').join('')+'</select>';
+                }else if(f.type==="textarea"){
+                    input='<textarea id="f_'+f.key+'" class="w-full border px-4 py-3 rounded-global" rows="3" placeholder="请输入'+f.label+'"></textarea>';
+                }else{
+                    input='<input id="f_'+f.key+'" type="'+f.type+'" class="w-full border px-4 py-3 rounded-global" placeholder="请输入'+f.label+'">';
+                }
+                return '<div><label class="block mb-1 text-sm">'+f.label+' '+req+'</label>'+input+'</div>';
+            }).join('');
+            document.getElementById("formArea").classList.remove("hidden");
+            document.getElementById("formArea").scrollIntoView({behavior:"smooth",block:"start"});
+        }
+        function closeForm(){
+            document.getElementById("formArea").classList.add("hidden");
+            currentType=null;
+        }
+        function submitApplication(){
+            if(!currentType)return;
+            const cfg=SPECIAL_FORMS[currentType];
+            const orderId=document.getElementById("appOrder").value;
+            if(!orderId){showToast("请选择关联航班");return;}
+            const order=loadOrders().find(o=>o.orderId===orderId);
+            const data={};
+            for(const f of cfg.fields){
+                const el=document.getElementById("f_"+f.key);
+                const val=el?el.value.trim():"";
+                if(f.required&&!val){showToast("请填写"+f.label);el&&el.focus();return;}
+                if(f.type==="tel"&&val&&!/^1\d{10}$/.test(val)){showToast(f.label+"格式不正确，请输入11位手机号");return;}
+                data[f.key]=val;
+            }
+            const app={
+                id:"SA"+Date.now()+Math.floor(Math.random()*1000),
+                type:currentType,
+                typeName:cfg.name,
+                icon:cfg.icon,
+                orderId:orderId,
+                flightNo:order?order.flightNo:"",
+                route:order?order.start+"→"+order.end:"",
+                date:order?order.date:"",
+                status:"待审核",
+                createdAt:Date.now(),
+                data:data
+            };
+            const list=getSpecialApps();
+            list.push(app);
+            saveSpecialApps(list);
+            showToast("申请提交成功！客服将在24小时内审核确认。");
+            closeForm();
+            renderAppList();
+        }
+        function renderAppList(){
+            const list=getSpecialApps(),d=document.getElementById("appList");
+            if(list.length===0){d.innerHTML='<p class="text-textGray">暂无申请记录。选择上方服务类型提交申请后，可在这里查看审核进度。</p>';return;}
+            d.innerHTML=list.slice().reverse().map((a,idx)=>{
+                const realIdx=list.length-1-idx;
+                const statusColor=a.status==="已通过"?"text-success":a.status==="已拒绝"?"text-danger":"text-gold";
+                const details=Object.entries(a.data).filter(([k,v])=>v).map(([k,v])=>{
+                    const f=SPECIAL_FORMS[a.type]?.fields.find(x=>x.key===k);
+                    return '<p class="text-xs text-textGray"><span class="text-textGray/70">'+(f?f.label:k)+'：</span>'+esc(v)+'</p>';
+                }).join('');
+                let actions='';
+                if(a.status==="待审核"){
+                    actions='<div class="flex gap-2 mt-2">'+
+                        '<button onclick="cancelApp('+realIdx+')" class="px-3 py-1 rounded-global text-xs font-bold border border-danger text-danger btn-hover">取消申请</button>'+
+                        '<button onclick="reviewApp('+realIdx+',true)" class="px-3 py-1 rounded-global text-xs font-bold bg-gold text-primary btn-hover">模拟通过</button>'+
+                        '<button onclick="reviewApp('+realIdx+',false)" class="px-3 py-1 rounded-global text-xs font-bold border border-textGray text-textGray btn-hover">模拟拒绝</button>'+
+                        '</div>';
+                }
+                return '<div class="bg-black/40 border border-gold/20 rounded-global p-4">'+
+                    '<div class="flex justify-between items-start flex-wrap gap-2">'+
+                        '<div class="flex items-center gap-3"><i class="fa '+a.icon+' text-gold text-2xl"></i><div>'+
+                            '<p class="font-bold">'+esc(a.typeName)+'</p>'+
+                            '<p class="text-xs text-textGray">'+esc(a.flightNo)+' '+esc(a.route)+' ('+esc(a.date)+')</p>'+
+                        '</div></div>'+
+                        '<div class="text-right"><span class="text-sm '+statusColor+' font-bold">'+a.status+'</span>'+
+                        '<p class="text-xs text-textGray">'+new Date(a.createdAt).toLocaleString("zh-CN")+'</p></div>'+
+                    '</div>'+
+                    '<div class="mt-2 bg-black/30 p-2 rounded-global">'+details+'</div>'+
+                    actions+
+                    '</div>';
+            }).join('');
+        }
+        function cancelApp(idx){
+            const list=getSpecialApps(),a=list[idx];
+            if(!a||a.status!=="待审核")return;
+            showConfirm("确认取消「"+a.typeName+"」申请？",function(){
+                list.splice(idx,1);saveSpecialApps(list);renderAppList();
+                showToast("申请已取消。");
+            });
+        }
+        function reviewApp(idx,pass){
+            const list=getSpecialApps(),a=list[idx];
+            if(!a||a.status!=="待审核")return;
+            a.status=pass?"已通过":"已拒绝";a.reviewedAt=Date.now();
+            saveSpecialApps(list);renderAppList();
+            showToast(pass?"申请已通过！":"申请已拒绝。");
+        }
+        renderServiceGrid();
+        renderAppList();
+    </script>
+</body>
+</html>

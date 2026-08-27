@@ -4,11 +4,12 @@
     '<header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">'+
         '<div class="container mx-auto px-4 py-3 flex justify-between items-center">'+
             '<a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold">老牧师航空</span></a>'+
-            '<nav class="hidden lg:flex gap-5 text-white text-[15px]">'+
+            '<nav class="hidden lg:flex gap-4 text-white text-[15px]">'+
                 '<a href="index.html" class="hover:text-gold transition-colors">首页</a>'+
                 '<a href="booking.html" class="hover:text-gold transition-colors">机票预订</a>'+
                 '<a href="flight.html" class="hover:text-gold transition-colors">航班动态</a>'+
                 '<a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a>'+
+                '<a href="special.html" class="hover:text-gold transition-colors">特殊服务</a>'+
                 '<a href="cart.html" class="hover:text-gold transition-colors">购物车</a>'+
                 '<a href="order.html" class="hover:text-gold transition-colors">我的订单</a>'+
                 '<a href="member.html" class="hover:text-gold transition-colors">会员中心</a>'+
@@ -25,7 +26,7 @@
         '</div>'+
         '<div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white">'+
             '<div class="flex flex-col gap-3">'+
-                '<a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="checkin.html">在线值机</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="member.html">会员中心</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a>'+
+                '<a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="checkin.html">在线值机</a><a href="special.html">特殊服务</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="member.html">会员中心</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a>'+
             '</div>'+
         '</div>'+
     '</header>';
@@ -150,6 +151,8 @@ const REDEEM_ITEMS=[
 ];
 function getBenefits(){try{const v=JSON.parse(localStorage.getItem("ffpBenefits")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveBenefits(b){localStorage.setItem("ffpBenefits",JSON.stringify(b));}
+function getSpecialApps(){try{const v=JSON.parse(localStorage.getItem("specialApps")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
+function saveSpecialApps(a){localStorage.setItem("specialApps",JSON.stringify(a));}
 function genBenefitCode(prefix){return prefix+"-"+Math.random().toString(36).slice(2,7).toUpperCase();}
 // 统一兑换入口（优惠券走 ffpCoupons，其余权益走 ffpBenefits）
 function redeemItem(id){
