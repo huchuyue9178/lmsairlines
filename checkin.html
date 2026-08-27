@@ -21,6 +21,9 @@
     <script src="assets/common.js"></script>
     <script>
         let curOrder=null,selectedSeat=null;
+        function hasActiveBenefit(id){
+            return getBenefits().some(b=>b.itemId===id&&(b.status==='可使用'||b.status==='待领取'));
+        }
         const orderId=new URLSearchParams(location.search).get('orderId');
         function init(){
             const box=document.getElementById("checkinBox");
@@ -121,6 +124,7 @@
                     '<div class="col-span-2"><p class="text-xs text-textGray">会员</p><p class="font-bold">'+(getMember()&&o.memberCardNo?(getMember().level+' · '+o.memberCardNo):'非会员')+'</p></div>'+
                 '</div>'+
                 '<p class="mt-4 text-xs text-textGray bg-black/20 p-3 rounded-global">请于登机时间（起飞前 40 分钟）前抵达 '+esc(o.gate)+' 登机口，并出示有效证件与登机牌；未及时登机可能无法乘机。</p>'+
+                (hasActiveBenefit('baggage')?'<p class="mt-2 text-xs text-success bg-black/20 p-3 rounded-global"><i class="fa fa-suitcase text-gold"></i> 已含超额行李权益：额外 20kg 免费行李。</p>':'')+
                 (o.type==='railair'?'<p class="mt-2 text-xs text-textGray bg-black/20 p-3 rounded-global"><i class="fa fa-train text-gold"></i> 高铁段 '+esc(o.trainNo)+'（'+esc(o.trainFrom)+'→'+esc(o.trainTo)+'）无需线上值机，凭身份证进站乘车。</p>':'')+
                 '<div class="flex flex-wrap gap-3 mt-5">'+
                     '<button onclick="window.print()" class="flex-1 border border-gold text-gold py-3 rounded-global btn-hover"><i class="fa fa-print"></i> 打印登机牌</button>'+

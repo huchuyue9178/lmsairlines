@@ -13,8 +13,7 @@
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
         <h2 class="text-[26px] font-bold text-gold mb-2">会员中心</h2>
-        <p class="text-textGray mb-8">老牧师航空常旅客计划 · 消费即累积里程，里程可兑换代金券</p>
-
+        <p class="text-textGray mb-8">老牧师航空常旅客计划 · 消费即累积里程，里程可兑换代金券与出行权益</p>
         <!-- 未登录：介绍 + 注册/登录 -->
         <div id="guestArea">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -46,7 +45,6 @@
                 </div>
             </div>
         </div>
-
         <!-- 已登录：会员信息 -->
         <div id="memberAreaMain" class="hidden space-y-8">
             <div class="bg-card card-gold p-8 rounded-global shadow-lg">
@@ -78,18 +76,29 @@
                         <div id="mProgress" class="h-full bg-gold rounded-global transition-all" style="width:0%"></div>
                     </div>
                 </div>
-                <div class="mt-6 flex flex-wrap gap-3">
-                    <button onclick="redeemCoupon()" id="redeemBtn" class="btn-hover bg-gold text-primary font-bold px-6 py-3 rounded-global">用 1000 里程兑换 ¥50 代金券</button>
-                    <button onclick="doLogout()" class="btn-hover border border-danger text-danger font-bold px-6 py-3 rounded-global">退出登录</button>
+                <div class="mt-6 flex flex-wrap gap-3 items-center">
+                    <span class="text-sm text-textGray">可用里程 <span id="mMiles2" class="text-gold font-bold"></span> 里程，可到下方兑换中心换取代金券与出行权益。</span>
+                    <button onclick="doLogout()" class="btn-hover border border-danger text-danger font-bold px-6 py-2 rounded-global ml-auto">退出登录</button>
                 </div>
-                <p id="couponTip" class="text-sm text-textGray mt-3"></p>
             </div>
-
+            <!-- 里程兑换中心 -->
             <div class="bg-card card-gold p-6 rounded-global shadow-lg">
-                <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-cube mr-2"></i>我的优惠券</h3>
+                <div class="flex flex-wrap justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gold"><i class="fa fa-exchange mr-2"></i>里程兑换中心</h3>
+                    <span class="text-sm text-textGray">当前可用里程 <span id="exMiles" class="text-gold font-bold"></span></span>
+                </div>
+                <div id="redeemGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+            </div>
+            <!-- 我的优惠券 -->
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-ticket mr-2"></i>我的优惠券</h3>
                 <div id="couponList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
-
+            <!-- 我的权益 -->
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-cube mr-2"></i>我的权益</h3>
+                <div id="benefitList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
             <div class="bg-card card-gold p-6 rounded-global shadow-lg">
                 <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-list mr-2"></i>里程明细（来源于购票订单）</h3>
                 <div id="milesList" class="space-y-3"></div>
@@ -121,7 +130,6 @@
         function loginMember(){
             const card=document.getElementById("loginCard").value.trim().toUpperCase();
             const phone=document.getElementById("loginPhone").value.trim();
-            // 演示项目：从订单中找回该卡号，或直接按卡号登录（本地无服务端，按卡号+手机号校验）
             const saved=localStorage.getItem("ffpMember");
             if(saved){
                 const cur=JSON.parse(saved);
@@ -130,17 +138,6 @@
             showToast("未找到匹配的会员卡号与手机号。演示环境支持通过注册流程创建会员。");
         }
         function doLogout(){logoutMember();renderPage();showToast("已退出登录。");}
-        function redeemCoupon(){
-            const m=getMember();
-            if(!m){return;}
-            if((m.miles||0)<1000){showToast("可用里程不足 1000，暂时无法兑换。");return;}
-            m.miles-=1000;saveMember(m);
-            const coupons=getCoupons();
-            coupons.push({code:"C"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
-            saveCoupons(coupons);
-            renderPage();
-            showToast("兑换成功！已获得 ¥50 代金券，可在支付时选择使用。");
-        }
         function renderPage(){
             const m=getMember();
             document.getElementById("guestArea").classList.toggle("hidden",!!m);
@@ -155,6 +152,8 @@
             lvEl.className="text-3xl font-bold "+LV_COLORS[lv.cur.name];
             document.getElementById("mTotal").textContent=m.totalMiles.toLocaleString();
             document.getElementById("mMiles").textContent=(m.miles||0).toLocaleString();
+            document.getElementById("mMiles2").textContent=(m.miles||0).toLocaleString();
+            document.getElementById("exMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mLevelHint").textContent=LV_DESC[lv.cur.name];
             if(lv.next){
                 const pct=Math.min(100,Math.round(m.totalMiles/lv.next.min*100));
@@ -164,17 +163,61 @@
                 document.getElementById("mProgress").style.width="100%";
                 document.getElementById("mProgressText").textContent="已达最高等级，尊享全部权益";
             }
-            const redeemBtn=document.getElementById("redeemBtn");
-            redeemBtn.disabled=(m.miles||0)<1000;
-            redeemBtn.style.opacity=(m.miles||0)<1000?"0.5":"1";
-            document.getElementById("couponTip").textContent="当前可用里程 "+(m.miles||0).toLocaleString()+"，每 1000 里程可兑换 ¥50 代金券";
+            renderRedeemGrid();
             renderCoupons();
+            renderBenefits();
             renderMiles(m);
+        }
+        function renderRedeemGrid(){
+            const m=getMember(),d=document.getElementById("redeemGrid");
+            d.innerHTML=REDEEM_ITEMS.map(item=>{
+                const disabled=(m.miles||0)<item.miles;
+                return '<div class="bg-black/40 border border-gold/20 rounded-global p-4 text-center flex flex-col items-center">'+
+                    '<i class="fa '+item.icon+' text-gold text-3xl mb-2"></i>'+
+                    '<p class="font-bold">'+item.name+'</p>'+
+                    '<p class="text-xs text-textGray mb-3">'+item.desc+'</p>'+
+                    '<button onclick="redeemItem(\''+item.id+'\')" '+(disabled?'disabled':'')+
+                    ' class="mt-auto px-4 py-2 rounded-global text-sm font-bold '+(disabled?'bg-black/50 text-textGray cursor-not-allowed':'bg-gold text-primary btn-hover')+'">'+(disabled?'里程不足':'兑换 · '+item.miles+' 里程')+'</button>'+
+                    '</div>';
+            }).join('');
         }
         function renderCoupons(){
             const c=getCoupons(),d=document.getElementById("couponList");
             if(c.length===0){d.innerHTML='<p class="text-textGray">暂无优惠券。用里程兑换后，支付机票时可选券抵扣。</p>';return;}
             d.innerHTML=c.map(x=>'<div class="bg-black/50 border border-gold/30 rounded-global p-4 flex justify-between items-center"><div><p class="font-bold text-gold">¥'+x.value+' 代金券</p><p class="text-xs text-textGray">券号 '+esc(x.code)+'</p></div><span class="text-sm '+(x.status==='可用'?'text-success':'text-textGray')+'">'+x.status+'</span></div>').join('');
+        }
+        function renderBenefits(){
+            const b=getBenefits(),d=document.getElementById("benefitList");
+            if(b.length===0){d.innerHTML='<p class="text-textGray">暂无出行权益。兑换超额行李、贵宾厅、优先安检、Wi-Fi、联名好物等后，可在这里查看与核销。</p>';return;}
+            d.innerHTML=b.map((x,i)=>{
+                let action='';
+                if(x.status==='可使用'){
+                    action='<button onclick="useBenefit('+i+')" class="mt-2 px-4 py-1.5 rounded-global text-xs font-bold bg-gold text-primary btn-hover">核销使用</button>';
+                }else if(x.status==='待领取'){
+                    action='<button onclick="receiveBenefit('+i+')" class="mt-2 px-4 py-1.5 rounded-global text-xs font-bold border border-gold text-gold btn-hover">确认领取</button>';
+                }
+                return '<div class="bg-black/50 border border-gold/30 rounded-global p-4">'+
+                    '<div class="flex items-center gap-3"><i class="fa '+x.icon+' text-gold text-2xl"></i><div><p class="font-bold">'+esc(x.name)+'</p>'+
+                    '<p class="text-xs text-textGray">'+esc(x.desc)+'</p></div></div>'+
+                    '<div class="flex justify-between items-center mt-2"><span class="text-xs text-textGray">权益码 '+esc(x.code)+'</span>'+
+                    '<span class="text-sm '+(x.status==='可使用'||x.status==='待领取'?'text-success':'text-textGray')+'">'+x.status+'</span></div>'+
+                    '<div class="text-center">'+action+'</div>'+
+                    '</div>';
+            }).join('');
+        }
+        function useBenefit(index){
+            const list=getBenefits(),b=list[index];
+            if(!b||b.status!=='可使用')return;
+            b.status='已使用';b.usedAt=Date.now();
+            saveBenefits(list);renderBenefits();
+            showToast("「"+b.name+"」已核销使用。");
+        }
+        function receiveBenefit(index){
+            const list=getBenefits(),b=list[index];
+            if(!b||b.status!=='待领取')return;
+            b.status='已领取';b.usedAt=Date.now();
+            saveBenefits(list);renderBenefits();
+            showToast("「"+b.name+"」已确认领取，请在机场领取处出示权益码 "+b.code+"。");
         }
         function renderMiles(m){
             const orders=loadOrders().filter(o=>o.memberCardNo===m.cardNo);

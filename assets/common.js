@@ -111,6 +111,44 @@ function renderMemberArea(){
 function getCoupons(){try{return JSON.parse(localStorage.getItem("ffpCoupons")||"[]");}catch(e){return [];}}
 function saveCoupons(c){localStorage.setItem("ffpCoupons",JSON.stringify(c));}
 function availableCoupons(){return getCoupons().filter(x=>x.status==="可用");}
+// ---- 里程兑换中心：兑换目录与权益 ----
+const REDEEM_ITEMS=[
+    {id:"coupon50",name:"¥50 代金券",desc:"购票支付立减 50 元",miles:1000,icon:"fa-ticket",type:"coupon"},
+    {id:"baggage",name:"超额行李额度",desc:"额外 20kg 免费行李",miles:800,icon:"fa-suitcase",type:"benefit"},
+    {id:"lounge",name:"贵宾厅单次体验卡",desc:"机场贵宾厅单次休息",miles:1500,icon:"fa-glass",type:"benefit"},
+    {id:"priority",name:"优先安检登机",desc:"专属通道优先安检登机",miles:1200,icon:"fa-bolt",type:"benefit"},
+    {id:"wifi",name:"机上 Wi-Fi 时长包",desc:"全程高速 Wi-Fi 上网",miles:1000,icon:"fa-wifi",type:"benefit"},
+    {id:"suitcase",name:"品牌联名行李箱",desc:"老牧师×TRAVELER 20寸登机箱",miles:5000,icon:"fa-briefcase",type:"goods"},
+    {id:"figure",name:"限量机长手办",desc:"老牧师机长公仔手办",miles:3000,icon:"fa-gift",type:"goods"},
+    {id:"coffee",name:"咖啡兑换券",desc:"机场联名咖啡一杯",miles:500,icon:"fa-coffee",type:"voucher"}
+];
+function getBenefits(){try{return JSON.parse(localStorage.getItem("ffpBenefits")||"[]");}catch(e){return [];}}
+function saveBenefits(b){localStorage.setItem("ffpBenefits",JSON.stringify(b));}
+function genBenefitCode(prefix){return prefix+"-"+Math.random().toString(36).slice(2,7).toUpperCase();}
+// 统一兑换入口（优惠券走 ffpCoupons，其余权益走 ffpBenefits）
+function redeemItem(id){
+    const item=REDEEM_ITEMS.find(x=>x.id===id);
+    if(!item){showToast("兑换项不存在");return;}
+    const m=getMember();
+    if(!m){showToast("请先登录会员再兑换");return;}
+    if((m.miles||0)<item.miles){showToast("可用里程不足 "+item.miles+"，暂时无法兑换。");return;}
+    showConfirm('确认用 '+item.miles+' 里程兑换「'+item.name+'」？',function(){
+        m.miles-=item.miles;saveMember(m);
+        if(item.type==="coupon"){
+            const c=getCoupons();
+            c.push({code:"C"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
+            saveCoupons(c);
+        }else{
+            const b={itemId:item.id,name:item.name,desc:item.desc,type:item.type,icon:item.icon,miles:item.miles,
+                code:genBenefitCode(item.type==="goods"?"GK":item.type==="voucher"?"CF":"LF"),
+                status:item.type==="goods"?"待领取":"可使用",createdAt:Date.now()};
+            const list=getBenefits();list.push(b);saveBenefits(list);
+        }
+        if(typeof renderMemberCenter==="function")renderMemberCenter();
+        if(typeof renderPage==="function")renderPage();
+        showToast("兑换成功！已获得「"+item.name+"」。");
+    });
+}
 
 // ---- 页面内轻提示 / 确认框（替代原生 alert/confirm，统一黑金风格） ----
 function showToast(msg){
