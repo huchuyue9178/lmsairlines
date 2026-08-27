@@ -63,10 +63,10 @@
 })();
 
 // ---- 购物车 / 订单 / 工具（全局可用） ----
-function getCart(){try{return JSON.parse(localStorage.getItem("airCart")||"[]");}catch(e){return [];}}
+function getCart(){try{const v=JSON.parse(localStorage.getItem("airCart")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveCart(c){localStorage.setItem("airCart",JSON.stringify(c));updateCartBadge();}
 function updateCartBadge(){const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;}
-function loadOrders(){try{return JSON.parse(localStorage.getItem("airOrders")||"[]");}catch(e){return [];}}
+function loadOrders(){try{const v=JSON.parse(localStorage.getItem("airOrders")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveOrders(o){localStorage.setItem("airOrders",JSON.stringify(o));}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 // ---- 会员常旅客计划（全局可用） ----
@@ -77,8 +77,34 @@ const FFP_LEVELS=[
     {name:'铂金卡',min:60000},
     {name:'钻石卡',min:100000}
 ];
-function getMember(){try{return JSON.parse(localStorage.getItem("ffpMember")||"null");}catch(e){return null;}}
-function saveMember(m){localStorage.setItem("ffpMember",JSON.stringify(m));renderMemberArea();}
+function getMember(){try{const v=JSON.parse(localStorage.getItem("ffpMember")||"null");return v&&typeof v==="object"?v:null;}catch(e){return null;}}
+function getMembers(){
+    try{
+        let v=JSON.parse(localStorage.getItem("ffpMembers")||"[]");
+        if(!Array.isArray(v))v=[];
+        // 自动迁移当前登录会员到注册表（兼容老数据）
+        const cur=localStorage.getItem("ffpMember");
+        if(cur){
+            try{
+                const m=JSON.parse(cur);
+                if(m&&m.cardNo&&!v.some(x=>x.cardNo===m.cardNo)){v.push(m);localStorage.setItem("ffpMembers",JSON.stringify(v));}
+            }catch(e){}
+        }
+        return v;
+    }catch(e){return [];}
+}
+function saveMembers(list){localStorage.setItem("ffpMembers",JSON.stringify(list));}
+function saveMember(m){
+    localStorage.setItem("ffpMember",JSON.stringify(m));
+    // 同步更新会员注册表（支持退出后重新登录）
+    try{
+        const list=getMembers();
+        const idx=list.findIndex(x=>x.cardNo===m.cardNo);
+        if(idx>=0)list[idx]=m;else list.push(m);
+        localStorage.setItem("ffpMembers",JSON.stringify(list));
+    }catch(e){}
+    renderMemberArea();
+}
 function ffpLevel(totalMiles){
     totalMiles=totalMiles||0;
     let cur=FFP_LEVELS[0],next=null;
@@ -108,7 +134,7 @@ function renderMemberArea(){
     }
 }
 // ---- 里程兑换优惠券 ----
-function getCoupons(){try{return JSON.parse(localStorage.getItem("ffpCoupons")||"[]");}catch(e){return [];}}
+function getCoupons(){try{const v=JSON.parse(localStorage.getItem("ffpCoupons")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveCoupons(c){localStorage.setItem("ffpCoupons",JSON.stringify(c));}
 function availableCoupons(){return getCoupons().filter(x=>x.status==="可用");}
 // ---- 里程兑换中心：兑换目录与权益 ----
@@ -122,7 +148,7 @@ const REDEEM_ITEMS=[
     {id:"figure",name:"限量机长手办",desc:"老牧师机长公仔手办",miles:3000,icon:"fa-gift",type:"goods"},
     {id:"coffee",name:"咖啡兑换券",desc:"机场联名咖啡一杯",miles:500,icon:"fa-coffee",type:"voucher"}
 ];
-function getBenefits(){try{return JSON.parse(localStorage.getItem("ffpBenefits")||"[]");}catch(e){return [];}}
+function getBenefits(){try{const v=JSON.parse(localStorage.getItem("ffpBenefits")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveBenefits(b){localStorage.setItem("ffpBenefits",JSON.stringify(b));}
 function genBenefitCode(prefix){return prefix+"-"+Math.random().toString(36).slice(2,7).toUpperCase();}
 // 统一兑换入口（优惠券走 ffpCoupons，其余权益走 ffpBenefits）
