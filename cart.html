@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>购物车 | 老牧师航空</title>
-    <script src="assets/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <h2 class="text-[26px] font-bold text-primary mb-8">购物车</h2>
+        <h2 class="text-[26px] font-bold text-gold mb-8">购物车</h2>
         <div id="cartList"></div>
     </main>
     <div id="paymentModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-lg p-6 rounded-global">
-            <h3 class="text-xl font-bold text-primary mb-4">在线支付</h3>
+        <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
+            <h3 class="text-xl font-bold text-gold mb-4">在线支付</h3>
             <div id="paymentInfo" class="mb-4 text-sm"></div>
             <div class="space-y-4">
                 <div><label class="block mb-1">支付方式</label><select id="payMethod" class="w-full border px-4 py-3 rounded-global"><option>微信支付</option><option>支付宝</option><option>银行卡</option></select></div>
@@ -32,10 +32,10 @@
     <script>
         function renderCartList(){
             let c=getCart(),d=document.getElementById("cartList");
-            if(c.length===0){d.innerHTML='<div class="bg-white p-6 rounded-global shadow-lg">购物车为空，请先去预订航班。</div>';return;}
+            if(c.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">购物车为空，请先去预订航班。</div>';return;}
             let total=c.reduce((s,i)=>s+i.price,0),h="";
             c.forEach((item,index)=>{
-                h+='<div class="bg-white p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between flex-wrap gap-3">'+
+                h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><div class="flex justify-between flex-wrap gap-3">'+
                     '<div><p class="font-bold">'+esc(item.flightNo)+'｜'+esc(item.start)+'→'+esc(item.end)+'</p>'+
                     '<p class="text-sm text-textGray">'+esc(item.date)+' '+esc(item.time)+'</p>'+
                     '<p class="text-sm">舱位：'+esc(item.cabin)+'</p>'+
@@ -44,7 +44,7 @@
                     '<button onclick="removeFromCart('+index+')" class="text-danger border border-danger px-3 py-1 rounded-global text-sm btn-hover">删除</button>'+
                     '</div></div>';
             });
-            h+='<div class="bg-white p-6 rounded-global shadow-lg mt-6"><div class="flex justify-between items-center mb-4"><span class="text-lg font-bold">购物车总计</span><span class="text-danger text-2xl font-bold">¥'+total+'</span></div><button onclick="openPaymentModal()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">立即支付</button></div>';
+            h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mt-6"><div class="flex justify-between items-center mb-4"><span class="text-lg font-bold">购物车总计</span><span class="text-danger text-2xl font-bold">¥'+total+'</span></div><button onclick="openPaymentModal()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">立即支付</button></div>';
             d.innerHTML=h;
         }
         function removeFromCart(i){let c=getCart();c.splice(i,1);saveCart(c);renderCartList();}

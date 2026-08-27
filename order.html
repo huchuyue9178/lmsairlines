@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的订单 | 老牧师航空</title>
-    <script src="assets/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <h2 class="text-[26px] font-bold text-primary mb-8">我的订单</h2>
+        <h2 class="text-[26px] font-bold text-gold mb-8">我的订单</h2>
         <div id="orderList"></div>
     </main>
     <div id="changeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-lg p-6 rounded-global">
-            <h3 class="text-xl font-bold text-primary mb-4">免费改签</h3>
+        <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
+            <h3 class="text-xl font-bold text-gold mb-4">免费改签</h3>
             <div id="changeInfo" class="mb-4 text-sm"></div>
             <div><label class="block mb-1">选择新出发日期</label><select id="changeDate" class="w-full border px-4 py-3 rounded-global"></select></div>
             <div class="flex gap-4 mt-6">
@@ -47,16 +47,16 @@
         }
         function renderOrderList(){
             let orders=loadOrders(),d=document.getElementById("orderList");
-            if(orders.length===0){d.innerHTML='<div class="bg-white p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}
+            if(orders.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}
             let h="";
             orders.forEach((item,index)=>{
                 const status=resolveStatus(item);
                 const sc=status==='已退票'?'text-danger':status==='已完成'?'text-success':'text-orange-500';
                 let actions='';
                 if(status==='已退票'){
-                    actions='<div class="mt-4 text-gray-500">已退票，手续费 ¥'+(item.fee||0)+'，已退还 ¥'+(item.refundAmount||0)+'</div>';
+                    actions='<div class="mt-4 text-textGray">已退票，手续费 ¥'+(item.fee||0)+'，已退还 ¥'+(item.refundAmount||0)+'</div>';
                 }else if(status==='支付处理中'){
-                    actions='<div class="mt-4 text-gray-500 text-sm">订单支付处理中，约5秒后自动完成，请稍候刷新查看。</div>';
+                    actions='<div class="mt-4 text-textGray text-sm">订单支付处理中，约5秒后自动完成，请稍候刷新查看。</div>';
                 }else{
                     const rate=refundRate(item);
                     const fee=Math.round(item.price*rate);
@@ -66,7 +66,7 @@
                         '<button onclick="refundOrder('+index+')" class="px-4 py-2 bg-danger text-white rounded-global btn-hover">申请退票（手续费'+rate*100+'% · 退¥'+refund+'）</button>'+
                         '</div>';
                 }
-                h+='<div class="bg-white p-6 rounded-global shadow-lg mb-4">'+
+                h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
                     '<div class="flex justify-between"><span>订单号：'+esc(item.orderId)+'</span><span class="'+sc+'">'+status+'</span></div>'+
                     '<hr class="my-3">'+
                     '<p>航班：'+esc(item.flightNo)+' &nbsp;&nbsp; '+esc(item.start)+'→'+esc(item.end)+'</p>'+

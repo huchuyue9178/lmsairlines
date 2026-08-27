@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>航班动态 | 老牧师航空</title>
-    <script src="assets/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <h2 class="text-[26px] font-bold text-primary mb-8">航班动态</h2>
-        <div class="bg-white p-6 rounded-global shadow-lg">
+        <h2 class="text-[26px] font-bold text-gold mb-8">航班动态</h2>
+        <div class="bg-card card-gold p-6 rounded-global shadow-lg">
             <label class="block mb-2">输入航班号</label>
             <input id="searchFlightNo" type="text" class="w-full border px-4 py-3 rounded-global mb-4" placeholder="例如：LMS001">
             <button onclick="queryFlightStatus()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">查询航班状态</button>
@@ -29,8 +29,8 @@
             const {depMs,arrMs}=parseFlightTime(f.date,f.time);
             if(now<depMs-2*3600000)return {t:'计划正常',cls:'text-success'};
             if(now<depMs)return {t:'正在值机',cls:'text-gold'};
-            if(now<arrMs)return {t:'飞行中',cls:'text-primary'};
-            return {t:'已到达',cls:'text-gray-500'};
+            if(now<arrMs)return {t:'飞行中',cls:'text-gold'};
+            return {t:'已到达',cls:'text-textGray'};
         }
         function queryFlightStatus(){
             let no=document.getElementById("searchFlightNo").value.trim().toUpperCase();

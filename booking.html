@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>机票预订 | 老牧师航空</title>
-    <script src="assets/tailwind-config.js"></script>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <h2 class="text-[26px] font-bold text-primary mb-8">机票预订</h2>
-        <div class="bg-white p-6 rounded-global shadow-lg mb-8">
+        <h2 class="text-[26px] font-bold text-gold mb-8">机票预订</h2>
+        <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div><label class="block mb-2">出发城市</label><input id="startCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
                 <div><label class="block mb-2">到达城市</label><input id="endCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：纽约"></div>
@@ -23,8 +23,8 @@
         </div>
         <div id="flightResult"></div>
         <div id="buyModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div class="bg-white w-full max-w-lg p-6 rounded-global">
-                <h3 class="text-xl font-bold text-primary mb-4">确认加入购物车</h3>
+            <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
+                <h3 class="text-xl font-bold text-gold mb-4">确认加入购物车</h3>
                 <div id="modalInfo" class="mb-4 text-sm"></div>
                 <div class="space-y-4">
                     <div><label class="block mb-1">乘客姓名</label><input id="userName" type="text" class="w-full border px-4 py-3 rounded-global"></div>
@@ -51,14 +51,14 @@
             if(!s&&!e&&!fd){renderFlights(flightList,"全部虚拟航班");return;}
             let filter=searchFlights({start:s||undefined,end:e||undefined,date:fd||undefined});
             if(filter.length===0){
-                document.getElementById("flightResult").innerHTML='<div class="bg-white p-6 rounded-global shadow-lg text-center"><p class="text-red-500 mb-3">没有找到符合“'+esc(s)+' → '+esc(e)+'”条件的航班</p><button onclick="renderFlights(flightList)" class="btn-hover bg-gold text-primary font-bold px-6 py-2 rounded-global">查看全部航班</button></div>';
+                document.getElementById("flightResult").innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center"><p class="text-red-500 mb-3">没有找到符合“'+esc(s)+' → '+esc(e)+'”条件的航班</p><button onclick="renderFlights(flightList)" class="btn-hover bg-gold text-primary font-bold px-6 py-2 rounded-global">查看全部航班</button></div>';
                 return;
             }
             renderFlights(filter,"");
         }
         function renderFlights(list,title){
             currentList=list;shown=0;
-            let html=title?'<div class="bg-white p-6 rounded-global shadow-lg mb-4"><p class="text-primary font-bold">'+title+'（共 '+list.length+' 个航班）</p></div>':'';
+            let html=title?'<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4"><p class="text-gold font-bold">'+title+'（共 '+list.length+' 个航班）</p></div>':'';
             document.getElementById("flightResult").innerHTML=html;
             appendMore();
         }
@@ -72,14 +72,14 @@
             if(shown<currentList.length){
                 const b=document.createElement('button');
                 b.id='loadMoreBtn';
-                b.className='btn-hover w-full bg-white text-primary font-bold py-3 rounded-global shadow-lg mb-4 border';
+                b.className='btn-hover w-full bg-card text-gold font-bold py-3 rounded-global shadow-lg mb-4 border border-gold';
                 b.textContent='加载更多（剩余 '+((currentList.length-shown)||0)+' 个航班）';
                 b.onclick=appendMore;
                 cont.appendChild(b);
             }
         }
         function flightCardHtml(f){
-            return '<div class="bg-white p-6 rounded-global shadow-lg mb-4">'+
+            return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
                 '<div class="flex flex-wrap justify-between items-center mb-3"><span class="font-bold text-lg">'+f.no+'</span><span>'+f.start+' <i class="fa fa-plane mx-2 text-gold"></i> '+f.end+'</span><span>'+f.date+' '+f.time+'</span></div>'+
                 '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">'+
                 '<button onclick="openBuy(\''+f.no+'\',\'eco\')" class="border py-2 rounded-global btn-hover">经济舱 ¥'+f.price.eco+'</button>'+
