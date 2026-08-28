@@ -47,16 +47,18 @@
         </div>
         <!-- 已登录：会员信息 -->
         <div id="memberAreaMain" class="hidden space-y-8">
-            <div class="bg-card card-gold p-8 rounded-global shadow-lg">
+            <div id="memberCard" class="bg-card card-gold p-8 rounded-global shadow-lg lv-card lv-plain">
+                <div class="lv-deco"></div>
                 <div class="flex flex-wrap justify-between items-center gap-6">
                     <div>
                         <p class="text-textGray text-sm mb-1">会员卡号</p>
                         <p id="mCardNo" class="font-mono text-lg"></p>
                         <p id="mName" class="text-2xl font-bold mt-1"></p>
+                        <p id="mTitle" class="mt-2 font-semibold text-gold"><i id="mTitleIcon" class="fa fa-credit-card mr-1"></i><span id="mTitleTxt"></span></p>
                     </div>
                     <div class="text-right">
                         <p class="text-textGray text-sm mb-1">当前等级</p>
-                        <p id="mLevel" class="text-3xl font-bold text-gold"></p>
+                        <p id="mLevel" class="text-3xl font-bold text-gold flex items-center gap-2 justify-end"><i id="mLevelIcon" class="fa fa-credit-card"></i><span id="mLevelTxt"></span></p>
                     </div>
                     <div class="text-right">
                         <p class="text-textGray text-sm mb-1">累计里程</p>
@@ -73,7 +75,7 @@
                         <span id="mProgressText"></span>
                     </div>
                     <div class="w-full h-3 bg-black/60 rounded-global overflow-hidden">
-                        <div id="mProgress" class="h-full bg-gold rounded-global transition-all" style="width:0%"></div>
+                        <div id="mProgress" class="h-full bg-gold rounded-global transition-all lvbar-gold" style="width:0%"></div>
                     </div>
                 </div>
                 <div class="mt-6 flex flex-wrap gap-3 items-center">
@@ -160,6 +162,14 @@
             showToast("未找到匹配的会员卡号与手机号。演示环境支持通过注册流程创建会员。");
         }
         function doLogout(){logoutMember();renderPage();showToast("已退出登录。");}
+        // 等级尊贵度配置：等级越高越尊贵
+        const LV_META={
+            '普卡':{cls:'lv-plain',icon:'fa-credit-card',title:'会员',lvColor:'text-white',bar:'lvbar-gold'},
+            '银卡':{cls:'lv-silver',icon:'fa-star',title:'尊贵银卡会员',lvColor:'text-gray-300',bar:'lvbar-gold'},
+            '金卡':{cls:'lv-gold',icon:'fa-trophy',title:'尊贵金卡会员',lvColor:'text-gold',bar:'lvbar-gold'},
+            '铂金卡':{cls:'lv-platinum',icon:'fa-crown',title:'尊贵铂金卡会员',lvColor:'text-amber-300',bar:'lvbar-platinum'},
+            '钻石卡':{cls:'lv-diamond',icon:'fa-diamond',title:'至尊钻石卡会员',lvColor:'text-cyan-300',bar:'lvbar-diamond'}
+        };
         function renderPage(){
             const m=getMember();
             document.getElementById("guestArea").classList.toggle("hidden",!!m);
@@ -167,22 +177,36 @@
             main.classList.toggle("hidden",!m);
             if(!m)return;
             const lv=ffpLevel(m.totalMiles);
+            const meta=LV_META[lv.cur.name]||LV_META['普卡'];
+            // 同步存储等级并刷新导航栏右上角等级显示
+            if(m.level!==lv.cur.name){m.level=lv.cur.name;saveMember(m);}
+            if(typeof renderMemberArea==="function")renderMemberArea();
+            // 会员卡等级主题
+            const mc=document.getElementById("memberCard");
+            mc.className="bg-card p-8 rounded-global shadow-lg lv-card "+meta.cls;
             document.getElementById("mCardNo").textContent=m.cardNo;
             document.getElementById("mName").textContent=m.name+"  ·  加入于 "+new Date(m.joinedAt).toLocaleDateString("zh-CN");
-            const lvEl=document.getElementById("mLevel");
-            lvEl.textContent=lv.cur.name;
-            lvEl.className="text-3xl font-bold "+LV_COLORS[lv.cur.name];
+            // 尊贵头衔
+            document.getElementById("mTitleIcon").className="fa "+meta.icon+" mr-1";
+            document.getElementById("mTitleTxt").textContent=meta.title;
+            // 等级徽章
+            document.getElementById("mLevelIcon").className="fa "+meta.icon;
+            document.getElementById("mLevelTxt").textContent=lv.cur.name;
+            document.getElementById("mLevelTxt").className=meta.lvColor;
             document.getElementById("mTotal").textContent=m.totalMiles.toLocaleString();
             document.getElementById("mMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mMiles2").textContent=(m.miles||0).toLocaleString();
             document.getElementById("exMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mLevelHint").textContent=LV_DESC[lv.cur.name];
+            // 进度条等级化
+            const bar=document.getElementById("mProgress");
+            bar.className="h-full rounded-global transition-all "+meta.bar;
             if(lv.next){
                 const pct=Math.min(100,Math.round(m.totalMiles/lv.next.min*100));
-                document.getElementById("mProgress").style.width=pct+"%";
+                bar.style.width=pct+"%";
                 document.getElementById("mProgressText").textContent="距"+lv.next.name+"还需 "+(lv.next.min-m.totalMiles).toLocaleString()+" 里程";
             }else{
-                document.getElementById("mProgress").style.width="100%";
+                bar.style.width="100%";
                 document.getElementById("mProgressText").textContent="已达最高等级，尊享全部权益";
             }
             renderRedeemGrid();

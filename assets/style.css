@@ -65,3 +65,43 @@ main{padding-bottom:calc(2rem + env(safe-area-inset-bottom));}
 
 /* ---- iOS 分隔线 ---- */
 hr{border-color:var(--ios-sep);}
+
+/* ============================================================
+   会员等级主题：等级越高越尊贵
+   ============================================================ */
+.lv-card{position:relative;overflow:hidden;}
+.lv-card .lv-deco{position:absolute;inset:0;pointer-events:none;opacity:.55;transition:opacity .4s;}
+.lv-card:hover .lv-deco{opacity:.8;}
+.lv-card>*{position:relative;}
+
+/* 普卡：低调沉稳黑 */
+.lv-plain{border-color:rgba(255,255,255,.10) !important;}
+.lv-plain .lv-deco{background:radial-gradient(900px 380px at 85% -20%,rgba(255,255,255,.07),transparent);}
+
+/* 银卡：金属银光 */
+.lv-silver{border-color:rgba(220,220,235,.32) !important;box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 22px rgba(200,200,220,.14);}
+.lv-silver .lv-deco{background:linear-gradient(135deg,rgba(255,255,255,.10),transparent 45%),radial-gradient(900px 460px at 72% -30%,rgba(220,220,240,.4),transparent);}
+
+/* 金卡：华贵金辉 */
+.lv-gold{border-color:rgba(200,169,126,.55) !important;box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 30px rgba(200,169,126,.26);}
+.lv-gold .lv-deco{background:linear-gradient(135deg,rgba(200,169,126,.14),transparent 45%),radial-gradient(900px 520px at 76% -22%,rgba(200,169,126,.5),transparent),radial-gradient(700px 380px at 18% 120%,rgba(200,169,126,.22),transparent);}
+
+/* 铂金卡：铂金流光 */
+.lv-platinum{border-color:rgba(190,190,235,.55) !important;box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 34px rgba(180,180,245,.26);}
+.lv-platinum .lv-deco{background:linear-gradient(135deg,rgba(190,190,235,.12),transparent 50%),radial-gradient(900px 540px at 74% -24%,rgba(190,190,240,.5),transparent),radial-gradient(700px 400px at 22% 120%,rgba(200,169,126,.3),transparent);}
+
+/* 钻石卡：璀璨钻石光辉 */
+.lv-diamond{border-color:rgba(79,195,247,.6) !important;box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 42px rgba(79,195,247,.38);}
+.lv-diamond .lv-deco{background:linear-gradient(135deg,rgba(79,195,247,.14),transparent 50%),radial-gradient(1000px 620px at 72% -28%,rgba(79,195,247,.55),transparent),radial-gradient(800px 460px at 18% 120%,rgba(129,212,250,.28),transparent),radial-gradient(500px 260px at 92% 110%,rgba(200,169,126,.22),transparent);}
+
+/* 等级徽章光效 */
+#mLevelIcon{display:inline-block;}
+#mLevelIcon.fa-diamond{text-shadow:0 0 14px rgba(79,195,247,.95),0 0 30px rgba(79,195,247,.5);color:#7dd3fc;}
+#mLevelIcon.fa-crown{text-shadow:0 0 12px rgba(200,169,126,.9);color:#f5d78e;}
+#mLevelIcon.fa-trophy{text-shadow:0 0 10px rgba(200,169,126,.75);color:#e8c98f;}
+#mLevelIcon.fa-star{text-shadow:0 0 8px rgba(220,220,240,.7);color:#d6d6e0;}
+
+/* 等级进度条 */
+#mProgress.lvbar-gold{background:linear-gradient(90deg,#8a6d3b,#c8a97e);}
+#mProgress.lvbar-platinum{background:linear-gradient(90deg,#6b6b8a,#c8b0e8);box-shadow:0 0 12px rgba(180,180,240,.6);}
+#mProgress.lvbar-diamond{background:linear-gradient(90deg,#1e5f8a,#4fc3f7);box-shadow:0 0 14px rgba(79,195,247,.8);}
