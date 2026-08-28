@@ -28,10 +28,10 @@
                 </div>
                 <button onclick="searchFlight()" class="btn-hover w-full mt-6 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
             </div>
-            <!-- 实时天气查询 -->
+            <!-- 天气查询（模拟） -->
             <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
-                <h3 class="text-gold font-bold mb-1"><i class="fa fa-cloud-sun mr-2"></i>实时天气查询</h3>
-                <p class="text-sm text-textGray mb-4">查询出发 / 到达城市的实时天气。若起降地出现恶劣天气（暴雨、雷暴、大雪、大风等），航班可能取消。恶劣天气航班仍可购票，若航班取消将自动提供免费改签或其他补偿方案。</p>
+                <h3 class="text-gold font-bold mb-1"><i class="fa fa-cloud-sun mr-2"></i>天气查询（模拟随机）</h3>
+                <p class="text-sm text-textGray mb-4">查询出发 / 到达城市的模拟天气（随机生成，同一天同一城市保持稳定）。若起降地出现恶劣天气（暴雨、雷暴、大雪、大风等），航班可能取消。恶劣天气航班仍可购票，若航班取消将自动提供免费改签或其他补偿方案。</p>
                 <div class="flex flex-wrap gap-3">
                     <input id="weatherCity" type="text" class="flex-1 min-w-[220px] border px-4 py-3 rounded-global" placeholder="输入城市，如：北京 / 上海 / 广州 / 纽约">
                     <button onclick="weatherQuery()" class="bg-gold text-primary font-bold px-6 py-3 rounded-global btn-hover"><i class="fa fa-search"></i> 查询天气</button>
@@ -126,19 +126,34 @@
                 cont.appendChild(b);
             }
         }
-        // ============ 天气模块（本地天气代理 http://localhost:9100） ============
-        const WEATHER_API='http://localhost:9100/weather';
+        // ============ 天气模块（模拟随机天气，无需外部服务） ============
+        // 确定性伪随机：同一天同一城市天气一致，不同日期会变化；约20%概率出现恶劣天气
         const weatherCache={};
+        function hashStr(str){let h=0;for(let i=0;i<str.length;i++){h=(h*31+str.charCodeAt(i))>>>0;}return h;}
+        function randWeather(city){
+            const today=new Date();
+            const dayKey=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            let seed=hashStr(city+'|'+dayKey);
+            const rnd=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296;};
+            const isRisk=rnd()<0.2;
+            const conds=isRisk
+                ?[['大雨',65],['暴雨',82],['雷暴',95],['强雷暴伴冰雹',99],['大雪',75],['暴雪',86],['大风',10]]
+                :[['晴',0],['晴间多云',1],['多云',2],['阴天',3],['小毛毛雨',51],['毛毛雨',53],['小雨',61],['阵雨',80],['雾',45]];
+            const pick=conds[Math.floor(rnd()*conds.length)];
+            const cond=pick[0],code=pick[1];
+            const temp=isRisk?Math.round(8+rnd()*22):Math.round(-2+rnd()*36);
+            const wind=isRisk?Math.round(22+rnd()*40):Math.round(1+rnd()*16);
+            const now=new Date();
+            const time=now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate()+' '+now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+            return {ok:true,city:city,temp:temp,wind:wind,code:code,condition:cond,level:isRisk?2:(code===45?1:0),severe:isRisk,severeReason:isRisk?cond:'',time:time};
+        }
         async function fetchWeather(city){
             const c=city&&city.trim();
             if(!c)return {ok:false,error:'城市为空'};
-            if(weatherCache[c]&&Date.now()-weatherCache[c]._t<10*60*1000)return weatherCache[c];
-            try{
-                const r=await fetch(WEATHER_API+'?city='+encodeURIComponent(c),{cache:'no-store'});
-                const d=await r.json();
-                if(d.ok){d._t=Date.now();weatherCache[c]=d;}
-                return d;
-            }catch(e){return {ok:false,error:'天气服务暂不可用'};}
+            if(weatherCache[c])return weatherCache[c];
+            const d=randWeather(c);
+            weatherCache[c]=d;
+            return d;
         }
         function weatherIcon(code){
             if(code>=95)return 'fa-bolt';
@@ -152,7 +167,7 @@
             const city=document.getElementById('weatherCity').value.trim();
             const box=document.getElementById('weatherResult');
             if(!city){box.innerHTML='<p class="text-textGray">请输入要查询的城市。</p>';return;}
-            box.innerHTML='<p class="text-textGray"><i class="fa fa-spinner fa-spin"></i> 正在查询 '+esc(city)+' 实时天气...</p>';
+            box.innerHTML='<p class="text-textGray"><i class="fa fa-spinner fa-spin"></i> 正在查询 '+esc(city)+' 天气...</p>';
             const d=await fetchWeather(city);
             if(!d.ok){box.innerHTML='<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> '+esc(d.error||'查询失败')+'</p>';return;}
             const severe=d.level>=2,warn=d.level===1;
@@ -161,7 +176,7 @@
             box.innerHTML='<div class="bg-black/40 border '+border+' rounded-global p-4 flex flex-wrap items-center gap-4">'+
                 '<div class="text-4xl w-14 text-center"><i class="fa '+weatherIcon(d.code)+' '+color+'"></i></div>'+
                 '<div class="flex-1 min-w-[200px]">'+
-                '<p class="font-bold text-lg">'+esc(d.city)+'　实时天气</p>'+
+                '<p class="font-bold text-lg">'+esc(d.city)+'　天气（模拟）</p>'+
                 '<p class="text-sm text-textGray mt-1">'+esc(d.condition)+'　'+d.temp+'°C　风速 '+d.wind+' km/h　（更新 '+esc((d.time||'').replace('T',' '))+')</p>'+
                 (severe?'<p class="text-danger font-bold mt-1"><i class="fa fa-cloud-rain"></i> 恶劣天气预警：'+esc(d.severeReason||d.condition)+'，航班可能取消</p>'
                       :warn?'<p class="text-amber-300 text-sm mt-1"><i class="fa fa-cloud"></i> 天气需关注，建议留意航班动态</p>'
