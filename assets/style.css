@@ -105,3 +105,14 @@ hr{border-color:var(--ios-sep);}
 #mProgress.lvbar-gold{background:linear-gradient(90deg,#8a6d3b,#c8a97e);}
 #mProgress.lvbar-platinum{background:linear-gradient(90deg,#6b6b8a,#c8b0e8);box-shadow:0 0 12px rgba(180,180,240,.6);}
 #mProgress.lvbar-diamond{background:linear-gradient(90deg,#1e5f8a,#4fc3f7);box-shadow:0 0 14px rgba(79,195,247,.8);}
+
+/* ============================================================
+   黑钻至尊（顶级会员）：黑金流光，凌驾于钻石之上
+   ============================================================ */
+.lv-elite{border-color:rgba(230,190,90,.70) !important;box-shadow:0 10px 40px rgba(0,0,0,.6),0 0 52px rgba(230,190,90,.34),inset 0 0 34px rgba(230,190,90,.06) !important;}
+.lv-elite .lv-deco{background:linear-gradient(135deg,rgba(230,190,90,.12),transparent 50%),radial-gradient(1100px 680px at 72% -28%,rgba(230,190,90,.5),transparent),radial-gradient(900px 520px at 18% 120%,rgba(150,90,220,.28),transparent),radial-gradient(520px 260px at 92% 110%,rgba(230,190,90,.24),transparent);}
+/* 黑钻流光扫过 */
+.lv-elite .lv-deco::after{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 32%,rgba(255,217,122,.10) 46%,transparent 60%);background-size:220% 100%;animation:lvEliteShine 5s linear infinite;}
+@keyframes lvEliteShine{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+#mLevelIcon.lv-elite{color:#ffd97a;text-shadow:0 0 16px rgba(230,190,90,1),0 0 38px rgba(230,190,90,.6),0 0 60px rgba(230,190,90,.3);}
+#mProgress.lvbar-elite{background:linear-gradient(90deg,#6b4a10,#c8a97e,#ffd97a);box-shadow:0 0 16px rgba(230,190,90,.9);}

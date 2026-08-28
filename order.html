@@ -164,7 +164,7 @@
                     milesBack=item.milesEarned;
                     m.miles=Math.max(0,(m.miles||0)-milesBack);
                     m.totalMiles=Math.max(0,(m.totalMiles||0)-milesBack);
-                    m.level=ffpLevel(m.totalMiles).cur.name;
+                    m.level=ffpLevel(m.totalMiles,m).cur.name;
                     saveMember(m);
                 }
                 renderOrderList();
@@ -259,7 +259,7 @@
                 if(m&&item.memberCardNo&&item.milesEarned){
                     m.miles=Math.max(0,(m.miles||0)-item.milesEarned);
                     m.totalMiles=Math.max(0,(m.totalMiles||0)-item.milesEarned);
-                    m.level=ffpLevel(m.totalMiles).cur.name;
+                    m.level=ffpLevel(m.totalMiles,m).cur.name;
                     saveMember(m);
                 }
             }else if(type==='coupon'){
@@ -273,7 +273,7 @@
                 if(!m){showToast("请先登录会员账户后，再选择里程补偿方案。");return;}
                 m.miles=(m.miles||0)+2000;
                 m.totalMiles=(m.totalMiles||0)+2000;
-                m.level=ffpLevel(m.totalMiles).cur.name;
+                m.level=ffpLevel(m.totalMiles,m).cur.name;
                 saveMember(m);
                 item.status='已补偿';item.compensated='miles';
                 msg='已补偿 2000 里程至您的会员账户。';
@@ -366,7 +366,7 @@
                     const delta=newMiles-oldMiles;
                     if(delta>0){m.miles=(m.miles||0)+delta;m.totalMiles=(m.totalMiles||0)+delta;}
                     else if(delta<0){m.miles=Math.max(0,(m.miles||0)+delta);m.totalMiles=Math.max(0,(m.totalMiles||0)+delta);}
-                    m.level=ffpLevel(m.totalMiles).cur.name;
+                    m.level=ffpLevel(m.totalMiles,m).cur.name;
                     saveMember(m);
                 }
                 document.getElementById("cabinModal").classList.add("hidden");

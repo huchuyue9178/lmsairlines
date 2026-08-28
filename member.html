@@ -25,7 +25,8 @@
                         <p><span class="font-bold">金卡</span>（3万里程）：免费选座、贵宾安检通道、额外25%里程、优先登机</p>
                         <p><span class="font-bold">铂金卡</span>（6万里程）：贵宾休息室、免费升舱券×1/年、额外50%里程</p>
                         <p><span class="font-bold">钻石卡</span>（10万里程）：专属行程管家、无限贵宾休息室、额外100%里程</p>
-                        <p class="text-textGray mt-2">每消费 ¥1 累积 1 里程，购买机票支付后自动到账。</p>
+                        <p><span class="font-bold text-gold">黑钻卡</span>（100万里程+¥28888开通）：黑钻至尊会籍，私人管家、无限休息室、全年升舱、黑钻通道</p>
+                        <p class="text-textGray mt-2">每消费 ¥1 累积 1 里程，购买机票支付后自动到账；黑钻卡需累积消费满 ¥100 万并额外支付 ¥28,888 开通。</p>
                     </div>
                 </div>
                 <div class="bg-card card-gold p-6 rounded-global shadow-lg">
@@ -78,10 +79,17 @@
                         <div id="mProgress" class="h-full bg-gold rounded-global transition-all lvbar-gold" style="width:0%"></div>
                     </div>
                 </div>
+                <div id="eliteArea"></div>
                 <div class="mt-6 flex flex-wrap gap-3 items-center">
                     <span class="text-sm text-textGray">可用里程 <span id="mMiles2" class="text-gold font-bold"></span> 里程，可到下方兑换中心换取代金券与出行权益。</span>
                     <button onclick="doLogout()" class="btn-hover border border-danger text-danger font-bold px-6 py-2 rounded-global ml-auto">退出登录</button>
                 </div>
+            </div>
+            <!-- 黑钻至尊专属权益（仅黑钻卡） -->
+            <div id="eliteBenefits" class="bg-card card-gold p-6 rounded-global shadow-lg hidden">
+                <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-diamond mr-2"></i>黑钻至尊专属权益</h3>
+                <p class="text-xs text-textGray mb-4">黑钻卡会员尊享 · 凌驾于钻石卡之上的顶级礼遇</p>
+                <div id="eliteBenefitGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
             <!-- 里程兑换中心 -->
             <div class="bg-card card-gold p-6 rounded-global shadow-lg">
@@ -168,15 +176,29 @@
             '银卡':{cls:'lv-silver',icon:'fa-star',title:'尊贵银卡会员',lvColor:'text-gray-300',bar:'lvbar-gold'},
             '金卡':{cls:'lv-gold',icon:'fa-trophy',title:'尊贵金卡会员',lvColor:'text-gold',bar:'lvbar-gold'},
             '铂金卡':{cls:'lv-platinum',icon:'fa-crown',title:'尊贵铂金卡会员',lvColor:'text-amber-300',bar:'lvbar-platinum'},
-            '钻石卡':{cls:'lv-diamond',icon:'fa-diamond',title:'至尊钻石卡会员',lvColor:'text-cyan-300',bar:'lvbar-diamond'}
+            '钻石卡':{cls:'lv-diamond',icon:'fa-diamond',title:'至尊钻石卡会员',lvColor:'text-cyan-300',bar:'lvbar-diamond'},
+            '黑钻卡':{cls:'lv-elite',icon:'fa-diamond',title:'黑钻至尊会员',lvColor:'text-amber-200',bar:'lvbar-elite'}
         };
+        // 黑钻至尊专属权益
+        const ELITE_BENEFITS=[
+            {icon:'fa-user-secret',name:'专属私人管家',desc:'7x24 一对一贴身服务'},
+            {icon:'fa-glass',name:'无限贵宾休息室',desc:'本人+随行1人 无限次'},
+            {icon:'fa-arrow-up',name:'全年免费升舱',desc:'经济舱升公务舱 12 张/年'},
+            {icon:'fa-bolt',name:'专属黑钻通道',desc:'值机/安检/登机独立通道'},
+            {icon:'fa-plus',name:'200% 里程加成',desc:'每消费1元累积3里程'},
+            {icon:'fa-suitcase',name:'免费额外行李',desc:'每航段 +50kg'},
+            {icon:'fa-car',name:'豪华轿车接送',desc:'机场专车接送 10 次/年'},
+            {icon:'fa-refresh',name:'无限免费改签',desc:'改签退票均免费'},
+            {icon:'fa-wifi',name:'全程高速 Wi-Fi',desc:'机上网络+顶级餐饮'},
+            {icon:'fa-birthday-cake',name:'生日至尊礼遇',desc:'头等舱香槟与蛋糕'}
+        ];
         function renderPage(){
             const m=getMember();
             document.getElementById("guestArea").classList.toggle("hidden",!!m);
             const main=document.getElementById("memberAreaMain");
             main.classList.toggle("hidden",!m);
             if(!m)return;
-            const lv=ffpLevel(m.totalMiles);
+            const lv=ffpLevel(m.totalMiles,m);
             const meta=LV_META[lv.cur.name]||LV_META['普卡'];
             // 同步存储等级并刷新导航栏右上角等级显示
             if(m.level!==lv.cur.name){m.level=lv.cur.name;saveMember(m);}
@@ -213,6 +235,37 @@
             renderCoupons();
             renderBenefits();
             renderMiles(m);
+            renderEliteArea(m);
+            renderEliteBenefits(m);
+        }
+        // 黑钻卡开通入口 / 已开通状态
+        function renderEliteArea(m){
+            const el=document.getElementById("eliteArea");
+            if(!el)return;
+            if((m.totalMiles||0)>=1000000&&!m.elite){
+                el.innerHTML='<div class="mt-5 rounded-global border border-gold/40 bg-black/40 p-4 flex flex-wrap items-center justify-between gap-3">'+
+                    '<div><p class="font-bold text-gold"><i class="fa fa-diamond mr-1"></i>黑钻卡 · 开通资格已达成</p>'+
+                    '<p class="text-xs text-textGray mt-1">您的累积消费已满 ¥1,000,000，可额外支付 <span class="text-gold font-bold">¥28,888</span> 开通黑钻至尊会籍。</p></div>'+
+                    '<button onclick="openElite()" class="px-5 py-2.5 rounded-global bg-gold text-primary font-bold btn-hover">立即开通 ¥28,888</button></div>';
+            }else if(m.elite){
+                el.innerHTML='<div class="mt-5 rounded-global border border-gold/50 bg-black/30 p-4 flex items-center gap-3">'+
+                    '<i class="fa fa-diamond text-gold text-2xl" style="text-shadow:0 0 12px rgba(230,190,90,.9)"></i>'+
+                    '<div><p class="font-bold text-gold">黑钻至尊会籍 · 已开通</p>'+
+                    '<p class="text-xs text-textGray mt-0.5">专属管家将为您提供一对一服务，全年尊享黑钻专属权益。</p></div></div>';
+            }else{
+                el.innerHTML='';
+            }
+        }
+        // 黑钻专属权益
+        function renderEliteBenefits(m){
+            const box=document.getElementById("eliteBenefits"),grid=document.getElementById("eliteBenefitGrid");
+            if(!box||!grid)return;
+            box.classList.toggle("hidden",!m.elite);
+            if(!m.elite)return;
+            grid.innerHTML=ELITE_BENEFITS.map(b=>'<div class="bg-black/40 border border-gold/25 rounded-global p-4">'+
+                '<i class="fa '+b.icon+' text-gold text-xl mb-2"></i>'+
+                '<p class="font-bold text-sm">'+b.name+'</p>'+
+                '<p class="text-xs text-textGray mt-1">'+b.desc+'</p></div>').join('');
         }
         function renderRedeemGrid(){
             const m=getMember(),d=document.getElementById("redeemGrid");

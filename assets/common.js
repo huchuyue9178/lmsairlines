@@ -84,8 +84,11 @@ const FFP_LEVELS=[
     {name:'银卡',min:10000},
     {name:'金卡',min:30000},
     {name:'铂金卡',min:60000},
-    {name:'钻石卡',min:100000}
+    {name:'钻石卡',min:100000},
+    {name:'黑钻卡',min:1000000}
 ];
+// 黑钻卡开通费用（累积消费满 ¥100 万后可额外开通）
+const ELITE_FEE=28888;
 function getMember(){try{const v=JSON.parse(localStorage.getItem("ffpMember")||"null");return v&&typeof v==="object"?v:null;}catch(e){return null;}}
 function getMembers(){
     try{
@@ -114,13 +117,31 @@ function saveMember(m){
     }catch(e){}
     renderMemberArea();
 }
-function ffpLevel(totalMiles){
+function ffpLevel(totalMiles,member){
     totalMiles=totalMiles||0;
+    const isElite=!!(member&&member.elite===true);
+    // 未开通黑钻时最高只到钻石卡；已开通则含黑钻档
+    const upper=isElite?FFP_LEVELS.length:FFP_LEVELS.length-1;
     let cur=FFP_LEVELS[0],next=null;
-    for(let i=0;i<FFP_LEVELS.length;i++){
-        if(totalMiles>=FFP_LEVELS[i].min){cur=FFP_LEVELS[i];next=FFP_LEVELS[i+1]||null;}else break;
+    for(let i=0;i<upper;i++){
+        if(totalMiles>=FFP_LEVELS[i].min){
+            cur=FFP_LEVELS[i];
+            next=(i+1<FFP_LEVELS.length)?FFP_LEVELS[i+1]:null;
+        }else break;
     }
     return {cur,next};
+}
+// 开通黑钻卡：需累积消费≥¥100万，额外支付 ¥28,888（模拟支付）
+function openElite(){
+    const m=getMember();if(!m){showToast("请先登录会员再开通黑钻卡");return;}
+    if(m.totalMiles<1000000){showToast("累积消费需达到 ¥1,000,000 方可开通黑钻卡");return;}
+    if(m.elite){showToast("您已是黑钻卡会员，无需重复开通");return;}
+    showConfirm("开通黑钻卡需额外支付 ¥28,888，确认开通？开通后尊享黑钻至尊专属权益。",function(){
+        m.elite=true;m.level="黑钻卡";saveMember(m);
+        if(typeof renderMemberArea==="function")renderMemberArea();
+        if(typeof renderPage==="function")renderPage();
+        showToast("恭喜，黑钻卡已开通！尊享黑钻至尊专属权益。");
+    });
 }
 // 支付后累积里程（1 元 = 1 里程，四舍五入），返回本次获得里程
 function earnMiles(amount){
@@ -128,7 +149,7 @@ function earnMiles(amount){
     const earned=Math.max(0,Math.round(amount||0));
     m.totalMiles=(m.totalMiles||0)+earned;
     m.miles=(m.miles||0)+earned;
-    m.level=ffpLevel(m.totalMiles).cur.name;
+    m.level=ffpLevel(m.totalMiles,m).cur.name;
     saveMember(m);
     return earned;
 }
