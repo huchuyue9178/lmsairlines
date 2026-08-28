@@ -137,7 +137,10 @@
                 c.forEach(item=>{
                     const payPrice=coupon?Math.max(0,Math.round(item.price-item.price*couponValue/total)):item.price;
                     const {cartId,...rest}=item;
-                    orders.push(Object.assign({},rest,{orderId:"ORD"+ts+Math.floor(Math.random()*1000),status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0,payPrice:payPrice,couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0}));
+                    orders.push(Object.assign({},rest,{orderId:"ORD"+ts+Math.floor(Math.random()*1000),status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0,payPrice:payPrice,couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0,
+                        weatherRisk:item.weatherRisk?true:false,
+                        weatherReason:item.weatherReason||'',
+                        riskEvalAt:item.weatherRisk?ts+30000:null}));
                 });
                 if(m){earnMiles(payTotal);}
                 if(coupon){coupon.status="已使用";coupon.usedAt=Date.now();saveCoupons(getCoupons().map(x=>x.code===coupon.code?coupon:x));}

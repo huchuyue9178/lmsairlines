@@ -28,6 +28,16 @@
                 </div>
                 <button onclick="searchFlight()" class="btn-hover w-full mt-6 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
             </div>
+            <!-- 实时天气查询 -->
+            <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
+                <h3 class="text-gold font-bold mb-1"><i class="fa fa-cloud-sun mr-2"></i>实时天气查询</h3>
+                <p class="text-sm text-textGray mb-4">查询出发 / 到达城市的实时天气。若起降地出现恶劣天气（暴雨、雷暴、大雪、大风等），航班可能取消。恶劣天气航班仍可购票，若航班取消将自动提供免费改签或其他补偿方案。</p>
+                <div class="flex flex-wrap gap-3">
+                    <input id="weatherCity" type="text" class="flex-1 min-w-[220px] border px-4 py-3 rounded-global" placeholder="输入城市，如：北京 / 上海 / 广州 / 纽约">
+                    <button onclick="weatherQuery()" class="bg-gold text-primary font-bold px-6 py-3 rounded-global btn-hover"><i class="fa fa-search"></i> 查询天气</button>
+                </div>
+                <div id="weatherResult" class="mt-4"></div>
+            </div>
             <div id="flightResult"></div>
         </div>
 
@@ -65,7 +75,7 @@
     <script src="assets/common.js?v=20260827b"></script>
     <script>
         const PAGE_SIZE=8;
-        let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,currentRailList=[];
+        let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
         // 铁路坐席价格表（用于付款时选择）
         const TRAIN_SEAT_KEYS=['second','first','business'];
         const TRAIN_SEAT_NAME={second:'二等座',first:'一等座',business:'商务座'};
@@ -105,6 +115,7 @@
             if(oldBtn)oldBtn.remove();
             const next=currentList.slice(shown,shown+PAGE_SIZE);
             next.forEach(f=>{cont.insertAdjacentHTML('beforeend',flightCardHtml(f));});
+            attachFlightWeather();
             shown+=next.length;
             if(shown<currentList.length){
                 const b=document.createElement('button');
@@ -115,19 +126,86 @@
                 cont.appendChild(b);
             }
         }
+        // ============ 天气模块（本地天气代理 http://localhost:9100） ============
+        const WEATHER_API='http://localhost:9100/weather';
+        const weatherCache={};
+        async function fetchWeather(city){
+            const c=city&&city.trim();
+            if(!c)return {ok:false,error:'城市为空'};
+            if(weatherCache[c]&&Date.now()-weatherCache[c]._t<10*60*1000)return weatherCache[c];
+            try{
+                const r=await fetch(WEATHER_API+'?city='+encodeURIComponent(c),{cache:'no-store'});
+                const d=await r.json();
+                if(d.ok){d._t=Date.now();weatherCache[c]=d;}
+                return d;
+            }catch(e){return {ok:false,error:'天气服务暂不可用'};}
+        }
+        function weatherIcon(code){
+            if(code>=95)return 'fa-bolt';
+            if([71,73,75,77,85,86].indexOf(code)>-1)return 'fa-snowflake-o';
+            if([61,63,65,66,67,80,81,82].indexOf(code)>-1)return 'fa-cloud-rain';
+            if([45,48].indexOf(code)>-1)return 'fa-cloud';
+            if(code<=3)return code===3?'fa-cloud':'fa-sun-o';
+            return 'fa-cloud';
+        }
+        async function weatherQuery(){
+            const city=document.getElementById('weatherCity').value.trim();
+            const box=document.getElementById('weatherResult');
+            if(!city){box.innerHTML='<p class="text-textGray">请输入要查询的城市。</p>';return;}
+            box.innerHTML='<p class="text-textGray"><i class="fa fa-spinner fa-spin"></i> 正在查询 '+esc(city)+' 实时天气...</p>';
+            const d=await fetchWeather(city);
+            if(!d.ok){box.innerHTML='<p class="text-danger"><i class="fa fa-exclamation-triangle"></i> '+esc(d.error||'查询失败')+'</p>';return;}
+            const severe=d.level>=2,warn=d.level===1;
+            const color=severe?'text-danger':(warn?'text-amber-300':'text-gold');
+            const border=severe?'border-danger':(warn?'border-amber-400/60':'border-gold/20');
+            box.innerHTML='<div class="bg-black/40 border '+border+' rounded-global p-4 flex flex-wrap items-center gap-4">'+
+                '<div class="text-4xl w-14 text-center"><i class="fa '+weatherIcon(d.code)+' '+color+'"></i></div>'+
+                '<div class="flex-1 min-w-[200px]">'+
+                '<p class="font-bold text-lg">'+esc(d.city)+'　实时天气</p>'+
+                '<p class="text-sm text-textGray mt-1">'+esc(d.condition)+'　'+d.temp+'°C　风速 '+d.wind+' km/h　（更新 '+esc((d.time||'').replace('T',' '))+')</p>'+
+                (severe?'<p class="text-danger font-bold mt-1"><i class="fa fa-cloud-rain"></i> 恶劣天气预警：'+esc(d.severeReason||d.condition)+'，航班可能取消</p>'
+                      :warn?'<p class="text-amber-300 text-sm mt-1"><i class="fa fa-cloud"></i> 天气需关注，建议留意航班动态</p>'
+                      :'<p class="text-success text-sm mt-1"><i class="fa fa-check-circle"></i> 天气良好，适合出行</p>')+
+                '</div></div>';
+        }
+        // 搜索结果起降地天气联动：恶劣天气标记并禁用预订
+        async function attachFlightWeather(){
+            const cards=document.querySelectorAll('#flightResult [data-fno]');
+            if(cards.length===0||!currentList)return;
+            const cities=new Set();
+            currentList.forEach(f=>{cities.add(f.start);cities.add(f.end);});
+            const res={};
+            await Promise.all([...cities].map(async c=>{res[c]=await fetchWeather(c);}));
+            currentList.forEach(f=>{
+                const card=document.querySelector('#flightResult [data-fno="'+f.no+'"]');
+                if(!card)return;
+                const wsArr=[res[f.start],res[f.end]].filter(x=>x&&x.ok);
+                const severe=wsArr.find(x=>x.severe),warn=wsArr.find(x=>x.level===1);
+                const slot=card.querySelector('.weather-slot');
+                if(slot){
+                    if(severe)slot.innerHTML='<span class="text-danger font-bold"><i class="fa fa-cloud-rain"></i> 恶劣天气预警：'+esc(severe.city)+' '+esc(severe.severeReason||severe.condition)+'，航班可能取消</span><span class="text-amber-300 text-xs ml-2">当前仍可购票，若航班取消将提供免费改签或补偿方案</span>';
+                    else if(warn)slot.innerHTML='<span class="text-amber-300 text-sm"><i class="fa fa-cloud"></i> '+esc(warn.city)+' '+esc(warn.condition)+'，建议关注航班动态</span>';
+                    else slot.innerHTML='';
+                }
+            });
+        }
         function flightCardHtml(f){
-            return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
+            return '<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4" data-fno="'+f.no+'">'+
                 '<div class="flex flex-wrap justify-between items-center mb-3"><span class="font-bold text-lg">'+f.no+'</span><span>'+f.start+' <i class="fa fa-plane mx-2 text-gold"></i> '+f.end+'</span><span>'+f.date+' '+f.time+'</span></div>'+
                 '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">'+
                 '<button onclick="openBuy(\''+f.no+'\',\'eco\')" class="border py-2 rounded-global btn-hover">经济舱 ¥'+f.price.eco+'</button>'+
                 '<button onclick="openBuy(\''+f.no+'\',\'superEco\')" class="border py-2 rounded-global btn-hover">超级经济舱 ¥'+f.price.superEco+'</button>'+
                 '<button onclick="openBuy(\''+f.no+'\',\'business\')" class="border py-2 rounded-global btn-hover">商务舱 ¥'+f.price.business+'</button>'+
                 '<button onclick="openBuy(\''+f.no+'\',\'first\')" class="border py-2 rounded-global btn-hover">头等舱 ¥'+f.price.first+'</button>'+
-                '</div></div>';
+                '</div><div class="weather-slot mt-3 text-sm"></div></div>';
         }
         function openBuy(no,cabin){
             selectFlight=findFlight(no);selectCabin=cabin;selectType="flight";selectPlan=null;
             if(!selectFlight){showToast("未找到该航班，请刷新后重试");return;}
+            // 记录天气风险（恶劣天气航班可能取消，购票后 30 秒内 80% 概率触发取消）
+            const wS=weatherCache[selectFlight.start],wE=weatherCache[selectFlight.end];
+            const risky=(wS&&wS.severe)?wS:((wE&&wE.severe)?wE:null);
+            selectWeatherRisk=risky?{city:risky.city,reason:risky.severeReason||risky.condition}:null;
             let p=selectFlight.price[cabin];
             document.getElementById("modalInfo").innerHTML='<p>航班号：'+selectFlight.no+'</p><p>航线：'+selectFlight.start+' → '+selectFlight.end+'</p><p>日期时间：'+selectFlight.date+' '+selectFlight.time+'</p><p>舱位：'+cabinNameMap[cabin]+'</p><p class="text-danger font-bold">票价：¥'+p+'</p>';
             document.getElementById("buyModal").classList.remove("hidden");
@@ -136,7 +214,7 @@
             document.getElementById("buyModal").classList.add("hidden");
             document.getElementById("userName").value="";
             document.getElementById("userIdCard").value="";
-            selectFlight=null;selectCabin="eco";selectPlan=null;
+            selectFlight=null;selectCabin="eco";selectPlan=null;selectWeatherRisk=null;
         }
         function confirmAddCart(){
             if(selectType==="railair"){addRailToCart();}else{addToCart();}
@@ -146,7 +224,7 @@
             let u=document.getElementById("userName").value.trim(),id=document.getElementById("userIdCard").value.trim();
             if(!u||!id){showToast("请填写乘客姓名和证件号码");return;}
             let c=getCart();
-            c.push({cartId:"CART"+Date.now()+Math.floor(Math.random()*1000),flightNo:selectFlight.no,start:selectFlight.start,end:selectFlight.end,date:selectFlight.date,time:selectFlight.time,cabin:cabinNameMap[selectCabin],price:selectFlight.price[selectCabin],username:u,idcard:id});
+            c.push({cartId:"CART"+Date.now()+Math.floor(Math.random()*1000),flightNo:selectFlight.no,start:selectFlight.start,end:selectFlight.end,date:selectFlight.date,time:selectFlight.time,cabin:cabinNameMap[selectCabin],price:selectFlight.price[selectCabin],username:u,idcard:id,weatherRisk:selectWeatherRisk?true:false,weatherReason:selectWeatherRisk?selectWeatherRisk.city+' '+selectWeatherRisk.reason:''});
             saveCart(c);
             showToast("已加入购物车");
             closeModal();
