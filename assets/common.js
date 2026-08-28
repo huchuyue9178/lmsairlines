@@ -40,6 +40,14 @@
                 '<div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="about.html">关于我们</a></li><li><a href="customer.html">客服中心</a></li></ul></div>'+
                 '<div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
+            '<div class="border-t border-white/20 pt-6 mb-6"><div class="text-center text-sm opacity-80">'+
+                '<span class="text-gold font-bold mr-3"><i class="fa fa-link"></i> 友情链接：</span>'+
+                '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">12306 铁路官网</a>'+
+                '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国国际航空</a>'+
+                '<a href="https://www.csair.com/cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国南方航空</a>'+
+                '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国东方航空</a>'+
+                '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">海南航空</a>'+
+            '</div></div>'+
             '<hr class="border-white/20 mb-6"><div class="text-center text-sm opacity-75"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div>'+
         '</div>'+
     '</footer>';
