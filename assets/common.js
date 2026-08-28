@@ -3,8 +3,8 @@
     const HEADER_HTML=
     '<header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">'+
         '<div class="container mx-auto px-4 py-3 flex justify-between items-center">'+
-            '<a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold">老牧师航空</span></a>'+
-            '<nav class="hidden lg:flex gap-4 text-white text-[15px]">'+
+            '<a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
+            '<nav class="hidden lg:flex gap-5 text-white text-[15px] font-medium">'+
                 '<a href="index.html" class="hover:text-gold transition-colors">首页</a>'+
                 '<a href="booking.html" class="hover:text-gold transition-colors">机票预订</a>'+
                 '<a href="flight.html" class="hover:text-gold transition-colors">航班动态</a>'+
@@ -20,27 +20,27 @@
             '<div class="hidden lg:flex items-center gap-4 text-white text-sm">'+
                 '<a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                 '<span id="memberArea"></span>'+
-                '<span><i class="fa fa-phone"></i> 400-888-9999</span>'+
+                '<span class="text-textGray"><i class="fa fa-phone"></i> 400-888-9999</span>'+
             '</div>'+
             '<button id="menuBtn" class="lg:hidden text-white text-2xl"><i class="fa fa-bars"></i></button>'+
         '</div>'+
-        '<div id="mobileMenu" class="hidden lg:hidden bg-primary px-4 pb-4 text-white">'+
-            '<div class="flex flex-col gap-3">'+
-                '<a href="index.html">首页</a><a href="booking.html">机票预订</a><a href="flight.html">航班动态</a><a href="checkin.html">在线值机</a><a href="special.html">特殊服务</a><a href="cart.html">购物车</a><a href="order.html">我的订单</a><a href="member.html">会员中心</a><a href="policy.html">服务指南</a><a href="about.html">关于我们</a><a href="customer.html">在线客服</a>'+
+        '<div id="mobileMenu" class="hidden lg:hidden bg-black/80 backdrop-blur-xl px-4 pb-5 pt-2 text-white">'+
+            '<div class="flex flex-col gap-3 text-[15px]">'+
+                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</div>'+
         '</div>'+
     '</header>';
 
     const FOOTER_HTML=
-    '<footer class="bg-primary text-white pt-12 pb-6">'+
+    '<footer class="bg-black border-t border-white/10 pt-12 pb-8">'+
         '<div class="container mx-auto px-4">'+
             '<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm opacity-80">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="policy.html">退改签政策</a></li><li><a href="policy.html">行李规定</a></li><li><a href="policy.html">登机须知</a></li></ul></div>'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm opacity-80"><li><a href="about.html">关于我们</a></li><li><a href="customer.html">客服中心</a></li></ul></div>'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm opacity-80">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
+                '<div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm text-textGray">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
+                '<div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm text-textGray"><li><a href="policy.html" class="hover:text-gold transition-colors">退改签政策</a></li><li><a href="policy.html" class="hover:text-gold transition-colors">行李规定</a></li><li><a href="policy.html" class="hover:text-gold transition-colors">登机须知</a></li></ul></div>'+
+                '<div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm text-textGray"><li><a href="about.html" class="hover:text-gold transition-colors">关于我们</a></li><li><a href="customer.html" class="hover:text-gold transition-colors">客服中心</a></li></ul></div>'+
+                '<div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm text-textGray">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
-            '<div class="border-t border-white/20 pt-6 mb-6"><div class="text-center text-sm opacity-80">'+
+            '<div class="border-t border-white/10 pt-6 mb-6"><div class="text-center text-sm text-textGray">'+
                 '<span class="text-gold font-bold mr-3"><i class="fa fa-link"></i> 友情链接：</span>'+
                 '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">12306 铁路官网</a>'+
                 '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国国际航空</a>'+
@@ -48,13 +48,13 @@
                 '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国东方航空</a>'+
                 '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">海南航空</a>'+
             '</div></div>'+
-            '<hr class="border-white/20 mb-6"><div class="text-center text-sm opacity-75"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div>'+
+            '<hr class="border-white/10 mb-6"><div class="text-center text-sm text-textGray"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div>'+
         '</div>'+
     '</footer>';
 
     function initNav(){
         const nav=document.getElementById('mainNav');
-        if(nav)window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='#0F2B5B';}else{nav.classList.add('nav-glass');nav.style.backgroundColor='';}});
+        if(nav)window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='rgba(0,0,0,0.9)';}else{nav.classList.add('nav-glass');nav.style.backgroundColor='';}});
         const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu');
         if(menuBtn&&mobileMenu){
             menuBtn.addEventListener('click',()=>mobileMenu.classList.toggle('hidden'));
@@ -191,10 +191,16 @@ function redeemItem(id){
 
 // ---- 页面内轻提示 / 确认框（替代原生 alert/confirm，统一黑金风格） ----
 function showToast(msg){
+    const old=document.getElementById("lmsToast");if(old)old.remove();
     const t=document.createElement("div");
     t.id="lmsToast";
-    t.className="fixed top-5 left-1/2 -translate-x-1/2 z-[120] px-6 py-3 rounded-global bg-card card-gold text-textDark shadow-lg text-sm";
-    t.style.border="1px solid #c9a227";
+    t.className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[120] px-5 py-3 text-sm text-white font-medium rounded-full shadow-2xl";
+    t.style.background="rgba(28,28,30,0.9)";
+    t.style.backdropFilter="blur(20px) saturate(180%)";
+    t.style.webkitBackdropFilter="blur(20px) saturate(180%)";
+    t.style.border="1px solid rgba(255,255,255,0.12)";
+    t.style.maxWidth="88vw";
+    t.style.textAlign="center";
     t.textContent=msg;
     document.body.appendChild(t);
     setTimeout(()=>t.remove(),3200);
@@ -204,10 +210,14 @@ function showConfirm(msg,onOk){
     const d=document.createElement("div");
     d.id="lmsConfirmModal";
     d.className="fixed inset-0 z-[130] flex items-center justify-center bg-black/60 p-4";
-    d.innerHTML='<div class="bg-card card-gold max-w-sm w-full p-6 rounded-global text-center">'+
-        '<p class="mb-6 text-textDark leading-relaxed">'+msg+'</p>'+
-        '<div class="flex gap-3"><button class="flex-1 border py-2 rounded-global text-textDark" data-a="cancel">取消</button>'+
-        '<button class="flex-1 bg-gold text-primary font-bold py-2 rounded-global" data-a="ok">确认</button></div></div>';
+    d.style.backdropFilter="blur(4px)";
+    d.innerHTML='<div class="w-[280px] overflow-hidden text-center shadow-2xl" style="background:rgba(28,28,30,0.95);border-radius:14px;border:1px solid rgba(255,255,255,0.1)">'+
+        '<div class="px-5 py-5 text-[15px] text-white leading-relaxed">'+msg+'</div>'+
+        '<div class="flex border-t" style="border-color:rgba(255,255,255,0.1)">'+
+        '<button class="flex-1 py-3 text-[17px] font-normal text-textGray" data-a="cancel">取消</button>'+
+        '<div style="width:1px;background:rgba(255,255,255,0.1)"></div>'+
+        '<button class="flex-1 py-3 text-[17px] font-semibold text-gold" data-a="ok">确认</button>'+
+        '</div></div>';
     d.querySelector('[data-a="cancel"]').onclick=function(){d.remove();};
     d.querySelector('[data-a="ok"]').onclick=function(){d.remove();onOk&&onOk();};
     document.body.appendChild(d);
