@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>神秘彩蛋 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260918k"></script>
+    <script src="assets/tailwind-config.js?v=20260918l"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260918k">
+    <link rel="stylesheet" href="assets/style.css?v=20260918l">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-32 pb-16 container mx-auto px-4 max-w-2xl text-center">
         <!-- 彩蛋吉祥物 -->
         <div class="bg-card card-gold p-8 rounded-big shadow-xl anim-up">
-            <img src="assets/egg_mascot.png?v=20260918k" alt="神秘吉祥物" class="mx-auto w-48 h-48 object-contain rounded-3xl bounce-hover">
+            <img src="assets/egg_mascot.png?v=20260918l" alt="神秘吉祥物" class="mx-auto w-48 h-48 object-contain rounded-3xl bounce-hover">
             <h2 class="text-2xl font-bold text-white mt-6">🎉 恭喜你发现了神秘彩蛋！</h2>
             <p class="text-white/70 mt-2">这只爱比耶的小袋鼠送你一次抽奖机会，每天可抽一次</p>
 
@@ -31,19 +31,22 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260918k"></script>
-    <script src="assets/common.js?v=20260918k"></script>
+    <script src="assets/data.js?v=20260918l"></script>
+    <script src="assets/common.js?v=20260918l"></script>
     <script>
         // 奖品池
         const PRIZES=[
-            {name:"吴景雕像",type:"goods",icon:"fa-star",weight:5},
-            {name:"偷吃乌龟模型",type:"goods",icon:"fa-turtle",weight:5},
-            {name:"¥20 代金券",type:"coupon",value:20,weight:30},
-            {name:"¥50 代金券",type:"coupon",value:50,weight:25},
-            {name:"¥100 代金券",type:"coupon",value:100,weight:10},
-            {name:"谢谢参与",type:"none",icon:"fa-meh",weight:25}
+            {name:"吴景雕像",type:"goods",icon:"fa-star",weight:20},
+            {name:"偷吃乌龟模型",type:"goods",icon:"fa-turtle",weight:20},
+            {name:"¥20 代金券",type:"coupon",value:20,weight:25},
+            {name:"¥50 代金券",type:"coupon",value:50,weight:15},
+            {name:"¥100 代金券",type:"coupon",value:100,weight:8},
+            {name:"谢谢参与",type:"none",icon:"fa-meh",weight:12}
         ];
+        const DAILY_LIMIT=9999;
         function todayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+        function todayCount(){try{var s=JSON.parse(localStorage.getItem('egg_draw')||'{}');return s.day===todayKey()?(s.count||0):0;}catch(e){return 0;}}
+        function incCount(){var s={day:todayKey(),count:todayCount()+1};localStorage.setItem('egg_draw',JSON.stringify(s));}
         function pickPrize(){
             var total=PRIZES.reduce((s,p)=>s+p.weight,0);
             var r=Math.random()*total;
@@ -53,12 +56,12 @@
         function getWins(){try{return JSON.parse(localStorage.getItem('eggWins')||'[]');}catch(e){return[];}}
         function saveWins(w){localStorage.setItem('eggWins',JSON.stringify(w));}
         function drawLottery(){
-            if(localStorage.getItem('egg_drawn')===todayKey()){
-                document.getElementById('drawResult').innerHTML='<p class="text-yellow-300">今天已经抽过啦，明天再来～</p>';
+            if(todayCount()>=DAILY_LIMIT){
+                document.getElementById('drawResult').innerHTML='<p class="text-yellow-300">今日抽奖次数已用完（'+DAILY_LIMIT+'次），明天再来～</p>';
                 return;
             }
             var prize=pickPrize();
-            localStorage.setItem('egg_drawn',todayKey());
+            incCount();
             var wins=getWins();
             if(prize.type==='coupon'){
                 var c=getCoupons();
@@ -75,15 +78,19 @@
                 showResult('🎉 恭喜抽中稀有实物 <b class="text-yellow-300">'+prize.name+'</b>！请到会员中心兑换并填写邮寄地址');
             }else{
                 wins.push({name:prize.name,type:"none",date:todayKey()});
-                showResult('😢 谢谢参与，明天再来试试手气～');
+                showResult('😢 谢谢参与，再来一次试试手气～');
             }
             saveWins(wins);
             renderWins();
         }
         function showResult(html){
             document.getElementById('drawResult').innerHTML='<div class="bg-white/10 rounded-2xl p-4 text-white">'+html+'</div>';
+            updateBtn();
+        }
+        function updateBtn(){
             var btn=document.getElementById('drawBtn');
-            btn.disabled=true;btn.style.opacity=.5;btn.innerHTML='<i class="fa fa-check mr-2"></i>今日已抽奖';
+            var left=DAILY_LIMIT-todayCount();
+            btn.innerHTML='<i class="fa fa-gift mr-2"></i>点击抽奖（今日剩 '+left+' 次）';
         }
         function renderWins(){
             var w=getWins();
@@ -94,11 +101,8 @@
                 return '<div class="flex justify-between bg-white/5 rounded-xl px-3 py-2"><span>'+tag+' '+x.name+'</span><span class="opacity-50">'+x.date+'</span></div>';
             }).join('');
         }
-        // 进入页面：若今天已抽过则置灰按钮
-        if(localStorage.getItem('egg_drawn')===todayKey()){
-            var btn=document.getElementById('drawBtn');
-            btn.disabled=true;btn.style.opacity=.5;btn.innerHTML='<i class="fa fa-check mr-2"></i>今日已抽奖';
-        }
+        // 进入页面：显示剩余次数
+        updateBtn();
         renderWins();
     </script>
 </body>
