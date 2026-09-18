@@ -247,18 +247,19 @@ hr{border-color:var(--ios-sep);}
     transform:translateY(0) scale(1);
     pointer-events:auto;
 }
-/* 更新公告：高度 + 透明度展开 */
+/* 更新公告：高度 + 透明度展开，内部可滚动 */
 #newsList{
-    overflow:hidden;
     max-height:0;
     opacity:0;
+    overflow-y:scroll;
     transition:max-height .45s cubic-bezier(0.22,1,0.36,1), opacity .35s ease;
 }
+#newsList::-webkit-scrollbar{width:5px;}
+#newsList::-webkit-scrollbar-thumb{background:rgba(74,90,110,0.3);border-radius:3px;}
 #newsList.open{
     max-height:150px;
     opacity:1;
-    overflow-y:auto;
-    padding-right:6px;
+    padding-right:8px;
 }
 #newsArrow{transition:transform .3s cubic-bezier(0.22,1,0.36,1);display:inline-block;}
 #newsArrow.up{transform:rotate(180deg);}
