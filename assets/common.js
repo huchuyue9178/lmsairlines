@@ -32,7 +32,7 @@
         '</div>'+
     '</header>';
 
-    // 背景音乐播放器（全局单例）
+    // 背景音乐播放器（全局单例，跨页面保持进度/音量/播放状态）
     if(!document.getElementById('bgmPlayer')){
         const a=document.createElement('audio');
         a.id='bgmPlayer';
@@ -44,6 +44,39 @@
     }
     window._bgmOn=false;
     window._bgmClickTimer=null;
+
+    // 保存播放状态到 sessionStorage（页面跳转后恢复）
+    window.saveBgmState=function(){
+        try{
+            const p=document.getElementById('bgmPlayer');
+            sessionStorage.setItem('bgmState',JSON.stringify({
+                playing:window._bgmOn,
+                time:Math.floor(p.currentTime||0),
+                volume:p.volume
+            }));
+        }catch(e){}
+    };
+    // 页面卸载前保存进度
+    window.addEventListener('beforeunload',window.saveBgmState);
+    // 恢复状态
+    window.restoreBgmState=function(){
+        let st=null;
+        try{st=JSON.parse(sessionStorage.getItem('bgmState')||'null');}catch(e){}
+        const p=document.getElementById('bgmPlayer');
+        if(!st)return;
+        const apply=()=>{
+            if(st.volume!=null)p.volume=st.volume;
+            if(st.time)p.currentTime=Math.min(st.time,(p.duration||st.time));
+            if(st.playing){
+                p.play().then(()=>{
+                    window._bgmOn=true;
+                    const ic=document.getElementById('bgmIcon');
+                    if(ic){ic.style.color='#0071e3';ic.style.animation='bgmSpin 2.4s linear infinite';}
+                }).catch(()=>{/* 浏览器拦截时保持暂停，用户点一下即继续 */});
+            }
+        };
+        if(p.readyState>=1)apply(); else p.addEventListener('loadedmetadata',apply,{once:true});
+    };
 
     // 单击：播放/暂停（延迟以区分双击）
     window.onBgmClick=function(){
@@ -61,6 +94,7 @@
                     ic.style.animation='bgmSpin 2.4s linear infinite';
                 }).catch(()=>showToast("请再次点击开始播放"));
             }
+            window.saveBgmState();
         },260);
     };
 
@@ -105,8 +139,8 @@
             if(!p.paused){seek.value=Math.floor(p.currentTime);}
             cur.textContent=fmt(p.currentTime);
         },500);
-        seek.addEventListener('input',()=>{p.currentTime=seek.value;});
-        vol.addEventListener('input',()=>{p.volume=vol.value/100;});
+        seek.addEventListener('input',()=>{p.currentTime=seek.value;saveBgmState();});
+        vol.addEventListener('input',()=>{p.volume=vol.value/100;saveBgmState();});
     };
 
     const FOOTER_HTML=
@@ -146,6 +180,7 @@
         initNav();
         updateCartBadge();
         renderMemberArea();
+        restoreBgmState();
     });
 })();
 
