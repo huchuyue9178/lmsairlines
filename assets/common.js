@@ -48,7 +48,7 @@
                 '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">中国东方航空</a>'+
                 '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">海南航空</a>'+
             '</div></div>'+
-            '<div class="text-xs opacity-70"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div>'+
+            '<div class="text-xs opacity-70"><p>胡楚粤 · 老牧师航空 ©2026 版权所有 | 个人制作网站仅供模拟、娱乐、学习使用，请勿用于非法用途</p></div>'+
         '</div>'+
     '</footer>';
 
