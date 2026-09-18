@@ -451,5 +451,6 @@ function cancelCheckin(orderId){
 function resolveStatus(item){
     if(item.status==='已退票')return '已退票';
     if(item.status==='支付处理中'&&Date.now()-item.createTime>5000)return '已完成';
+    if(item.checkedIn)return '已完成';
     return item.status;
 }
