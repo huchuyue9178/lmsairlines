@@ -18,7 +18,7 @@
                 '<a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</nav>'+
             '<div class="hidden lg:flex items-center gap-4 text-white text-sm">'+
-                '<button id="bgmBtn" onclick="toggleBgm()" class="hover:text-gold transition-colors cursor-pointer" title="播放/暂停背景音乐"><i class="fa fa-music text-lg" id="bgmIcon"></i></button>'+
+                '<button id="bgmBtn" onclick="onBgmClick()" ondblclick="openBgmPanel()" class="hover:text-gold transition-colors cursor-pointer" title="单击播放/暂停，双击打开播放栏"><i class="fa fa-music text-lg" id="bgmIcon"></i></button>'+
                 '<a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                 '<span id="memberArea"></span>'+
                 '<span class="text-textGray"><i class="fa fa-phone"></i> 400-888-9999</span>'+
@@ -39,24 +39,74 @@
         a.loop=true;
         a.preload='auto';
         a.src='assets/bgm.mp3';
+        a.volume=0.6;
         document.body.appendChild(a);
     }
     window._bgmOn=false;
-    window.toggleBgm=function(){
+    window._bgmClickTimer=null;
+
+    // 单击：播放/暂停（延迟以区分双击）
+    window.onBgmClick=function(){
+        if(window._bgmClickTimer)clearTimeout(window._bgmClickTimer);
+        window._bgmClickTimer=setTimeout(()=>{
+            const p=document.getElementById('bgmPlayer');
+            const ic=document.getElementById('bgmIcon');
+            if(window._bgmOn){
+                p.pause(); window._bgmOn=false;
+                ic.style.color=''; ic.style.animation='';
+            }else{
+                p.play().then(()=>{
+                    window._bgmOn=true;
+                    ic.style.color='#0071e3';
+                    ic.style.animation='bgmSpin 2.4s linear infinite';
+                }).catch(()=>showToast("请再次点击开始播放"));
+            }
+        },260);
+    };
+
+    // 双击：弹出小播放栏
+    window.openBgmPanel=function(){
+        if(window._bgmClickTimer){clearTimeout(window._bgmClickTimer);window._bgmClickTimer=null;}
+        let panel=document.getElementById('bgmPanel');
+        if(panel){panel.remove();return;}
+        panel=document.createElement('div');
+        panel.id='bgmPanel';
+        panel.className='fixed top-16 right-4 z-[9999] p-4 rounded-2xl shadow-2xl';
+        panel.style.cssText='background:rgba(30,36,54,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,0.18);width:280px;color:#fff';
+        panel.innerHTML=
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
+                '<i class="fa fa-music" style="color:#0071e3"></i>'+
+                '<b style="font-size:14px">背景音乐</b>'+
+                '<span style="margin-left:auto;font-size:12px;opacity:.6;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
+            '</div>'+
+            '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8;margin-bottom:6px">'+
+                '<span id="bgmCur">0:00</span>'+
+                '<input id="bgmSeek" type="range" min="0" max="100" value="0" style="flex:1;accent-color:#0071e3">'+
+                '<span id="bgmDur">0:00</span>'+
+            '</div>'+
+            '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8">'+
+                '<i class="fa fa-volume-up"></i>'+
+                '<input id="bgmVol" type="range" min="0" max="100" value="60" style="flex:1;accent-color:#0071e3">'+
+            '</div>';
+        document.body.appendChild(panel);
+
         const p=document.getElementById('bgmPlayer');
-        const ic=document.getElementById('bgmIcon');
-        if(window._bgmOn){
-            p.pause();
-            window._bgmOn=false;
-            ic.style.color='';
-            ic.style.animation='';
-        }else{
-            p.play().then(()=>{
-                window._bgmOn=true;
-                ic.style.color='#0071e3';
-                ic.style.animation='bgmSpin 2.4s linear infinite';
-            }).catch(e=>showToast("浏览器拦截了自动播放，请再次点击"));
-        }
+        const seek=document.getElementById('bgmSeek');
+        const vol=document.getElementById('bgmVol');
+        const cur=document.getElementById('bgmCur');
+        const dur=document.getElementById('bgmDur');
+        const fmt=s=>{s=Math.floor(s||0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+        p.addEventListener('loadedmetadata',()=>{dur.textContent=fmt(p.duration);seek.max=Math.floor(p.duration||100);});
+        dur.textContent=fmt(p.duration);
+        seek.max=Math.floor(p.duration||100);
+        // 进度实时更新
+        window._bgmTick=setInterval(()=>{
+            if(!document.getElementById('bgmPanel')){clearInterval(window._bgmTick);return;}
+            if(!p.paused){seek.value=Math.floor(p.currentTime);}
+            cur.textContent=fmt(p.currentTime);
+        },500);
+        seek.addEventListener('input',()=>{p.currentTime=seek.value;});
+        vol.addEventListener('input',()=>{p.volume=vol.value/100;});
     };
 
     const FOOTER_HTML=
