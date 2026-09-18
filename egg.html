@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>神秘彩蛋 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js?v=20260918k"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20260918k">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-32 pb-16 container mx-auto px-4 max-w-2xl text-center">
+        <!-- 彩蛋吉祥物 -->
+        <div class="bg-card card-gold p-8 rounded-big shadow-xl anim-up">
+            <img src="assets/egg_mascot.png?v=20260918k" alt="神秘吉祥物" class="mx-auto w-48 h-48 object-contain rounded-3xl bounce-hover">
+            <h2 class="text-2xl font-bold text-white mt-6">🎉 恭喜你发现了神秘彩蛋！</h2>
+            <p class="text-white/70 mt-2">这只爱比耶的小袋鼠送你一次抽奖机会，每天可抽一次</p>
+
+            <button id="drawBtn" onclick="drawLottery()" class="mt-7 btn-hover btn-shine inline-block text-white font-bold px-10 py-3.5 rounded-full text-lg" style="background:#0071e3">
+                <i class="fa fa-gift mr-2"></i>点击抽奖
+            </button>
+
+            <div id="drawResult" class="mt-6"></div>
+
+            <div class="mt-8 pt-6 border-t border-white/15 text-left">
+                <h3 class="text-white font-semibold mb-3"><i class="fa fa-trophy mr-2"></i>我的奖品</h3>
+                <div id="myPrizes" class="text-white/80 text-sm space-y-2"></div>
+            </div>
+        </div>
+    </main>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js?v=20260918k"></script>
+    <script src="assets/common.js?v=20260918k"></script>
+    <script>
+        // 奖品池
+        const PRIZES=[
+            {name:"吴景雕像",type:"goods",icon:"fa-star",weight:5},
+            {name:"偷吃乌龟模型",type:"goods",icon:"fa-turtle",weight:5},
+            {name:"¥20 代金券",type:"coupon",value:20,weight:30},
+            {name:"¥50 代金券",type:"coupon",value:50,weight:25},
+            {name:"¥100 代金券",type:"coupon",value:100,weight:10},
+            {name:"谢谢参与",type:"none",icon:"fa-meh",weight:25}
+        ];
+        function todayKey(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+        function pickPrize(){
+            var total=PRIZES.reduce((s,p)=>s+p.weight,0);
+            var r=Math.random()*total;
+            for(var p of PRIZES){if(r<p.weight)return p;r-=p.weight;}
+            return PRIZES[PRIZES.length-1];
+        }
+        function getWins(){try{return JSON.parse(localStorage.getItem('eggWins')||'[]');}catch(e){return[];}}
+        function saveWins(w){localStorage.setItem('eggWins',JSON.stringify(w));}
+        function drawLottery(){
+            if(localStorage.getItem('egg_drawn')===todayKey()){
+                document.getElementById('drawResult').innerHTML='<p class="text-yellow-300">今天已经抽过啦，明天再来～</p>';
+                return;
+            }
+            var prize=pickPrize();
+            localStorage.setItem('egg_drawn',todayKey());
+            var wins=getWins();
+            if(prize.type==='coupon'){
+                var c=getCoupons();
+                c.push({code:"EGG"+Date.now(),value:prize.value,status:"可用",createdAt:Date.now()});
+                saveCoupons(c);
+                wins.push({name:prize.name,type:"coupon",value:prize.value,date:todayKey()});
+                showResult('🎉 恭喜抽中 <b class="text-yellow-300">'+prize.name+'</b>！已放入会员中心优惠券');
+            }else if(prize.type==='goods'){
+                var b={itemId:"egg_"+prize.name, name:prize.name, desc:"彩蛋抽奖实物奖品", type:"goods",
+                    icon:prize.icon, code:"EGG-GK-"+Date.now().toString(36).toUpperCase(),
+                    status:"待发货", createdAt:Date.now()};
+                var list=getBenefits();list.push(b);saveBenefits(list);
+                wins.push({name:prize.name,type:"goods",date:todayKey()});
+                showResult('🎉 恭喜抽中稀有实物 <b class="text-yellow-300">'+prize.name+'</b>！请到会员中心兑换并填写邮寄地址');
+            }else{
+                wins.push({name:prize.name,type:"none",date:todayKey()});
+                showResult('😢 谢谢参与，明天再来试试手气～');
+            }
+            saveWins(wins);
+            renderWins();
+        }
+        function showResult(html){
+            document.getElementById('drawResult').innerHTML='<div class="bg-white/10 rounded-2xl p-4 text-white">'+html+'</div>';
+            var btn=document.getElementById('drawBtn');
+            btn.disabled=true;btn.style.opacity=.5;btn.innerHTML='<i class="fa fa-check mr-2"></i>今日已抽奖';
+        }
+        function renderWins(){
+            var w=getWins();
+            var box=document.getElementById('myPrizes');
+            if(!w.length){box.innerHTML='<p class="opacity-6">还没有奖品，快抽一次吧～</p>';return;}
+            box.innerHTML=w.slice().reverse().map(x=>{
+                var tag=x.type==='coupon'?'<span class="text-green-400">券</span>':x.type==='goods'?'<span class="text-yellow-300">实物</span>':'<span class="opacity-6">未中奖</span>';
+                return '<div class="flex justify-between bg-white/5 rounded-xl px-3 py-2"><span>'+tag+' '+x.name+'</span><span class="opacity-50">'+x.date+'</span></div>';
+            }).join('');
+        }
+        // 进入页面：若今天已抽过则置灰按钮
+        if(localStorage.getItem('egg_drawn')===todayKey()){
+            var btn=document.getElementById('drawBtn');
+            btn.disabled=true;btn.style.opacity=.5;btn.innerHTML='<i class="fa fa-check mr-2"></i>今日已抽奖';
+        }
+        renderWins();
+    </script>
+</body>
+</html>

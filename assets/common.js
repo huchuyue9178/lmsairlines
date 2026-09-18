@@ -153,13 +153,18 @@
                 '<div><h4 class="font-semibold text-white text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
             '<div class="border-t pt-6 mb-4" style="border-color:rgba(255,255,255,0.12)"><div class="text-sm leading-loose">'+
+                '<span class="font-semibold text-white mr-2"><i class="fa fa-gift"></i> 兑换码：</span>'+
+                '<input id="redeemInput" type="text" placeholder="输入兑换码" class="px-3 py-1.5 rounded-full text-[#1d1d1f] text-sm outline-none" style="min-width:180px">'+
+                '<button onclick="redeemCode()" class="ml-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold btn-hover" style="background:#0071e3">兑换</button>'+
+            '</div></div>'+
+            '<div class="mb-4 text-sm leading-loose">'+
                 '<span class="font-semibold text-white mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
                 '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">12306 铁路官网</a>'+
                 '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国国际航空</a>'+
                 '<a href="https://www.csair.com/cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国南方航空</a>'+
                 '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">中国东方航空</a>'+
                 '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">海南航空</a>'+
-            '</div></div>'+
+            '</div>'+
             '<div class="text-xs opacity-70"><p>胡楚粤 · 老牧师航空 ©2026 版权所有 | 个人制作网站仅供模拟、娱乐、学习使用，请勿用于非法用途</p></div>'+
         '</div>'+
     '</footer>';
@@ -276,6 +281,26 @@ function renderMemberArea(){
         el.innerHTML='<a href="member.html" class="hover:text-gold border border-gold/60 px-2 py-0.5 rounded-global text-xs">登录 / 注册</a>';
     }
 }
+// ---- 页脚兑换码 ----
+window.redeemCode=function(){
+    const inp=document.getElementById('redeemInput');
+    if(!inp)return;
+    const code=(inp.value||'').trim();
+    if(!code){showToast("请输入兑换码");return;}
+    if(code==='2025025270'){location.href='egg.html';return;}
+    if(code==='100000-200000'){
+        if(localStorage.getItem('coupon_redeemed')==='1'){showToast("该兑换码已使用过，每张优惠券限领一次");return;}
+        const c=getCoupons();
+        c.push({code:"GIFT50-"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
+        saveCoupons(c);
+        localStorage.setItem('coupon_redeemed','1');
+        showToast("兑换成功！已领取 ¥50 优惠券，可在会员中心查看");
+        inp.value='';
+        return;
+    }
+    showToast("兑换码无效，请检查后重试");
+};
+
 // ---- 里程兑换优惠券 ----
 function getCoupons(){try{const v=JSON.parse(localStorage.getItem("ffpCoupons")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveCoupons(c){localStorage.setItem("ffpCoupons",JSON.stringify(c));}
