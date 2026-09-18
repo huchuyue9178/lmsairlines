@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260919e"></script>
+    <script src="assets/tailwind-config.js?v=20260919f"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260919e">
+    <link rel="stylesheet" href="assets/style.css?v=20260919f">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -56,13 +56,13 @@
         </div>
 
         <!-- 苹果商城式购买面板：左详情+乘客，右摘要+购买 -->
-        <div id="buyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">
-            <div class="bg-card card-gold w-full max-w-5xl overflow-hidden" style="border-radius:22px;max-height:92vh">
-                <div class="buy-split" style="min-height:380px">
+        <div id="buyModal" class="hidden fixed inset-0 z-50 overflow-y-auto" style="background:linear-gradient(180deg,#F2F4F2,#D8DFE6)">
+            <div class="bg-card card-gold w-full" style="min-height:100vh">
+                <div class="buy-split" style="min-height:100vh">
                     <!-- 左栏：产品详情 + 乘客信息 -->
-                    <div class="p-6 md:p-8 overflow-y-auto">
+                    <div class="p-6 md:p-8 md:py-16 md:px-16">
                         <p class="text-sm text-textGray mb-1">您正在预订</p>
-                        <h3 class="text-2xl font-bold text-textDark mb-4">航班确认</h3>
+                        <h3 class="text-3xl font-bold text-textDark mb-4">航班确认</h3>
                         <div id="modalInfo" class="mb-4 text-[15px] leading-relaxed"></div>
                         <hr class="my-5" style="border-color:rgba(0,0,0,0.08)">
                         <h4 class="font-bold text-textDark mb-3">乘客信息</h4>
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <!-- 右栏：订单摘要（sticky 苹果商城式） -->
-                    <div class="p-6 md:p-8" style="background:rgba(118,118,128,0.05);border-left:1px solid rgba(0,0,0,0.06)">
+                    <div class="p-6 md:p-8 md:py-16 md:px-12" style="background:rgba(216,223,230,0.5);border-left:1px solid rgba(255,255,255,0.6)">
                         <h4 class="font-bold text-textDark mb-4">订单摘要</h4>
                         <div id="buySummary" class="text-[15px] space-y-2"></div>
                         <div class="flex items-baseline gap-2 mt-5 pb-4" style="border-bottom:1px solid rgba(0,0,0,0.08)">
@@ -87,8 +87,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260919e"></script>
-    <script src="assets/common.js?v=20260919e"></script>
+    <script src="assets/data.js?v=20260919f"></script>
+    <script src="assets/common.js?v=20260919f"></script>
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
