@@ -255,8 +255,10 @@ hr{border-color:var(--ios-sep);}
     transition:max-height .45s cubic-bezier(0.22,1,0.36,1), opacity .35s ease;
 }
 #newsList.open{
-    max-height:600px;
+    max-height:150px;
     opacity:1;
+    overflow-y:auto;
+    padding-right:6px;
 }
 #newsArrow{transition:transform .3s cubic-bezier(0.22,1,0.36,1);display:inline-block;}
 #newsArrow.up{transform:rotate(180deg);}
