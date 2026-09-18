@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的订单 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260918e"></script>
+    <script src="assets/tailwind-config.js?v=20260918f"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260918e">
+    <link rel="stylesheet" href="assets/style.css?v=20260918f">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -53,8 +53,8 @@
         </div>
     </div>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260918e"></script>
-    <script src="assets/common.js?v=20260918e"></script>
+    <script src="assets/data.js?v=20260918f"></script>
+    <script src="assets/common.js?v=20260918f"></script>
     <script>
         let changeIdx=null,changeFree=false;
         let cabinIdx=null,cabinTargetKey=null;
@@ -97,7 +97,7 @@
                     actions='<div class="mt-4 p-3 bg-black/40 border border-danger/50 rounded-global text-sm">'+
                         '<p class="text-danger font-bold mb-2"><i class="fa fa-cloud-rain"></i> 因恶劣天气，航班已取消。请选择处理方案：</p>'+
                         '<div class="flex flex-wrap gap-3">'+
-                        '<button onclick="openChange('+index+',true)" class="px-4 py-2 bg-primary text-white rounded-global btn-hover">免费改签（免差价）</button>'+
+                        '<button onclick="openChange('+index+',true)" class="px-4 py-2 bg-gold text-white rounded-global btn-hover">免费改签（免差价）</button>'+
                         '<button onclick="openCompensation('+index+')" class="px-4 py-2 bg-gold text-primary font-bold rounded-global btn-hover">选择其他补偿方案</button>'+
                         '</div></div>';
                 }else if(status==='已补偿'){
@@ -110,7 +110,7 @@
                     const refund=base-fee;
                     const changeBtn=isRA
                         ?'<span class="self-center text-textGray text-sm">空铁联运暂不支持在线改签，如需调整行程请联系客服</span>'
-                        :'<button onclick="openChange('+index+')" class="px-4 py-2 bg-primary text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>';
+                        :'<button onclick="openChange('+index+')" class="px-4 py-2 bg-gold text-white rounded-global btn-hover"'+(item.changed?' disabled style="opacity:.5;cursor:not-allowed"':'')+'>'+(item.changed?'已改签（免费机会已用）':'免费改签')+'</button>';
                     const cabinBtn=isRA
                         ?''
                         :'<button onclick="openCabinChange('+index+')" class="px-4 py-2 border border-gold text-gold rounded-global btn-hover"><i class="fa fa-exchange"></i> 升舱/降舱</button>';
