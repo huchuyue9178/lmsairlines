@@ -3,8 +3,8 @@
     const HEADER_HTML=
     '<header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">'+
         '<div class="container mx-auto px-4 py-3 flex justify-between items-center">'+
-            '<a href="index.html" class="flex items-center gap-2 text-white"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
-            '<nav class="hidden lg:flex gap-5 text-white text-[15px] font-medium">'+
+            '<a href="index.html" class="flex items-center gap-2 text-textDark"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
+            '<nav class="hidden lg:flex gap-5 text-textDark text-[15px] font-medium">'+
                 '<a href="index.html" class="hover:text-gold transition-colors">首页</a>'+
                 '<a href="booking.html" class="hover:text-gold transition-colors">机票预订</a>'+
                 '<a href="flight.html" class="hover:text-gold transition-colors">航班动态</a>'+
@@ -17,15 +17,15 @@
                 '<a href="about.html" class="hover:text-gold transition-colors">关于我们</a>'+
                 '<a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</nav>'+
-            '<div class="hidden lg:flex items-center gap-4 text-white text-sm">'+
+            '<div class="hidden lg:flex items-center gap-4 text-textDark text-sm">'+
                 '<button id="bgmBtn" onclick="onBgmClick()" ondblclick="openBgmPanel()" class="hover:text-gold transition-colors cursor-pointer" title="单击播放/暂停，双击打开播放栏"><i class="fa fa-music text-lg" id="bgmIcon"></i></button>'+
                 '<a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                 '<span id="memberArea"></span>'+
                 '<span class="text-textGray"><i class="fa fa-phone"></i> 400-888-9999</span>'+
             '</div>'+
-            '<button id="menuBtn" class="lg:hidden text-white text-2xl"><i class="fa fa-bars"></i></button>'+
+            '<button id="menuBtn" class="lg:hidden text-textDark text-2xl"><i class="fa fa-bars"></i></button>'+
         '</div>'+
-        '<div id="mobileMenu" class="hidden lg:hidden bg-black/80 backdrop-blur-xl px-4 pb-5 pt-2 text-white">'+
+        '<div id="mobileMenu" class="hidden lg:hidden bg-mistWhite/90 backdrop-blur-xl px-4 pb-5 pt-2 text-textDark">'+
             '<div class="flex flex-col gap-3 text-[15px]">'+
                 '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</div>'+
@@ -144,18 +144,18 @@
     };
 
     const FOOTER_HTML=
-    '<footer class="mt-16" style="background:rgba(10,16,30,0.55);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-top:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.65)">'+
+    '<footer class="mt-16" style="background:rgba(216,223,230,0.45);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-top:1px solid rgba(255,255,255,0.6);color:rgba(58,74,92,0.75)">'+
         '<div class="container mx-auto px-4 py-10">'+
             '<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">'+
-                '<div><h4 class="font-semibold text-white text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
-                '<div><h4 class="font-semibold text-white text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
-                '<div><h4 class="font-semibold text-white text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
-                '<div><h4 class="font-semibold text-white text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
+                '<div><h4 class="font-semibold text-textDark text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
+                '<div><h4 class="font-semibold text-textDark text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-textDark text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-textDark text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
-            '<div class="border-t pt-6 mb-4" style="border-color:rgba(255,255,255,0.12)"><div class="text-sm leading-loose">'+
+            '<div class="border-t pt-6 mb-4" style="border-color:rgba(150,175,200,0.4)"><div class="text-sm leading-loose">'+
                 '<span class="font-semibold text-white mr-2"><i class="fa fa-gift"></i> 兑换码：</span>'+
                 '<input id="redeemInput" type="text" placeholder="输入兑换码" class="px-3 py-1.5 rounded-full text-[#1d1d1f] text-sm outline-none" style="min-width:180px">'+
-                '<button onclick="redeemCode()" class="ml-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold btn-hover" style="background:#0071e3">兑换</button>'+
+                '<button onclick="redeemCode()" class="ml-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold btn-hover" style="background:#5b7a99">兑换</button>'+
             '</div></div>'+
             '<div class="mb-4 text-sm leading-loose">'+
                 '<span class="font-semibold text-white mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
