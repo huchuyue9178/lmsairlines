@@ -12,7 +12,7 @@
                 '<a href="member.html" class="hover:text-gold transition-colors">会员中心</a>'+
                 '<div class="relative">'+
                     '<button onclick="toggleMore()" class="hover:text-gold transition-colors flex items-center gap-1">更多 <i class="fa fa-chevron-down text-xs"></i></button>'+
-                    '<div id="moreMenu" class="hidden absolute right-0 top-full mt-2 w-44 rounded-2xl p-2 shadow-2xl" style="background:rgba(242,244,242,0.85);backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.7);box-shadow:0 10px 32px rgba(120,140,160,0.25)">'+
+                    '<div id="moreMenu" class="absolute right-0 top-full mt-2 w-44 rounded-2xl p-2 shadow-2xl" style="background:rgba(242,244,242,0.85);backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.7);box-shadow:0 10px 32px rgba(120,140,160,0.25)">'+
                         '<a href="flight.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">航班动态</a>'+
                         '<a href="special.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">特殊服务</a>'+
                         '<a href="cart.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">购物车</a>'+
@@ -159,7 +159,10 @@
             '</div>'+
             '<div class="mb-8">'+
                 '<h4 class="font-semibold text-textDark text-base mb-3 cursor-pointer select-none" onclick="toggleNews()" style="display:inline-block"><i class="fa fa-bullhorn mr-2"></i>更新公告 <i class="fa fa-chevron-down ml-1" id="newsArrow"></i></h4>'+
-                '<ul id="newsList" class="text-sm space-y-1.5 leading-relaxed" style="color:rgba(58,74,92,0.7);display:none">'+
+                '<ul id="newsList" class="text-sm space-y-1.5 leading-relaxed" style="color:rgba(58,74,92,0.7);overflow:hidden">'+
+                    '<li><b>2026-09-19</b> · 优化"更多"下拉与"更新公告"展开动效，丝滑淡入下滑</li>'+
+                    '<li><b>2026-09-19</b> · 我的订单支持按日期、订单号、乘机人姓名搜索筛选</li>'+
+                    '<li><b>2026-09-19</b> · 精简顶部导航，次要功能收进最右侧"更多"下拉</li>'+
                     '<li><b>2026-09-19</b> · 全新雾蓝雾白主题，液态玻璃升级为水滴折射效果，配色优化为深雾蓝灰</li>'+
                     '<li><b>2026-09-19</b> · 页脚新增兑换码与神秘彩蛋：输入彩蛋码可抽奖吴景雕像、偷吃乌龟模型与代金券</li>'+
                     '<li><b>2026-09-18</b> · 新增背景音乐：右上角一键播放/暂停，双击可调进度与音量，跨页面保持进度</li>'+
@@ -309,11 +312,11 @@ function renderMemberArea(){
 // ---- 顶部"更多"下拉 ----
 window.toggleMore=function(){
     const m=document.getElementById('moreMenu');
-    if(m)m.classList.toggle('hidden');
+    if(m)m.classList.toggle('open');
 };
 document.addEventListener('click',function(e){
     const m=document.getElementById('moreMenu');
-    if(m&&!m.classList.contains('hidden')&&!e.target.closest('#moreMenu')&&!e.target.closest('button'))m.classList.add('hidden');
+    if(m&&m.classList.contains('open')&&!e.target.closest('#moreMenu')&&!e.target.closest('button'))m.classList.remove('open');
 });
 
 // ---- 页脚更新公告折叠 ----
@@ -321,9 +324,8 @@ window.toggleNews=function(){
     const list=document.getElementById('newsList');
     const arrow=document.getElementById('newsArrow');
     if(!list)return;
-    const open=list.style.display!=='none';
-    list.style.display=open?'none':'block';
-    if(arrow)arrow.className=open?'fa fa-chevron-down ml-1':'fa fa-chevron-up ml-1';
+    list.classList.toggle('open');
+    if(arrow)arrow.classList.toggle('up');
 };
 
 // ---- 页脚兑换码 ----

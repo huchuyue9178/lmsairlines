@@ -232,3 +232,31 @@ hr{border-color:var(--ios-sep);}
 .d9{animation-delay:1.02s}.d10{animation-delay:1.14s}.d11{animation-delay:1.26s}.d12{animation-delay:1.38s}.d13{animation-delay:1.50s}
 /* 背景音乐图标旋转 */
 @keyframes bgmSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ---- 丝滑展开动效 ---- */
+/* 更多下拉：淡入 + 下滑 + 轻微缩放 */
+#moreMenu{
+    opacity:0;
+    transform:translateY(-8px) scale(0.96);
+    transform-origin:top right;
+    transition:opacity .28s cubic-bezier(0.22,1,0.36,1), transform .28s cubic-bezier(0.22,1,0.36,1);
+    pointer-events:none;
+}
+#moreMenu.open{
+    opacity:1;
+    transform:translateY(0) scale(1);
+    pointer-events:auto;
+}
+/* 更新公告：高度 + 透明度展开 */
+#newsList{
+    overflow:hidden;
+    max-height:0;
+    opacity:0;
+    transition:max-height .45s cubic-bezier(0.22,1,0.36,1), opacity .35s ease;
+}
+#newsList.open{
+    max-height:600px;
+    opacity:1;
+}
+#newsArrow{transition:transform .3s cubic-bezier(0.22,1,0.36,1);display:inline-block;}
+#newsArrow.up{transform:rotate(180deg);}
