@@ -160,6 +160,8 @@
             '<div class="mb-8">'+
                 '<h4 class="font-semibold text-textDark text-base mb-3 cursor-pointer select-none" onclick="toggleNews()" style="display:inline-block"><i class="fa fa-bullhorn mr-2"></i>更新公告 <i class="fa fa-chevron-down ml-1" id="newsArrow"></i></h4>'+
                 '<ul id="newsList" class="text-sm space-y-1.5 leading-relaxed" style="color:rgba(58,74,92,0.7);overflow:hidden">'+
+                    '<li><b>2026-09-19</b> · 修复滚动时导航栏变黑，改为与雾蓝主题协调的半透明玻璃</li>'+
+                    '<li><b>2026-09-19</b> · 兑换码改为输入任意数字即可领 50 元券（每天一次）</li>'+
                     '<li><b>2026-09-19</b> · 优化"更多"下拉与"更新公告"展开动效，丝滑淡入下滑</li>'+
                     '<li><b>2026-09-19</b> · 我的订单支持按日期、订单号、乘机人姓名搜索筛选</li>'+
                     '<li><b>2026-09-19</b> · 精简顶部导航，次要功能收进最右侧"更多"下拉</li>'+
