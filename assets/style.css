@@ -13,12 +13,11 @@
 }
 html{scroll-behavior:smooth;}
 body{
-    /* 雾蓝雾白低饱和同色系：雾白 + 雾蓝云海（多层径向渐变叠加） */
+    /* 雾蓝为主背景：雾蓝 D8DFE6 打底，雾白高光点缀，凸显液态玻璃通透感 */
     background:
-        radial-gradient(1100px 650px at 82% -8%, rgba(255,255,255,.85), transparent 60%),
-        radial-gradient(950px 700px at 8% 108%, rgba(216,223,230,.75), transparent 62%),
-        radial-gradient(700px 500px at 50% 50%, rgba(242,244,242,.4), transparent 70%),
-        linear-gradient(180deg,#F2F4F2 0%,#eaeff1 45%,#D8DFE6 100%);
+        radial-gradient(1000px 600px at 85% -10%, rgba(242,244,242,.6), transparent 60%),
+        radial-gradient(900px 700px at 5% 110%, rgba(242,244,242,.45), transparent 60%),
+        linear-gradient(180deg,#c9d3de 0%,#d3dde6 40%,#D8DFE6 100%);
     background-attachment:fixed;
     background-repeat:no-repeat;
     min-height:100vh;
