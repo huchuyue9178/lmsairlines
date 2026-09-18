@@ -32,23 +32,23 @@
     '</header>';
 
     const FOOTER_HTML=
-    '<footer class="bg-black border-t border-white/10 pt-12 pb-8">'+
-        '<div class="container mx-auto px-4">'+
+    '<footer class="mt-16" style="background:#e8e8ed;border-top:1px solid rgba(0,0,0,0.06);color:#6e6e73">'+
+        '<div class="container mx-auto px-4 py-10">'+
             '<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">老牧师航空</h4><p class="text-sm text-textGray">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">出行政策</h4><ul class="space-y-2 text-sm text-textGray"><li><a href="policy.html" class="hover:text-gold transition-colors">退改签政策</a></li><li><a href="policy.html" class="hover:text-gold transition-colors">行李规定</a></li><li><a href="policy.html" class="hover:text-gold transition-colors">登机须知</a></li></ul></div>'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">快速链接</h4><ul class="space-y-2 text-sm text-textGray"><li><a href="about.html" class="hover:text-gold transition-colors">关于我们</a></li><li><a href="customer.html" class="hover:text-gold transition-colors">客服中心</a></li></ul></div>'+
-                '<div><h4 class="text-gold font-bold text-lg mb-4">联系我们</h4><p class="text-sm text-textGray">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
+                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
+                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
-            '<div class="border-t border-white/10 pt-6 mb-6"><div class="text-center text-sm text-textGray">'+
-                '<span class="text-gold font-bold mr-3"><i class="fa fa-link"></i> 友情链接：</span>'+
-                '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">12306 铁路官网</a>'+
-                '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国国际航空</a>'+
-                '<a href="https://www.csair.com/cn/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国南方航空</a>'+
-                '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">中国东方航空</a>'+
-                '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:text-gold mx-2 transition-colors">海南航空</a>'+
+            '<div class="border-t pt-6 mb-4" style="border-color:rgba(0,0,0,0.1)"><div class="text-sm leading-loose">'+
+                '<span class="font-semibold text-[#1d1d1f] mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
+                '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">12306 铁路官网</a>'+
+                '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国国际航空</a>'+
+                '<a href="https://www.csair.com/cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国南方航空</a>'+
+                '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">中国东方航空</a>'+
+                '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">海南航空</a>'+
             '</div></div>'+
-            '<hr class="border-white/10 mb-6"><div class="text-center text-sm text-textGray"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div>'+
+            '<div class="text-xs opacity-70"><p>老牧师航空 © 2025 版权所有 | 民航服务备案说明</p></div>'+
         '</div>'+
     '</footer>';
 
@@ -215,11 +215,13 @@ function showToast(msg){
     const old=document.getElementById("lmsToast");if(old)old.remove();
     const t=document.createElement("div");
     t.id="lmsToast";
-    t.className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[120] px-5 py-3 text-sm text-white font-medium rounded-full shadow-2xl";
-    t.style.background="rgba(28,28,30,0.9)";
+    t.className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[120] px-5 py-3 text-sm font-medium rounded-full shadow-2xl";
+    t.style.background="rgba(255,255,255,0.9)";
+    t.style.color="#1d1d1f";
     t.style.backdropFilter="blur(20px) saturate(180%)";
     t.style.webkitBackdropFilter="blur(20px) saturate(180%)";
-    t.style.border="1px solid rgba(255,255,255,0.12)";
+    t.style.border="1px solid rgba(0,0,0,0.06)";
+    t.style.boxShadow="0 8px 30px rgba(0,0,0,0.18)";
     t.style.maxWidth="88vw";
     t.style.textAlign="center";
     t.textContent=msg;
@@ -232,12 +234,12 @@ function showConfirm(msg,onOk){
     d.id="lmsConfirmModal";
     d.className="fixed inset-0 z-[130] flex items-center justify-center bg-black/60 p-4";
     d.style.backdropFilter="blur(4px)";
-    d.innerHTML='<div class="w-[280px] overflow-hidden text-center shadow-2xl" style="background:rgba(28,28,30,0.95);border-radius:14px;border:1px solid rgba(255,255,255,0.1)">'+
-        '<div class="px-5 py-5 text-[15px] text-white leading-relaxed">'+msg+'</div>'+
-        '<div class="flex border-t" style="border-color:rgba(255,255,255,0.1)">'+
-        '<button class="flex-1 py-3 text-[17px] font-normal text-textGray" data-a="cancel">取消</button>'+
-        '<div style="width:1px;background:rgba(255,255,255,0.1)"></div>'+
-        '<button class="flex-1 py-3 text-[17px] font-semibold text-gold" data-a="ok">确认</button>'+
+    d.innerHTML='<div class="w-[300px] overflow-hidden text-center shadow-2xl" style="background:rgba(255,255,255,0.96);border-radius:14px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 20px 60px rgba(0,0,0,0.25)">'+
+        '<div class="px-5 py-5 text-[15px] text-[#1d1d1f] leading-relaxed">'+msg+'</div>'+
+        '<div class="flex border-t" style="border-color:rgba(0,0,0,0.08)">'+
+        '<button class="flex-1 py-3 text-[17px] font-normal text-[#86868b]" data-a="cancel">取消</button>'+
+        '<div style="width:1px;background:rgba(0,0,0,0.08)"></div>'+
+        '<button class="flex-1 py-3 text-[17px] font-semibold text-[#0071e3]" data-a="ok">确认</button>'+
         '</div></div>';
     d.querySelector('[data-a="cancel"]').onclick=function(){d.remove();};
     d.querySelector('[data-a="ok"]').onclick=function(){d.remove();onOk&&onOk();};

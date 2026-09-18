@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260828b"></script>
+    <script src="assets/tailwind-config.js?v=20260918a"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260828b">
+    <link rel="stylesheet" href="assets/style.css?v=20260918a">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -55,24 +55,40 @@
             <div id="railAirResult"></div>
         </div>
 
-        <div id="buyModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-            <div class="bg-card card-gold w-full max-w-lg p-6 rounded-global">
-                <h3 class="text-xl font-bold text-gold mb-4">确认加入购物车</h3>
-                <div id="modalInfo" class="mb-4 text-sm"></div>
-                <div class="space-y-4">
-                    <div><label class="block mb-1">乘客姓名</label><input id="userName" type="text" class="w-full border px-4 py-3 rounded-global"></div>
-                    <div><label class="block mb-1">身份证号/护照号</label><input id="userIdCard" type="text" class="w-full border px-4 py-3 rounded-global"></div>
-                </div>
-                <div class="flex gap-4 mt-6">
-                    <button onclick="closeModal()" class="flex-1 border py-3 rounded-global">取消</button>
-                    <button onclick="confirmAddCart()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">加入购物车</button>
+        <!-- 苹果商城式购买面板：左详情+乘客，右摘要+购买 -->
+        <div id="buyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">
+            <div class="bg-card card-gold w-full max-w-5xl overflow-hidden" style="border-radius:22px;max-height:92vh">
+                <div class="buy-split" style="min-height:380px">
+                    <!-- 左栏：产品详情 + 乘客信息 -->
+                    <div class="p-6 md:p-8 overflow-y-auto">
+                        <p class="text-sm text-textGray mb-1">您正在预订</p>
+                        <h3 class="text-2xl font-bold text-textDark mb-4">航班确认</h3>
+                        <div id="modalInfo" class="mb-4 text-[15px] leading-relaxed"></div>
+                        <hr class="my-5" style="border-color:rgba(0,0,0,0.08)">
+                        <h4 class="font-bold text-textDark mb-3">乘客信息</h4>
+                        <div class="space-y-4">
+                            <div><label class="block mb-1.5 text-sm text-textGray">乘客姓名</label><input id="userName" type="text" class="w-full px-4 py-3 rounded-global" placeholder="请输入姓名"></div>
+                            <div><label class="block mb-1.5 text-sm text-textGray">身份证号 / 护照号</label><input id="userIdCard" type="text" class="w-full px-4 py-3 rounded-global" placeholder="请输入证件号码"></div>
+                        </div>
+                    </div>
+                    <!-- 右栏：订单摘要（sticky 苹果商城式） -->
+                    <div class="p-6 md:p-8" style="background:rgba(118,118,128,0.05);border-left:1px solid rgba(0,0,0,0.06)">
+                        <h4 class="font-bold text-textDark mb-4">订单摘要</h4>
+                        <div id="buySummary" class="text-[15px] space-y-2"></div>
+                        <div class="flex items-baseline gap-2 mt-5 pb-4" style="border-bottom:1px solid rgba(0,0,0,0.08)">
+                            <span class="text-textGray text-sm">应付总额</span>
+                            <span id="buyTotal" class="text-3xl font-bold text-textDark ml-auto"></span>
+                        </div>
+                        <button onclick="confirmAddCart()" class="btn-hover w-full mt-5 text-white font-semibold py-3.5 rounded-full text-[16px]" style="background:#0071e3">加入购物袋</button>
+                        <button onclick="closeModal()" class="btn-hover w-full mt-2 py-2.5 text-textGray">取消</button>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260828b"></script>
-    <script src="assets/common.js?v=20260828b"></script>
+    <script src="assets/data.js?v=20260918a"></script>
+    <script src="assets/common.js?v=20260918a"></script>
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
@@ -222,7 +238,9 @@
             const risky=(wS&&wS.severe)?wS:((wE&&wE.severe)?wE:null);
             selectWeatherRisk=risky?{city:risky.city,reason:risky.severeReason||risky.condition}:null;
             let p=selectFlight.price[cabin];
-            document.getElementById("modalInfo").innerHTML='<p>航班号：'+selectFlight.no+'</p><p>航线：'+selectFlight.start+' → '+selectFlight.end+'</p><p>日期时间：'+selectFlight.date+' '+selectFlight.time+'</p><p>舱位：'+cabinNameMap[cabin]+'</p><p class="text-danger font-bold">票价：¥'+p+'</p>';
+            document.getElementById("modalInfo").innerHTML='<p><span class="text-textGray">航班号</span>　<b>'+selectFlight.no+'</b></p><p><span class="text-textGray">航线</span>　'+selectFlight.start+' → '+selectFlight.end+'</p><p><span class="text-textGray">日期时间</span>　'+selectFlight.date+' '+selectFlight.time+'</p><p><span class="text-textGray">舱位</span>　'+cabinNameMap[cabin]+'</p>';
+            document.getElementById("buySummary").innerHTML='<p class="flex justify-between"><span class="text-textGray">'+selectFlight.no+' · '+cabinNameMap[cabin]+'</span><span>¥'+p+'</span></p>';
+            document.getElementById("buyTotal").textContent='¥'+p;
             document.getElementById("buyModal").classList.remove("hidden");
         }
         function closeModal(){
@@ -296,14 +314,16 @@
             const railFrom=p.type==="airRail"?t.from:t.to;
             const railTo=p.type==="airRail"?t.to:t.from;
             document.getElementById("modalInfo").innerHTML=
-                '<p class="text-gold font-bold">空铁联运 · '+(p.type==="airRail"?"先飞后铁":"先铁后飞")+'　'+esc(p.start)+' → '+esc(p.end)+'</p>'+
-                '<hr class="my-2">'+
-                '<p><i class="fa fa-plane text-gold"></i> 航班 '+esc(f.no)+'：'+esc(f.start)+' → '+esc(f.end)+'</p>'+
+                '<p class="font-semibold text-textDark">空铁联运 · '+(p.type==="airRail"?"先飞后铁":"先铁后飞")+'　'+esc(p.start)+' → '+esc(p.end)+'</p>'+
+                '<p class="mt-2"><i class="fa fa-plane text-[#0071e3]"></i> 航班 '+esc(f.no)+'：'+esc(f.start)+' → '+esc(f.end)+'</p>'+
                 '<p class="text-sm text-textGray ml-5">'+esc(p.date)+' '+esc(f.time)+'　'+cabinNameMap[cabin]+' ¥'+f.price[cabin]+'</p>'+
-                '<p><i class="fa fa-train text-gold"></i> 高铁 '+esc(t.no)+'：'+esc(railFrom)+' → '+esc(railTo)+'</p>'+
+                '<p class="mt-2"><i class="fa fa-train text-[#0071e3]"></i> 高铁 '+esc(t.no)+'：'+esc(railFrom)+' → '+esc(railTo)+'</p>'+
                 '<p class="text-sm text-textGray ml-5">'+esc(t.time)+'（'+esc(t.dur)+'）二等座 ¥'+seatPrice+'</p>'+
-                '<p class="text-sm text-textGray">铁路坐席可在付款时选择。</p>'+
-                '<p class="text-danger font-bold mt-2">总价：¥'+price+'</p>';
+                '<p class="text-sm text-textGray mt-1">铁路坐席可在付款时选择。</p>';
+            document.getElementById("buySummary").innerHTML=
+                '<p class="flex justify-between"><span class="text-textGray">机票舱位</span><span>¥'+f.price[cabin]+'</span></p>'+
+                '<p class="flex justify-between"><span class="text-textGray">高铁二等座</span><span>¥'+seatPrice+'</span></p>';
+            document.getElementById("buyTotal").textContent='¥'+price;
             document.getElementById("buyModal").classList.remove("hidden");
         }
         function addRailToCart(){

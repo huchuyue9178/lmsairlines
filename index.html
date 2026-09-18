@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260828b"></script>
+    <script src="assets/tailwind-config.js?v=20260918a"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260828b">
+    <link rel="stylesheet" href="assets/style.css?v=20260918a">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <div class="bg-card card-gold rounded-global p-10 text-white text-center my-6">
-            <h1 class="text-[34px] font-bold mb-3 tracking-tight">欢迎来到老牧师航空</h1>
+        <div class="bg-card card-gold rounded-global p-10 text-center my-6" style="padding:64px 40px">
+            <p class="text-[#0071e3] font-semibold mb-2" style="font-size:15px">欢迎来到</p>
+            <h1 class="text-[40px] font-bold mb-3 tracking-tight text-[#1d1d1f]">老牧师航空</h1>
             <p class="mb-6 text-textGray text-lg">虔诚 · 严谨 · 安心，守护您每一段航程</p>
-            <a href="booking.html" class="btn-hover inline-block bg-gold text-primary font-bold py-3 px-8 rounded-full">查询航班</a>
-            <a href="booking.html?mode=railair" class="btn-hover inline-block border border-gold text-gold font-bold py-3 px-8 rounded-full ml-3">空铁联运</a>
+            <a href="booking.html" class="btn-hover inline-block bg-gold text-primary font-semibold py-3 px-8 rounded-full text-[16px]" style="background:#0071e3">查询航班</a>
+            <a href="booking.html?mode=railair" class="btn-hover inline-block border border-[#0071e3] text-[#0071e3] font-semibold py-3 px-8 rounded-full ml-3 text-[16px]">空铁联运</a>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-6 gap-6 my-10">
             <a href="booking.html" class="bg-card card-gold p-6 rounded-global shadow-lg card-hover text-center">
@@ -57,8 +58,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260828b"></script>
-    <script src="assets/common.js?v=20260828b"></script>
+    <script src="assets/data.js?v=20260918a"></script>
+    <script src="assets/common.js?v=20260918a"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
     </script>
