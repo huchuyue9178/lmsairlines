@@ -71,7 +71,7 @@
                 p.play().then(()=>{
                     window._bgmOn=true;
                     const ic=document.getElementById('bgmIcon');
-                    if(ic){ic.style.color='#0071e3';ic.style.animation='bgmSpin 2.4s linear infinite';}
+                    if(ic){ic.style.color='#4a5a6e';ic.style.animation='bgmSpin 2.4s linear infinite';}
                 }).catch(()=>{/* 浏览器拦截时保持暂停，用户点一下即继续 */});
             }
         };
@@ -90,7 +90,7 @@
             }else{
                 p.play().then(()=>{
                     window._bgmOn=true;
-                    ic.style.color='#0071e3';
+                    ic.style.color='#4a5a6e';
                     ic.style.animation='bgmSpin 2.4s linear infinite';
                 }).catch(()=>showToast("请再次点击开始播放"));
             }
@@ -109,18 +109,18 @@
         panel.style.cssText='background:rgba(30,36,54,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,0.18);width:280px;color:#fff';
         panel.innerHTML=
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
-                '<i class="fa fa-music" style="color:#0071e3"></i>'+
+                '<i class="fa fa-music" style="color:#4a5a6e"></i>'+
                 '<b style="font-size:14px">背景音乐</b>'+
                 '<span style="margin-left:auto;font-size:12px;opacity:.6;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
             '</div>'+
             '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8;margin-bottom:6px">'+
                 '<span id="bgmCur">0:00</span>'+
-                '<input id="bgmSeek" type="range" min="0" max="100" value="0" style="flex:1;accent-color:#0071e3">'+
+                '<input id="bgmSeek" type="range" min="0" max="100" value="0" style="flex:1;accent-color:#4a5a6e">'+
                 '<span id="bgmDur">0:00</span>'+
             '</div>'+
             '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8">'+
                 '<i class="fa fa-volume-up"></i>'+
-                '<input id="bgmVol" type="range" min="0" max="100" value="60" style="flex:1;accent-color:#0071e3">'+
+                '<input id="bgmVol" type="range" min="0" max="100" value="60" style="flex:1;accent-color:#4a5a6e">'+
             '</div>';
         document.body.appendChild(panel);
 
@@ -155,7 +155,7 @@
             '<div class="border-t pt-6 mb-4" style="border-color:rgba(150,175,200,0.4)"><div class="text-sm leading-loose">'+
                 '<span class="font-semibold text-white mr-2"><i class="fa fa-gift"></i> 兑换码：</span>'+
                 '<input id="redeemInput" type="text" placeholder="输入兑换码" class="px-3 py-1.5 rounded-full text-[#1d1d1f] text-sm outline-none" style="min-width:180px">'+
-                '<button onclick="redeemCode()" class="ml-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold btn-hover" style="background:#5b7a99">兑换</button>'+
+                '<button onclick="redeemCode()" class="ml-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold btn-hover" style="background:#4a5a6e">兑换</button>'+
             '</div></div>'+
             '<div class="mb-4 text-sm leading-loose">'+
                 '<span class="font-semibold text-white mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
@@ -377,7 +377,7 @@ function showConfirm(msg,onOk){
         '<div class="flex border-t" style="border-color:rgba(0,0,0,0.08)">'+
         '<button class="flex-1 py-3 text-[17px] font-normal text-[#86868b]" data-a="cancel">取消</button>'+
         '<div style="width:1px;background:rgba(0,0,0,0.08)"></div>'+
-        '<button class="flex-1 py-3 text-[17px] font-semibold text-[#0071e3]" data-a="ok">确认</button>'+
+        '<button class="flex-1 py-3 text-[17px] font-semibold text-[#4a5a6e]" data-a="ok">确认</button>'+
         '</div></div>';
     d.querySelector('[data-a="cancel"]').onclick=function(){d.remove();};
     d.querySelector('[data-a="ok"]').onclick=function(){d.remove();onOk&&onOk();};

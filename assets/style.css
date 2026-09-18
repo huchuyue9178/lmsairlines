@@ -6,7 +6,7 @@
     --ios-sep:rgba(216,223,230,0.6);
     --ios-label:#3a4a5c;
     --ios-secondary:#8a99a8;
-    --ios-accent:#5b7a99;
+    --ios-accent:#4a5a6e;
     --ios-green:#7ba89a;
     --ios-red:#c98a8a;
     --ios-radius:22px;
@@ -69,10 +69,10 @@ body{
 
 /* ---- 链接 / Apple 蓝强调 ---- */
 a{color:var(--ios-accent);}
-.text-gold{color:#0071e3 !important;}
-.bg-gold{background-color:#0071e3 !important;}
-.border-gold{border-color:rgba(0,113,227,0.45) !important;}
-.border-gold\/20{border-color:rgba(0,113,227,0.22) !important;}
+.text-gold{color:#4a5a6e !important;}
+.bg-gold{background-color:#4a5a6e !important;}
+.border-gold{border-color:rgba(74,90,110,0.45) !important;}
+.border-gold\/20{border-color:rgba(74,90,110,0.22) !important;}
 .border-gold\/30{border-color:rgba(0,113,227,0.32) !important;}
 .border-gold\/40{border-color:rgba(0,113,227,0.45) !important;}
 

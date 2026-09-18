@@ -2,7 +2,7 @@
 tailwind.config = {theme:{extend:{
     colors:{
         primary:'#ffffff',
-        gold:'#5b7a99',
+        gold:'#4a5a6e',
         card:'rgba(255,255,255,0.55)',
         bgPage:'#F2F4F2',
         mistBlue:'#D8DFE6',
@@ -11,8 +11,8 @@ tailwind.config = {theme:{extend:{
         danger:'#c98a8a',
         textGray:'#8a99a8',
         textDark:'#3a4a5c',
-        appleBlue:'#5b7a99',
-        appleLink:'#5b7a99'
+        appleBlue:'#4a5a6e',
+        appleLink:'#4a5a6e'
     },
     fontFamily:{sans:['-apple-system','BlinkMacSystemFont','"SF Pro Display"','"SF Pro Text"','"PingFang SC"','"Helvetica Neue"','Arial','sans-serif']},
     borderRadius:{global:'18px'}

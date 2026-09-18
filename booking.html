@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260918n"></script>
+    <script src="assets/tailwind-config.js?v=20260918q"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260918n">
+    <link rel="stylesheet" href="assets/style.css?v=20260918q">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -79,7 +79,7 @@
                             <span class="text-textGray text-sm">应付总额</span>
                             <span id="buyTotal" class="text-3xl font-bold text-textDark ml-auto"></span>
                         </div>
-                        <button onclick="confirmAddCart()" class="btn-hover w-full mt-5 text-white font-semibold py-3.5 rounded-full text-[16px]" style="background:#0071e3">加入购物袋</button>
+                        <button onclick="confirmAddCart()" class="btn-hover w-full mt-5 text-white font-semibold py-3.5 rounded-full text-[16px]" style="background:#4a5a6e">加入购物袋</button>
                         <button onclick="closeModal()" class="btn-hover w-full mt-2 py-2.5 text-textGray">取消</button>
                     </div>
                 </div>
@@ -87,8 +87,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260918n"></script>
-    <script src="assets/common.js?v=20260918n"></script>
+    <script src="assets/data.js?v=20260918q"></script>
+    <script src="assets/common.js?v=20260918q"></script>
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
@@ -315,9 +315,9 @@
             const railTo=p.type==="airRail"?t.to:t.from;
             document.getElementById("modalInfo").innerHTML=
                 '<p class="font-semibold text-textDark">空铁联运 · '+(p.type==="airRail"?"先飞后铁":"先铁后飞")+'　'+esc(p.start)+' → '+esc(p.end)+'</p>'+
-                '<p class="mt-2"><i class="fa fa-plane text-[#0071e3]"></i> 航班 '+esc(f.no)+'：'+esc(f.start)+' → '+esc(f.end)+'</p>'+
+                '<p class="mt-2"><i class="fa fa-plane text-[#4a5a6e]"></i> 航班 '+esc(f.no)+'：'+esc(f.start)+' → '+esc(f.end)+'</p>'+
                 '<p class="text-sm text-textGray ml-5">'+esc(p.date)+' '+esc(f.time)+'　'+cabinNameMap[cabin]+' ¥'+f.price[cabin]+'</p>'+
-                '<p class="mt-2"><i class="fa fa-train text-[#0071e3]"></i> 高铁 '+esc(t.no)+'：'+esc(railFrom)+' → '+esc(railTo)+'</p>'+
+                '<p class="mt-2"><i class="fa fa-train text-[#4a5a6e]"></i> 高铁 '+esc(t.no)+'：'+esc(railFrom)+' → '+esc(railTo)+'</p>'+
                 '<p class="text-sm text-textGray ml-5">'+esc(t.time)+'（'+esc(t.dur)+'）二等座 ¥'+seatPrice+'</p>'+
                 '<p class="text-sm text-textGray mt-1">铁路坐席可在付款时选择。</p>';
             document.getElementById("buySummary").innerHTML=
