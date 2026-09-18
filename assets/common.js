@@ -152,6 +152,20 @@
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
+            '<div class="mb-8">'+
+                '<h4 class="font-semibold text-textDark text-base mb-3"><i class="fa fa-bullhorn mr-2"></i>更新公告</h4>'+
+                '<ul class="text-sm space-y-1.5 leading-relaxed" style="color:rgba(58,74,92,0.7)">'+
+                    '<li><b>2026-09-19</b> · 全新雾蓝雾白主题，液态玻璃升级为水滴折射效果，配色优化为深雾蓝灰</li>'+
+                    '<li><b>2026-09-19</b> · 页脚新增兑换码与神秘彩蛋：输入彩蛋码可抽奖吴景雕像、偷吃乌龟模型与代金券</li>'+
+                    '<li><b>2026-09-18</b> · 新增背景音乐：右上角一键播放/暂停，双击可调进度与音量，跨页面保持进度</li>'+
+                    '<li><b>2026-09-18</b> · 首页改版为 Apple 风格英文大标题，加入圆润动画与全站液态玻璃效果</li>'+
+                    '<li><b>2026-09-18</b> · 会员常旅客体系上线，含黑钻顶级卡；里程兑换支持实物邮寄</li>'+
+                    '<li><b>2026-09-18</b> · 订单支持升降舱（多退少补），单次最多可购 50 张票</li>'+
+                    '<li><b>2026-09-18</b> · 空铁联运支持铁路选座、在线值机、登机牌打印</li>'+
+                    '<li><b>2026-09-18</b> · 新增模拟天气、特殊申请（餐食/无陪儿童/宠物/大电池托运）</li>'+
+                    '<li><b>2026-09-18</b> · 修复改签按钮、里程兑换中心、实物领取等多项问题</li>'+
+                '</ul>'+
+            '</div>'+
             '<div class="border-t pt-6 mb-4" style="border-color:rgba(150,175,200,0.4)"><div class="text-sm leading-loose">'+
                 '<span class="font-semibold text-white mr-2"><i class="fa fa-gift"></i> 兑换码：</span>'+
                 '<input id="redeemInput" type="text" placeholder="输入兑换码" class="px-3 py-1.5 rounded-full text-[#1d1d1f] text-sm outline-none" style="min-width:180px">'+
