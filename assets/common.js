@@ -153,8 +153,8 @@
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
             '<div class="mb-8">'+
-                '<h4 class="font-semibold text-textDark text-base mb-3"><i class="fa fa-bullhorn mr-2"></i>更新公告</h4>'+
-                '<ul class="text-sm space-y-1.5 leading-relaxed" style="color:rgba(58,74,92,0.7)">'+
+                '<h4 class="font-semibold text-textDark text-base mb-3 cursor-pointer select-none" onclick="toggleNews()" style="display:inline-block"><i class="fa fa-bullhorn mr-2"></i>更新公告 <i class="fa fa-chevron-down ml-1" id="newsArrow"></i></h4>'+
+                '<ul id="newsList" class="text-sm space-y-1.5 leading-relaxed" style="color:rgba(58,74,92,0.7);display:none">'+
                     '<li><b>2026-09-19</b> · 全新雾蓝雾白主题，液态玻璃升级为水滴折射效果，配色优化为深雾蓝灰</li>'+
                     '<li><b>2026-09-19</b> · 页脚新增兑换码与神秘彩蛋：输入彩蛋码可抽奖吴景雕像、偷吃乌龟模型与代金券</li>'+
                     '<li><b>2026-09-18</b> · 新增背景音乐：右上角一键播放/暂停，双击可调进度与音量，跨页面保持进度</li>'+
@@ -301,6 +301,16 @@ function renderMemberArea(){
         el.innerHTML='<a href="member.html" class="hover:text-gold border border-gold/60 px-2 py-0.5 rounded-global text-xs">登录 / 注册</a>';
     }
 }
+// ---- 页脚更新公告折叠 ----
+window.toggleNews=function(){
+    const list=document.getElementById('newsList');
+    const arrow=document.getElementById('newsArrow');
+    if(!list)return;
+    const open=list.style.display!=='none';
+    list.style.display=open?'none':'block';
+    if(arrow)arrow.className=open?'fa fa-chevron-down ml-1':'fa fa-chevron-up ml-1';
+};
+
 // ---- 页脚兑换码 ----
 window.redeemCode=function(){
     const inp=document.getElementById('redeemInput');
