@@ -335,17 +335,17 @@ window.redeemCode=function(){
     const code=(inp.value||'').trim();
     if(!code){showToast("请输入兑换码");return;}
     if(code==='2025025270'){location.href='egg.html';return;}
-    if(code==='100000-200000'){
-        if(localStorage.getItem('coupon_redeemed')==='1'){showToast("该兑换码已使用过，每张优惠券限领一次");return;}
-        const c=getCoupons();
-        c.push({code:"GIFT50-"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
-        saveCoupons(c);
-        localStorage.setItem('coupon_redeemed','1');
-        showToast("兑换成功！已领取 ¥50 优惠券，可在会员中心查看");
-        inp.value='';
-        return;
-    }
-    showToast("兑换码无效，请检查后重试");
+    if(!/^\d+$/.test(code)){showToast("兑换码需为数字");return;}
+    // 任意数字均可兑换，每天一次
+    let today=new Date();
+    const dayKey=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    if(localStorage.getItem('redeem_day')===dayKey){showToast("今天已兑换过，明天再来领券吧");return;}
+    const c=getCoupons();
+    c.push({code:"GIFT50-"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
+    saveCoupons(c);
+    localStorage.setItem('redeem_day',dayKey);
+    showToast("兑换成功！已领取 ¥50 优惠券，可在会员中心查看");
+    inp.value='';
 };
 
 // ---- 里程兑换优惠券 ----
