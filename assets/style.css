@@ -1,20 +1,27 @@
 /* ============================================================
-   老牧师航空 - Apple 官网风格全局样式（浅色 / iOS 27）
+   老牧师航空 - iOS 液态玻璃（Liquid Glass）高端主题
    ============================================================ */
 :root{
-    --ios-bg:#f5f5f7;
-    --ios-card:rgba(255,255,255,0.82);
-    --ios-sep:rgba(0,0,0,0.08);
+    --ios-card:rgba(255,255,255,0.62);
+    --ios-sep:rgba(255,255,255,0.14);
     --ios-label:#1d1d1f;
-    --ios-secondary:#86868b;
+    --ios-secondary:#6e6e73;
     --ios-accent:#0071e3;
     --ios-green:#34c759;
     --ios-red:#ff3b30;
-    --ios-radius:18px;
+    --ios-radius:22px;
 }
 html{scroll-behavior:smooth;}
 body{
-    background:var(--ios-bg);
+    /* 高端高空暮色：深空蓝 + 云海暖光 + 紫霞余晖（多层径向渐变模拟壁纸） */
+    background:
+        radial-gradient(1200px 700px at 85% -5%, rgba(255,190,140,.35), transparent 60%),
+        radial-gradient(900px 600px at 8% 0%, rgba(110,160,255,.42), transparent 60%),
+        radial-gradient(1100px 800px at 50% 125%, rgba(170,130,255,.38), transparent 62%),
+        linear-gradient(180deg,#0a1830 0%,#16294a 38%,#243b63 72%,#2f4a75 100%);
+    background-attachment:fixed;
+    background-repeat:no-repeat;
+    min-height:100vh;
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
@@ -22,54 +29,67 @@ body{
     color:var(--ios-label);
 }
 
-/* ---- Apple 白色毛玻璃卡片 ---- */
+/* ---- iOS 液态玻璃卡片：半透明白 + 强模糊 + 顶部高光 + 细腻描边 ---- */
 .bg-card{
-    background-color:rgba(255,255,255,0.82) !important;
-    -webkit-backdrop-filter:blur(20px) saturate(180%);
-    backdrop-filter:blur(20px) saturate(180%);
+    background-color:rgba(255,255,255,0.62) !important;
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    backdrop-filter:blur(28px) saturate(180%);
+    border:1px solid rgba(255,255,255,0.55);
+    box-shadow:0 8px 32px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.85), inset 0 -1px 0 rgba(255,255,255,0.15);
 }
 .card-gold{
-    border:1px solid rgba(0,0,0,0.06);
-    box-shadow:0 4px 24px rgba(0,0,0,0.06);
+    border:1px solid rgba(255,255,255,0.5);
+    box-shadow:0 10px 40px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.85);
 }
 
-/* ---- Apple 深色毛玻璃导航栏（Apple 官网同款深灰半透） ---- */
+/* ---- 液态玻璃导航栏 ---- */
 .nav-glass{
-    -webkit-backdrop-filter:blur(24px) saturate(180%);
-    backdrop-filter:blur(24px) saturate(180%);
-    background-color:rgba(22,22,23,0.82);
-    border-bottom:1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter:blur(28px) saturate(180%);
+    backdrop-filter:blur(28px) saturate(180%);
+    background-color:rgba(12,16,28,0.55);
+    border-bottom:1px solid rgba(255,255,255,0.10);
 }
 
-/* ---- Apple 交互反馈 ---- */
-.card-hover{transition:all 0.3s cubic-bezier(0.2,0,0,1);}
-.card-hover:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,0.10);}
+/* ---- 液态玻璃交互 ---- */
+.card-hover{transition:transform 0.35s cubic-bezier(0.2,0,0,1),box-shadow 0.35s;}
+.card-hover:hover{transform:translateY(-3px);box-shadow:0 16px 44px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.9);}
 .btn-hover{transition:all 0.2s cubic-bezier(0.2,0,0,1);}
-.btn-hover:hover{opacity:0.88;}
-.btn-hover:active{transform:scale(0.97);opacity:0.7;}
+.btn-hover:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-hover:active{transform:scale(0.97);opacity:0.75;}
 
-/* ---- 链接默认色（Apple 蓝） ---- */
+/* ---- 链接 / Apple 蓝强调 ---- */
 a{color:var(--ios-accent);}
 .text-gold{color:#0071e3 !important;}
 .bg-gold{background-color:#0071e3 !important;}
-.border-gold{border-color:rgba(0,113,227,0.4) !important;}
-.border-gold\/20{border-color:rgba(0,113,227,0.2) !important;}
-.border-gold\/30{border-color:rgba(0,113,227,0.3) !important;}
-.border-gold\/40{border-color:rgba(0,113,227,0.4) !important;}
+.border-gold{border-color:rgba(0,113,227,0.45) !important;}
+.border-gold\/20{border-color:rgba(0,113,227,0.22) !important;}
+.border-gold\/30{border-color:rgba(0,113,227,0.32) !important;}
+.border-gold\/40{border-color:rgba(0,113,227,0.45) !important;}
 
-/* ---- Apple 滚动条 ---- */
+/* ---- 滚动条 ---- */
 ::-webkit-scrollbar{width:8px;height:8px;}
-::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.18);border-radius:4px;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.22);border-radius:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 
-/* ---- Apple 页面大标题 ---- */
-main h2{font-size:clamp(28px,2rem,40px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;}
+/* ---- 页面大标题（深色天空上用白字） ---- */
+main h2{font-size:clamp(28px,2rem,42px);font-weight:700;letter-spacing:-0.02em;line-height:1.1;color:#ffffff;}
 main h3{letter-spacing:-0.01em;}
+main > p{color:rgba(255,255,255,0.72);}
 
-/* ---- Apple 输入控件 ---- */
-input,select,textarea{outline:none;background:rgba(118,118,128,0.08);border:1px solid transparent;color:var(--ios-label);}
-input::placeholder,textarea::placeholder{color:#8e8e93;}
-input:focus,select:focus,textarea:focus{border-color:rgba(0,113,227,0.6) !important;background:rgba(255,255,255,0.9);}
+/* ---- 输入控件：半透明白玻璃 ---- */
+input,select,textarea{outline:none;background:rgba(255,255,255,0.55);border:1px solid rgba(255,255,255,0.6);color:#1d1d1f;border-radius:14px;}
+input::placeholder,textarea::placeholder{color:#8a8a90;}
+input:focus,select:focus,textarea:focus{border-color:rgba(0,113,227,0.6) !important;background:rgba(255,255,255,0.85);box-shadow:0 0 0 4px rgba(0,113,227,0.12);}
+
+/* ---- 浅灰小色块在玻璃卡上的适配 ---- */
+.bg-black\/20{background-color:rgba(118,118,128,0.10) !important;}
+.bg-black\/30{background-color:rgba(118,118,128,0.14) !important;}
+.bg-black\/40{background-color:rgba(118,118,128,0.12) !important;}
+.bg-black\/50{background-color:rgba(118,118,128,0.14) !important;}
+
+/* ---- iOS 安全区 ---- */
+main{padding-bottom:calc(2rem + env(safe-area-inset-bottom));}
+hr{border-color:rgba(0,0,0,0.08);}
 
 /* ---- Apple 浅灰小色块（替代原深色 bg-black/xx） ---- */
 .bg-black\/20{background-color:rgba(118,118,128,0.08) !important;}

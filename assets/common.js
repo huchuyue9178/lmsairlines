@@ -32,16 +32,16 @@
     '</header>';
 
     const FOOTER_HTML=
-    '<footer class="mt-16" style="background:#e8e8ed;border-top:1px solid rgba(0,0,0,0.06);color:#6e6e73">'+
+    '<footer class="mt-16" style="background:rgba(10,16,30,0.55);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-top:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.65)">'+
         '<div class="container mx-auto px-4 py-10">'+
             '<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">'+
-                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
-                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
-                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
-                '<div><h4 class="font-semibold text-[#1d1d1f] text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
+                '<div><h4 class="font-semibold text-white text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
+                '<div><h4 class="font-semibold text-white text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-white text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-white text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服热线：400-888-9999<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
-            '<div class="border-t pt-6 mb-4" style="border-color:rgba(0,0,0,0.1)"><div class="text-sm leading-loose">'+
-                '<span class="font-semibold text-[#1d1d1f] mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
+            '<div class="border-t pt-6 mb-4" style="border-color:rgba(255,255,255,0.12)"><div class="text-sm leading-loose">'+
+                '<span class="font-semibold text-white mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
                 '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">12306 铁路官网</a>'+
                 '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国国际航空</a>'+
                 '<a href="https://www.csair.com/cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国南方航空</a>'+
