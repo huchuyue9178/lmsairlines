@@ -199,7 +199,7 @@
 
     function initNav(){
         const nav=document.getElementById('mainNav');
-        if(nav)window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.classList.remove('nav-glass');nav.style.backgroundColor='rgba(0,0,0,0.9)';}else{nav.classList.add('nav-glass');nav.style.backgroundColor='';}});
+        if(nav)window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.style.backgroundColor='rgba(216,223,230,0.75)';nav.style.backdropFilter='blur(24px) saturate(160%)';nav.style.webkitBackdropFilter='blur(24px) saturate(160%)';nav.style.borderBottom='1px solid rgba(255,255,255,0.6)';}else{nav.style.backgroundColor='';nav.style.backdropFilter='';nav.style.webkitBackdropFilter='';nav.style.borderBottom='';}});
         const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu');
         if(menuBtn&&mobileMenu){
             menuBtn.addEventListener('click',()=>mobileMenu.classList.toggle('hidden'));
