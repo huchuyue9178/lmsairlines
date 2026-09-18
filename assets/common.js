@@ -18,6 +18,7 @@
                 '<a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</nav>'+
             '<div class="hidden lg:flex items-center gap-4 text-white text-sm">'+
+                '<button id="bgmBtn" onclick="toggleBgm()" class="hover:text-gold transition-colors cursor-pointer" title="播放/暂停背景音乐"><i class="fa fa-music text-lg" id="bgmIcon"></i></button>'+
                 '<a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                 '<span id="memberArea"></span>'+
                 '<span class="text-textGray"><i class="fa fa-phone"></i> 400-888-9999</span>'+
@@ -30,6 +31,33 @@
             '</div>'+
         '</div>'+
     '</header>';
+
+    // 背景音乐播放器（全局单例）
+    if(!document.getElementById('bgmPlayer')){
+        const a=document.createElement('audio');
+        a.id='bgmPlayer';
+        a.loop=true;
+        a.preload='auto';
+        a.src='assets/bgm.mp3';
+        document.body.appendChild(a);
+    }
+    window._bgmOn=false;
+    window.toggleBgm=function(){
+        const p=document.getElementById('bgmPlayer');
+        const ic=document.getElementById('bgmIcon');
+        if(window._bgmOn){
+            p.pause();
+            window._bgmOn=false;
+            ic.style.color='';
+            ic.style.animation='';
+        }else{
+            p.play().then(()=>{
+                window._bgmOn=true;
+                ic.style.color='#0071e3';
+                ic.style.animation='bgmSpin 2.4s linear infinite';
+            }).catch(e=>showToast("浏览器拦截了自动播放，请再次点击"));
+        }
+    };
 
     const FOOTER_HTML=
     '<footer class="mt-16" style="background:rgba(10,16,30,0.55);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);border-top:1px solid rgba(255,255,255,0.10);color:rgba(255,255,255,0.65)">'+
