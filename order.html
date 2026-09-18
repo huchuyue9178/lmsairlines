@@ -5,14 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的订单 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260918u"></script>
+    <script src="assets/tailwind-config.js?v=20260918v"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260918u">
+    <link rel="stylesheet" href="assets/style.css?v=20260918v">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
-        <h2 class="text-[26px] font-bold text-gold mb-8">我的订单</h2>
+        <h2 class="text-[26px] font-bold text-gold mb-6">我的订单</h2>
+        <!-- 订单搜索：日期 / 订单号 / 乘机人 -->
+        <div class="bg-card card-gold p-5 rounded-global shadow-lg mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm mb-1 text-textGray"><i class="fa fa-calendar mr-1"></i> 出发日期</label>
+                    <input id="qDate" type="date" oninput="renderOrderList()" class="w-full border px-4 py-2.5 rounded-global text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1 text-textGray"><i class="fa fa-hashtag mr-1"></i> 订单号</label>
+                    <input id="qOrder" type="text" placeholder="输入订单号" oninput="renderOrderList()" class="w-full border px-4 py-2.5 rounded-global text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm mb-1 text-textGray"><i class="fa fa-user mr-1"></i> 乘机人姓名</label>
+                    <input id="qName" type="text" placeholder="输入乘机人姓名" oninput="renderOrderList()" class="w-full border px-4 py-2.5 rounded-global text-sm outline-none">
+                </div>
+            </div>
+            <div class="mt-3 flex justify-between items-center text-sm">
+                <span id="orderCount" class="text-textGray"></span>
+                <button onclick="clearOrderSearch()" class="text-gold hover:underline"><i class="fa fa-refresh mr-1"></i>重置</button>
+            </div>
+        </div>
         <div id="orderList"></div>
     </main>
     <div id="changeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -53,8 +74,8 @@
         </div>
     </div>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260918u"></script>
-    <script src="assets/common.js?v=20260918u"></script>
+    <script src="assets/data.js?v=20260918v"></script>
+    <script src="assets/common.js?v=20260918v"></script>
     <script>
         let changeIdx=null,changeFree=false;
         let cabinIdx=null,cabinTargetKey=null;
@@ -70,11 +91,30 @@
             if(hoursLeft>4)return 0.30;
             return 0.50;
         }
+        function clearOrderSearch(){
+            document.getElementById('qDate').value='';
+            document.getElementById('qOrder').value='';
+            document.getElementById('qName').value='';
+            renderOrderList();
+        }
         function renderOrderList(){
-            let orders=loadOrders(),d=document.getElementById("orderList");
-            if(orders.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}
+            let all=loadOrders();
+            const qDate=(document.getElementById('qDate').value||'').trim();
+            const qOrder=(document.getElementById('qOrder').value||'').trim().toLowerCase();
+            const qName=(document.getElementById('qName').value||'').trim();
+            let orders=all.map((item,index)=>({item,index})).filter(({item})=>{
+                if(qDate && (item.date||'')!==qDate)return false;
+                if(qOrder && !(item.orderId||'').toLowerCase().includes(qOrder))return false;
+                if(qName && !(item.username||'').includes(qName))return false;
+                return true;
+            });
+            let d=document.getElementById("orderList");
+            const cnt=document.getElementById("orderCount");
+            if(cnt)cnt.textContent='共 '+orders.length+' 个订单';
+            if(all.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">暂无订单，请前往机票预订页面购买航班。</div>';return;}
+            if(orders.length===0){d.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg">未找到匹配的订单，请调整搜索条件。</div>';return;}
             let h="";
-            orders.forEach((item,index)=>{
+            orders.forEach(({item,index})=>{
                 const isRA=item.type==="railair";
                 const status=resolveStatus(item);
                 const sc=(status==='已退票'||status==='恶劣天气取消')?'text-danger':(status==='已完成')?'text-success':(status==='已补偿')?'text-textGray':'text-orange-500';
