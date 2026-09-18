@@ -5,70 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260918b"></script>
+    <script src="assets/tailwind-config.js?v=20260918c"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260918b">
+    <link rel="stylesheet" href="assets/style.css?v=20260918c">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
     <main class="pt-32 pb-16 container mx-auto px-4">
         <!-- 大气 Hero：超大标题 + 留白 + 玻璃 -->
         <section class="text-center" style="padding:70px 0 60px">
-            <p class="text-white/70 font-medium mb-4 tracking-wide" style="font-size:15px;letter-spacing:0.18em">LAOMUSI AIRLINES</p>
-            <h1 class="font-bold text-white" style="font-size:clamp(44px,6vw,76px);letter-spacing:-0.03em;line-height:1.05">
+            <p class="text-white/70 font-medium mb-4 tracking-wide anim-down" style="font-size:15px;letter-spacing:0.18em">LAOMUSI AIRLINES</p>
+            <h1 class="font-bold text-white anim-up d1" style="font-size:clamp(44px,6vw,76px);letter-spacing:-0.03em;line-height:1.05">
                 抵达美好航程
             </h1>
-            <p class="mt-5 text-white/70" style="font-size:clamp(17px,1.4vw,21px)">虔诚 · 严谨 · 安心，像牧师般守护每一段飞行</p>
-            <div class="mt-9 flex flex-wrap justify-center gap-3">
-                <a href="booking.html" class="btn-hover inline-block text-white font-semibold px-8 py-3.5 rounded-full text-[17px]" style="background:#0071e3">查询航班</a>
+            <p class="mt-5 text-white/70 anim-up d2" style="font-size:clamp(17px,1.4vw,21px)">虔诚 · 严谨 · 安心，像牧师般守护每一段飞行</p>
+            <div class="mt-9 flex flex-wrap justify-center gap-3 anim-up d3">
+                <a href="booking.html" class="btn-hover btn-shine inline-block text-white font-semibold px-8 py-3.5 rounded-full text-[17px]" style="background:#0071e3">查询航班</a>
                 <a href="booking.html?mode=railair" class="btn-hover inline-block border border-white/40 text-white font-semibold px-8 py-3.5 rounded-full text-[17px]">空铁联运</a>
             </div>
         </section>
 
-        <!-- 玻璃功能入口：更大更通透 -->
+        <!-- 玻璃功能入口：更大更通透，错峰滑入 -->
         <section class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-5 my-8">
-            <a href="booking.html" class="bg-card card-gold p-7 rounded-global card-hover text-center block">
+            <a href="booking.html" class="bg-card card-gold p-7 rounded-big bounce-hover text-center block anim-up d3">
                 <i class="fa fa-plane text-[#0071e3] text-3xl mb-3" style="transform:rotate(-20deg)"></i>
                 <h3 class="font-semibold text-lg text-[#1d1d1f]">机票预订</h3>
             </a>
-            <a href="booking.html?mode=railair" class="bg-card card-gold p-7 rounded-global card-hover text-center block">
+            <a href="booking.html?mode=railair" class="bg-card card-gold p-7 rounded-big bounce-hover text-center block anim-up d4">
                 <i class="fa fa-train text-[#0071e3] text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg text-[#1d1d1f]">空铁联运</h3>
             </a>
-            <a href="checkin.html" class="bg-card card-gold p-7 rounded-global card-hover text-center block">
+            <a href="checkin.html" class="bg-card card-gold p-7 rounded-big bounce-hover text-center block anim-up d5">
                 <i class="fa fa-qrcode text-[#0071e3] text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg text-[#1d1d1f]">在线值机</h3>
             </a>
-            <a href="flight.html" class="bg-card card-gold p-7 rounded-global card-hover text-center block">
+            <a href="flight.html" class="bg-card card-gold p-7 rounded-big bounce-hover text-center block anim-up d6">
                 <i class="fa fa-clock-o text-[#0071e3] text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg text-[#1d1d1f]">航班动态</h3>
             </a>
-            <a href="cart.html" class="bg-card card-gold p-7 rounded-global card-hover text-center block">
+            <a href="cart.html" class="bg-card card-gold p-7 rounded-big bounce-hover text-center block anim-up d7">
                 <i class="fa fa-shopping-cart text-[#0071e3] text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg text-[#1d1d1f]">购物车</h3>
             </a>
-            <a href="member.html" class="bg-card card-gold p-7 rounded-global card-hover text-center block">
+            <a href="member.html" class="bg-card card-gold p-7 rounded-big bounce-hover text-center block anim-up d8">
                 <i class="fa fa-diamond text-[#0071e3] text-3xl mb-3"></i>
                 <h3 class="font-semibold text-lg text-[#1d1d1f]">会员中心</h3>
             </a>
         </section>
 
         <!-- 热门航线：简洁玻璃条 -->
-        <section class="bg-card card-gold p-7 rounded-global my-6">
+        <section class="bg-card card-gold p-7 rounded-big my-6 anim-up d7">
             <h3 class="font-semibold text-[#1d1d1f] text-xl mb-5">热门航线</h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                <button type="button" class="w-full text-left p-4 rounded-global card-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','广州')">北京 → 广州</button>
-                <button type="button" class="w-full text-left p-4 rounded-global card-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','纽约')">上海 → 纽约</button>
-                <button type="button" class="w-full text-left p-4 rounded-global card-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','迪拜')">北京 → 迪拜</button>
-                <button type="button" class="w-full text-left p-4 rounded-global card-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','悉尼')">上海 → 悉尼</button>
-                <button type="button" class="w-full text-left p-4 rounded-global card-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','新加坡')">北京 → 新加坡</button>
-                <button type="button" class="w-full text-left p-4 rounded-global card-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','伦敦')">上海 → 伦敦</button>
+                <button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','广州')">北京 → 广州</button>
+                <button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','纽约')">上海 → 纽约</button>
+                <button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','迪拜')">北京 → 迪拜</button>
+                <button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','悉尼')">上海 → 悉尼</button>
+                <button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','新加坡')">北京 → 新加坡</button>
+                <button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','伦敦')">上海 → 伦敦</button>
             </div>
         </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260918b"></script>
-    <script src="assets/common.js?v=20260918b"></script>
+    <script src="assets/data.js?v=20260918c"></script>
+    <script src="assets/common.js?v=20260918c"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
     </script>

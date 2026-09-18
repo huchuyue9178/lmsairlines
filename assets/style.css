@@ -157,3 +157,31 @@ hr{border-color:var(--ios-sep);}
 @keyframes lvEliteShine{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
 #mLevelIcon.lv-elite{color:#ffd97a;text-shadow:0 0 16px rgba(230,190,90,1),0 0 38px rgba(230,190,90,.6),0 0 60px rgba(230,190,90,.3);}
 #mProgress.lvbar-elite{background:linear-gradient(90deg,#6b4a10,#c8a97e,#ffd97a);box-shadow:0 0 16px rgba(230,190,90,.9);}
+
+/* ============================================================
+   首页高级动画（入场滑入 / 弹跳 / 悬浮）
+   ============================================================ */
+@keyframes lmsSlideUp{from{opacity:0;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lmsSlideDown{from{opacity:0;transform:translateY(-28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lmsSlideLeft{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:translateX(0)}}
+@keyframes lmsFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes lmsPop{0%{opacity:0;transform:scale(.85)}60%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+/* 入场工具类（初始隐藏，播放后落位） */
+.anim-up{opacity:0;animation:lmsSlideUp .9s cubic-bezier(.22,1,.36,1) forwards;}
+.anim-down{opacity:0;animation:lmsSlideDown .9s cubic-bezier(.22,1,.36,1) forwards;}
+.anim-left{opacity:0;animation:lmsSlideLeft .9s cubic-bezier(.22,1,.36,1) forwards;}
+.anim-fade{opacity:0;animation:lmsFadeIn 1.1s ease forwards;}
+.anim-pop{opacity:0;animation:lmsPop .8s cubic-bezier(.22,1,.36,1) forwards;}
+/* 错峰延迟 */
+.d1{animation-delay:.08s}.d2{animation-delay:.18s}.d3{animation-delay:.30s}.d4{animation-delay:.42s}
+.d5{animation-delay:.54s}.d6{animation-delay:.66s}.d7{animation-delay:.78s}.d8{animation-delay:.90s}
+/* 圆润化：首页大圆角 */
+.rounded-big{border-radius:28px !important;}
+/* 悬浮弹跳（回弹曲线） */
+.bounce-hover{transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .45s;}
+.bounce-hover:hover{transform:translateY(-6px) scale(1.03);}
+.bounce-hover:active{transform:scale(.96);}
+/* 按钮呼吸光泽 */
+.btn-shine{position:relative;overflow:hidden;}
+.btn-shine::after{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);animation:shine 3.6s ease-in-out infinite;}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
