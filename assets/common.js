@@ -455,3 +455,44 @@ function resolveStatus(item){
     if(item.checkedIn)return '已完成';
     return item.status;
 }
+
+// 首次访问：右上角"最佳访问环境"小弹窗
+(function(){
+    if(localStorage.getItem('access_notice_seen')) return;
+    function show(){
+        const box=document.createElement('div');
+        box.id='accessNotice';
+        box.style.cssText='position:fixed;top:76px;right:16px;z-index:9999;width:300px;max-width:calc(100vw - 32px);'+
+            'background:rgba(255,255,255,0.65);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);'+
+            'border:1px solid rgba(255,255,255,0.8);border-radius:20px;box-shadow:0 12px 40px rgba(74,90,110,0.18);'+
+            'padding:18px 18px 14px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;'+
+            'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .45s cubic-bezier(.2,.9,.3,1.2);color:#3a4a5c;';
+        box.innerHTML=
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
+                '<span style="font-size:18px">✨</span>'+
+                '<strong style="font-size:15px;font-weight:800">最佳访问环境</strong>'+
+            '</div>'+
+            '<ul style="font-size:12.5px;line-height:1.7;color:#4a5a6e;list-style:none;padding:0;margin:0 0 12px">'+
+                '<li>· 建议使用 Chrome 79+ / Safari 13.1+ / iOS 13.4+</li>'+
+                '<li>· 需联网加载 CDN 资源，建议 4G 或 WiFi</li>'+
+                '<li>· 请开启 JavaScript 与本地存储</li>'+
+                '<li style="color:#8a99a8;font-size:11.5px;margin-top:4px">老版本浏览器可能出现玻璃模糊、动效缺失</li>'+
+            '</ul>'+
+            '<div style="display:flex;justify-content:flex-end">'+
+                '<button id="accessNoticeOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:6px 18px;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我已知晓</button>'+
+            '</div>';
+        document.body.appendChild(box);
+        requestAnimationFrame(function(){
+            box.style.opacity='1';
+            box.style.transform='translateY(0) scale(1)';
+        });
+        document.getElementById('accessNoticeOk').addEventListener('click',function(){
+            localStorage.setItem('access_notice_seen','1');
+            box.style.opacity='0';
+            box.style.transform='translateY(-10px) scale(0.96)';
+            setTimeout(function(){ box.remove(); },350);
+        });
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',show);
+    else show();
+})();
