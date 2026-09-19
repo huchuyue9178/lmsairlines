@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全部航线 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js?v=20260920c"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20260920c">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-28 pb-16 container mx-auto px-4 max-w-6xl">
+        <h2 class="text-[28px] font-bold text-gold mb-2">全部航线</h2>
+        <p class="text-textGray text-sm mb-8">114 条精选航线，覆盖全球热门与小众目的地</p>
+        <div class="bg-card card-gold p-6 md:p-8 rounded-big shadow-xl">
+            <h4 class="font-semibold text-textDark/80 mt-2 mb-3">🇨🇳 国内热门干线</h4>
+            <div id="routesDomestic" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
+            <h4 class="font-semibold text-textDark/80 mb-3">🏝️ 国内旅游城市</h4>
+            <div id="routesTravel" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
+            <h4 class="font-semibold text-textDark/80 mb-3">🌏 国际及地区航线</h4>
+            <div id="routesIntl" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
+            <h4 class="font-semibold text-textDark/80 mb-3">✨ 小众宝藏目的地</h4>
+            <div id="routesNiche" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+        </div>
+    </main>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js?v=20260920c"></script>
+    <script src="assets/common.js?v=20260920c"></script>
+    <script src="assets/routes-data.js?v=20260920c"></script>
+    <script>
+        function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
+        function routeCard(r){
+            return '<button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch(\''+r[0]+'\',\''+r[1]+'\')">'+
+                '<p class="font-semibold">'+r[0]+' → '+r[1]+'</p>'+
+                '<p class="text-xs text-textGray mt-1">'+r[2]+'</p></button>';
+        }
+        document.getElementById('routesDomestic').innerHTML=ROUTES.domestic.map(routeCard).join('');
+        document.getElementById('routesTravel').innerHTML=ROUTES.travel.map(routeCard).join('');
+        document.getElementById('routesIntl').innerHTML=ROUTES.intl.map(routeCard).join('');
+        document.getElementById('routesNiche').innerHTML=ROUTES.niche.map(routeCard).join('');
+    </script>
+</body>
+</html>
