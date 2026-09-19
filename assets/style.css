@@ -382,3 +382,83 @@ hr{border-color:var(--ios-sep);}
 .touch-mode .modal-body{
     -webkit-overflow-scrolling:touch;
 }
+
+/* ===== AirPods 风格滑动胶囊 Tab（液态玻璃反光） ===== */
+.airpods-tabs{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:0;
+    padding:4px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.45);
+    border:1px solid rgba(255,255,255,0.7);
+    backdrop-filter:blur(20px) saturate(180%);
+    -webkit-backdrop-filter:blur(20px) saturate(180%);
+    box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.8),
+        inset 0 -1px 2px rgba(74,90,110,0.06),
+        0 6px 20px rgba(74,90,110,0.10);
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:pan-y;
+    cursor:pointer;
+}
+.airpods-pill{
+    position:absolute;
+    top:4px;
+    bottom:4px;
+    left:0;
+    width:80px;
+    border-radius:999px;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(242,244,242,0.92) 100%);
+    box-shadow:
+        0 4px 12px rgba(74,90,110,0.18),
+        0 1px 3px rgba(74,90,110,0.10),
+        inset 0 1px 1px rgba(255,255,255,1),
+        inset 0 -1px 1px rgba(74,90,110,0.05);
+    transition:transform .45s cubic-bezier(.2,.9,.3,1.15), width .35s cubic-bezier(.2,.9,.3,1.15);
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+}
+/* 表面高光弧线（水滴折射） */
+.airpods-pill::before{
+    content:'';
+    position:absolute;
+    left:8%;right:8%;top:8%;
+    height:45%;
+    border-radius:999px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0));
+    filter:blur(0.5px);
+    pointer-events:none;
+}
+/* 边缘色框（双边色线） */
+.airpods-pill::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,0.9);
+    pointer-events:none;
+}
+.airpods-tabs .deal-tab{
+    position:relative;
+    z-index:1;
+    background:transparent !important;
+    box-shadow:none !important;
+    color:rgba(58,74,92,0.6);
+    border-radius:999px;
+    transition:color .3s;
+    padding:8px 18px !important;
+    cursor:pointer;
+    white-space:nowrap;
+}
+.airpods-tabs .deal-tab:hover{color:#3a4a5c;}
+.airpods-tabs .deal-tab-on{
+    color:#2a3a4c !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    font-weight:800;
+}
