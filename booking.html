@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920e"></script>
+    <script src="assets/tailwind-config.js?v=20260920f"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920e">
+    <link rel="stylesheet" href="assets/style.css?v=20260920f">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -87,8 +87,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920e"></script>
-    <script src="assets/common.js?v=20260920e"></script>
+    <script src="assets/data.js?v=20260920f"></script>
+    <script src="assets/common.js?v=20260920f"></script>
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
@@ -251,7 +251,11 @@
                 '</div><div class="weather-slot mt-3 text-sm"></div></div>';
         }
         function openBuy(no,cabin){
-            selectFlight=findFlight(no);selectCabin=cabin;selectType="flight";selectPlan=null;
+            selectFlight=findFlight(no);
+            if(!selectFlight&&typeof currentList!=='undefined'&&Array.isArray(currentList)){
+                selectFlight=currentList.find(f=>f.no===no);
+            }
+            selectCabin=cabin;selectType="flight";selectPlan=null;
             if(!selectFlight){showToast("未找到该航班，请刷新后重试");return;}
             // 记录天气风险（恶劣天气航班可能取消，购票后 30 秒内 80% 概率触发取消）
             const wS=weatherCache[selectFlight.start],wE=weatherCache[selectFlight.end];
