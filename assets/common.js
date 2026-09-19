@@ -110,21 +110,21 @@
         if(panel){panel.remove();return;}
         panel=document.createElement('div');
         panel.id='bgmPanel';
-        panel.className='fixed top-16 right-4 z-[9999] p-4 rounded-2xl shadow-2xl bgm-pop';
-        panel.style.cssText='background:rgba(30,36,54,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,0.18);width:280px;color:#fff;transform-origin:top right';
+        panel.className='fixed top-16 right-4 z-[9999] p-4 rounded-3xl shadow-2xl bgm-pop';
+        panel.style.cssText='background:linear-gradient(135deg,rgba(242,244,242,0.55),rgba(216,223,230,0.45));backdrop-filter:blur(28px) saturate(180%) brightness(1.05);-webkit-backdrop-filter:blur(28px) saturate(180%) brightness(1.05%);border:1.5px solid rgba(255,255,255,0.75);box-shadow:0 20px 60px rgba(74,90,110,0.25),inset 0 1px 0 rgba(255,255,255,0.8),inset 0 -1px 1px rgba(255,255,255,0.3);width:280px;color:#3a4a5c;transform-origin:top right';
         panel.innerHTML=
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
                 '<i class="fa fa-music" style="color:#4a5a6e"></i>'+
-                '<b style="font-size:14px">背景音乐</b>'+
-                '<span style="margin-left:auto;font-size:12px;opacity:.6;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
+                '<b style="font-size:14px;color:#3a4a5c">背景音乐</b>'+
+                '<span style="margin-left:auto;font-size:12px;opacity:.55;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
             '</div>'+
-            '<div style="text-align:center;margin-bottom:10px;padding:8px;border-radius:12px;background:rgba(0,0,0,0.22);font-size:13px;letter-spacing:.5px"><i class="fa fa-headphones mr-2" style="color:#4a5a6e"></i>DJ版《琵琶行》</div>'+
-            '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8;margin-bottom:6px">'+
+            '<div style="text-align:center;margin-bottom:10px;padding:8px;border-radius:12px;background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);font-size:13px;letter-spacing:.5px;color:#4a5a6e"><i class="fa fa-headphones mr-2"></i>DJ版《琵琶行》</div>'+
+            '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.75;margin-bottom:6px;color:#3a4a5c">'+
                 '<span id="bgmCur">0:00</span>'+
                 '<input id="bgmSeek" type="range" min="0" max="100" value="0" style="flex:1;accent-color:#4a5a6e">'+
                 '<span id="bgmDur">0:00</span>'+
             '</div>'+
-            '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8">'+
+            '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.75;color:#3a4a5c">'+
                 '<i class="fa fa-volume-up"></i>'+
                 '<input id="bgmVol" type="range" min="0" max="100" value="60" style="flex:1;accent-color:#4a5a6e">'+
             '</div>';
