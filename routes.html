@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全部航线 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920y"></script>
+    <script src="assets/tailwind-config.js?v=20260920z"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920y">
+    <link rel="stylesheet" href="assets/style.css?v=20260920z">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -15,31 +15,66 @@
         <h2 class="text-[28px] font-bold text-gold mb-2">全部航线</h2>
         <p class="text-textGray text-sm mb-8">114 条精选航线，覆盖全球热门与小众目的地</p>
         <div class="bg-card card-gold p-6 md:p-8 rounded-big shadow-xl">
-            <h4 class="font-semibold text-textDark/80 mt-2 mb-3">🇨🇳 国内热门干线</h4>
-            <div id="routesDomestic" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
-            <h4 class="font-semibold text-textDark/80 mb-3">🏝️ 国内旅游城市</h4>
-            <div id="routesTravel" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
-            <h4 class="font-semibold text-textDark/80 mb-3">🌏 国际及地区航线</h4>
-            <div id="routesIntl" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
-            <h4 class="font-semibold text-textDark/80 mb-3">✨ 小众宝藏目的地</h4>
-            <div id="routesNiche" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
+            <h4 class="font-semibold text-textDark/80 mt-2 mb-4">🇨🇳 国内热门干线</h4>
+            <div id="routesDomestic" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+            <h4 class="font-semibold text-textDark/80 mb-4">🏝️ 国内旅游城市</h4>
+            <div id="routesTravel" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+            <h4 class="font-semibold text-textDark/80 mb-4">🌏 国际及地区航线</h4>
+            <div id="routesIntl" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8"></div>
+            <h4 class="font-semibold text-textDark/80 mb-4">✨ 小众宝藏目的地</h4>
+            <div id="routesNiche" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920y"></script>
-    <script src="assets/common.js?v=20260920y"></script>
-    <script src="assets/routes-data.js?v=20260920y"></script>
+    <script src="assets/data.js?v=20260920z"></script>
+    <script src="assets/common.js?v=20260920z"></script>
+    <script src="assets/routes-data.js?v=20260920z"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
-        function routeCard(r){
-            return '<button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch(\''+r[0]+'\',\''+r[1]+'\')">'+
-                '<p class="font-semibold">'+r[0]+' → '+r[1]+'</p>'+
-                '<p class="text-xs text-textGray mt-1">'+r[2]+'</p></button>';
+        // 目的地城市 → 图片映射
+        const CITY_IMG={
+            "上海":"assets/routes/shanghai.webp","广州":"assets/deals/guangzhou.webp","深圳":"assets/routes/shenzhen.webp",
+            "成都":"assets/deals/chengdu.webp","重庆":"assets/routes/chongqing.webp","杭州":"assets/deals/hangzhou.webp",
+            "西安":"assets/deals/xian.webp","武汉":"assets/deals/wuhan.webp","长沙":"assets/routes/changsha.webp",
+            "昆明":"assets/routes/kunming.webp","三亚":"assets/routes/sanya.webp","丽江":"assets/routes/lijiang.webp",
+            "厦门":"assets/routes/xiamen.webp","青岛":"assets/routes/qingdao.webp","大连":"assets/routes/dalian.webp",
+            "桂林":"assets/routes/guilin.webp","哈尔滨":"assets/routes/harbin.webp",
+            "纽约":"assets/routes/newyork.webp","洛杉矶":"assets/routes/la.webp","伦敦":"assets/deals/london.webp",
+            "巴黎":"assets/deals/paris.webp","迪拜":"assets/deals/dubai.webp","法兰克福":"assets/routes/frankfurt.webp",
+            "新加坡":"assets/routes/singapore.webp","悉尼":"assets/routes/sydney.webp","东京":"assets/routes/tokyo.webp",
+            "首尔":"assets/routes/seoul.webp","曼谷":"assets/routes/bangkok.webp","香港":"assets/routes/hongkong.webp",
+            "台北":"assets/routes/taipei.webp"
+        };
+        // 缺图城市的渐变色（按城市名 hash 出柔和雾色）
+        const FALLBACKS=[
+            "linear-gradient(135deg,#a8b8c8 0%,#c8d8e8 100%)",
+            "linear-gradient(135deg,#b8a8c8 0%,#d8c8e8 100%)",
+            "linear-gradient(135deg,#a8c8b8 0%,#c8e8d8 100%)",
+            "linear-gradient(135deg,#c8b8a8 0%,#e8d8c8 100%)",
+            "linear-gradient(135deg,#b8c8d8 0%,#d8e8f8 100%)",
+            "linear-gradient(135deg,#c8b8b8 0%,#e8d8d8 100%)"
+        ];
+        function routeCard(r,i){
+            const from=r[0],to=r[1],info=r[2];
+            const img=CITY_IMG[to];
+            const bg=img? '' : FALLBACKS[(to.charCodeAt(0))%FALLBACKS.length];
+            const inner=img
+                ? '<img src="'+img+'" alt="'+to+'" class="deal-img" loading="lazy">'
+                : '<div style="position:absolute;inset:0;background:'+bg+';display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:2px;text-shadow:0 2px 12px rgba(0,0,0,0.15)">'+to+'</div>';
+            return '<button type="button" class="deal-card text-left overflow-hidden cursor-pointer group deal-in" style="animation-delay:'+((i%9)*60)+'ms" onclick="quickSearch(\''+from+'\',\''+to+'\')">'+
+                '<div class="deal-imgwrap" style="height:180px">'+inner+
+                    '<div class="deal-mask"></div>'+
+                    '<div class="deal-info">'+
+                        '<p class="deal-from">'+from+' 出发 · '+info+'</p>'+
+                        '<p class="deal-city">'+from+' → '+to+'</p>'+
+                    '</div>'+
+                '</div>'+
+            '</button>';
         }
-        document.getElementById('routesDomestic').innerHTML=ROUTES.domestic.map(routeCard).join('');
-        document.getElementById('routesTravel').innerHTML=ROUTES.travel.map(routeCard).join('');
-        document.getElementById('routesIntl').innerHTML=ROUTES.intl.map(routeCard).join('');
-        document.getElementById('routesNiche').innerHTML=ROUTES.niche.map(routeCard).join('');
+        document.getElementById('routesDomestic').innerHTML=ROUTES.domestic.map((r,i)=>routeCard(r,i)).join('');
+        document.getElementById('routesTravel').innerHTML=ROUTES.travel.map((r,i)=>routeCard(r,i)).join('');
+        document.getElementById('routesIntl').innerHTML=ROUTES.intl.map((r,i)=>routeCard(r,i)).join('');
+        document.getElementById('routesNiche').innerHTML=ROUTES.niche.map((r,i)=>routeCard(r,i)).join('');
     </script>
 </body>
 </html>
