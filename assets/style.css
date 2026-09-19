@@ -45,6 +45,15 @@ h3{font-size:clamp(18px,2vw,22px);line-height:1.2;font-weight:600;letter-spacing
 .text-textGray, .text-textDark\/70, .text-textDark\/65, .text-textDark\/60{
     color:var(--ios-secondary) !important;
 }
+/* 导航链接：强制内联块，垂直居中对齐 */
+.nav-link{
+    display:inline-block !important;
+    height:auto !important;
+    line-height:inherit !important;
+    padding:0 !important;
+    margin:0 !important;
+    vertical-align:middle;
+}
 
 /* ---- 水滴折射液态玻璃：多层渐变叠加 + 高光弧线 + 双边色框 ---- */
 .bg-card{
@@ -350,10 +359,16 @@ hr{border-color:var(--ios-sep);}
 .touch-mode button,
 .touch-mode .deal-more,
 .touch-mode .deal-tab,
-.touch-mode a[href^="booking"],
-.touch-mode a[href^="orders"],
+.touch-mode a[href^="booking"]:not(.nav-link),
+.touch-mode a[href^="orders"]:not(.nav-link),
 .touch-mode .deal-card{
     min-height:48px;
+}
+/* 导航链接在触控模式下保持紧凑，不被撑高 */
+.touch-mode nav .nav-link{
+    min-height:0 !important;
+    display:inline-block !important;
+    line-height:1.5;
 }
 /* 卡片整体放大，间距加宽，便于手指滑动 */
 .touch-mode .deal-card{

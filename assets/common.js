@@ -3,13 +3,13 @@
     const HEADER_HTML=
     '<header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">'+
         '<div class="container mx-auto px-4 py-3 flex justify-between items-center">'+
-            '<a href="index.html" class="flex items-center gap-2 text-textDark"><i class="fa fa-plane text-gold text-2xl" style="transform:rotate(-30deg)"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
+            '<a href="index.html" class="flex items-center gap-2 text-textDark"><i class="fa fa-plane text-gold text-2xl"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
             '<nav class="hidden lg:flex gap-5 text-textDark text-[15px] font-medium items-center">'+
-                '<a href="index.html" class="hover:text-gold transition-colors">首页</a>'+
-                '<a href="booking.html" class="hover:text-gold transition-colors">机票预订</a>'+
-                '<a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a>'+
-                '<a href="order.html" class="hover:text-gold transition-colors">我的订单</a>'+
-                '<a href="member.html" class="hover:text-gold transition-colors">会员中心</a>'+
+                '<a href="index.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">首页</a>'+
+                '<a href="booking.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">机票预订</a>'+
+                '<a href="checkin.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">在线值机</a>'+
+                '<a href="order.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">我的订单</a>'+
+                '<a href="member.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">会员中心</a>'+
                 '<div class="relative">'+
                     '<button onclick="toggleMore()" class="hover:text-gold transition-colors flex items-center gap-1">更多 <i class="fa fa-chevron-down text-xs"></i></button>'+
                     '<div id="moreMenu" class="absolute right-0 top-full mt-2 w-44 rounded-2xl p-2 shadow-2xl" style="background:rgba(242,244,242,0.85);backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.7);box-shadow:0 10px 32px rgba(120,140,160,0.25)">'+
