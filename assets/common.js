@@ -498,3 +498,52 @@ function resolveStatus(item){
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',show);
     else show();
 })();
+
+// 已选过模式：立刻给 body 加 class（在弹窗出现前就生效）
+(function(){
+    var mode=sessionStorage.getItem('device_mode');
+    if(mode==='touch') document.body.classList.add('touch-mode');
+})();
+
+// 访问模式选择弹窗（紧接环境弹窗下方）
+(function(){
+    if(sessionStorage.getItem('device_prompt_seen')) return;
+    function show(){
+        var box=document.createElement('div');
+        box.id='deviceModeNotice';
+        box.style.cssText='position:fixed;top:460px;right:16px;z-index:9998;width:300px;max-width:calc(100vw - 32px);'+
+            'background:rgba(255,255,255,0.65);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);'+
+            'border:1px solid rgba(255,255,255,0.8);border-radius:20px;box-shadow:0 12px 40px rgba(74,90,110,0.18);'+
+            'padding:18px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:#3a4a5c;'+
+            'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .45s cubic-bezier(.2,.9,.3,1.2);';
+        box.innerHTML=
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+                '<span style="font-size:18px">🖥️</span>'+
+                '<strong style="font-size:15px;font-weight:800">选择访问模式</strong>'+
+            '</div>'+
+            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 12px">请选择您正在使用的设备，以便本站自动优化交互体验：</p>'+
+            '<div style="display:flex;gap:8px">'+
+                '<button id="modePC" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:12px 8px;font-size:13px;font-weight:700;cursor:pointer">💻<br>电脑端</button>'+
+                '<button id="modeTouch" style="flex:1;background:#4a5a6e;color:#fff;border:none;border-radius:14px;padding:12px 8px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">📱<br>触控移动端</button>'+
+            '</div>';
+        document.body.appendChild(box);
+        requestAnimationFrame(function(){
+            box.style.opacity='1';
+            box.style.transform='translateY(0) scale(1)';
+        });
+        function choose(mode){
+            sessionStorage.setItem('device_prompt_seen','1');
+            sessionStorage.setItem('device_mode',mode);
+            if(mode==='touch') document.body.classList.add('touch-mode');
+            else document.body.classList.remove('touch-mode');
+            box.style.opacity='0';
+            box.style.transform='translateY(-10px) scale(0.96)';
+            setTimeout(function(){ box.remove(); },350);
+            if(typeof showToast==='function') showToast(mode==='touch'?'已切换为触控模式，按钮与卡片已加大':'已切换为电脑端模式');
+        }
+        document.getElementById('modePC').addEventListener('click',function(){choose('pc');});
+        document.getElementById('modeTouch').addEventListener('click',function(){choose('touch');});
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',show);
+    else show();
+})();

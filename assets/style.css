@@ -325,3 +325,60 @@ hr{border-color:var(--ios-sep);}
 .shop-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(74,90,110,0.25);}
 .shop-img{transition:transform 1s cubic-bezier(0.22,1,0.36,1);}
 .shop-card:hover .shop-img{transform:scale(1.07);}
+
+/* ============================================================
+   触控移动端模式（用户在弹窗中选择"触控移动端"后启用 body.touch-mode）
+   ============================================================ */
+.touch-mode{
+    touch-action:manipulation;
+    -webkit-tap-highlight-color:transparent;
+}
+.touch-mode *{
+    -webkit-tap-highlight-color:transparent;
+}
+/* 加大点击热区：按钮/卡片最小 48px */
+.touch-mode button,
+.touch-mode .deal-more,
+.touch-mode .deal-tab,
+.touch-mode a[href^="booking"],
+.touch-mode a[href^="orders"],
+.touch-mode .deal-card{
+    min-height:48px;
+}
+/* 卡片整体放大，间距加宽，便于手指滑动 */
+.touch-mode .deal-card{
+    border-radius:18px;
+}
+.touch-mode .deal-imgwrap{
+    height:200px;
+}
+.touch-mode .grid{
+    gap:14px !important;
+}
+/* 去掉 hover 悬停效果（触摸屏 hover 会粘住） */
+.touch-mode .deal-card:hover,
+.touch-mode .deal-more:hover,
+.touch-mode .deal-tab:hover,
+.touch-mode .bounce-hover:hover,
+.touch-mode .anim-link:hover{
+    transform:none !important;
+}
+.touch-mode .deal-card:hover .deal-img{
+    transform:none !important;
+}
+/* 头部导航更紧凑，避免手机顶栏过高 */
+.touch-mode #mainNav .container{
+    padding-top:8px;
+    padding-bottom:8px;
+}
+/* 输入框触控友好：字号 16px 防止 iOS 自动放大 */
+.touch-mode input,
+.touch-mode select,
+.touch-mode textarea{
+    font-size:16px !important;
+    min-height:44px;
+}
+/* 模态弹窗滚动更顺 */
+.touch-mode .modal-body{
+    -webkit-overflow-scrolling:touch;
+}
