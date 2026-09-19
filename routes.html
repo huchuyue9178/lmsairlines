@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全部航线 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920aa"></script>
+    <script src="assets/tailwind-config.js?v=20260920cc"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920aa">
+    <link rel="stylesheet" href="assets/style.css?v=20260920cc">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -26,14 +26,14 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920aa"></script>
-    <script src="assets/common.js?v=20260920aa"></script>
-    <script src="assets/routes-data.js?v=20260920aa"></script>
+    <script src="assets/data.js?v=20260920cc"></script>
+    <script src="assets/common.js?v=20260920cc"></script>
+    <script src="assets/routes-data.js?v=20260920cc"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
         // 目的地城市 → 图片映射
         const CITY_IMG={
-            "上海":"assets/routes/shanghai.webp","广州":"assets/deals/guangzhou.webp","深圳":"assets/routes/shenzhen.webp",
+            "上海":"assets/routes/shanghai.webp","北京":"assets/routes/beijing.webp","广州":"assets/deals/guangzhou.webp","深圳":"assets/routes/shenzhen.webp",
             "成都":"assets/deals/chengdu.webp","重庆":"assets/routes/chongqing.webp","杭州":"assets/deals/hangzhou.webp",
             "西安":"assets/deals/xian.webp","武汉":"assets/deals/wuhan.webp","长沙":"assets/routes/changsha.webp",
             "昆明":"assets/routes/kunming.webp","三亚":"assets/routes/sanya.webp","丽江":"assets/routes/lijiang.webp",
@@ -43,7 +43,16 @@
             "巴黎":"assets/deals/paris.webp","迪拜":"assets/deals/dubai.webp","法兰克福":"assets/routes/frankfurt.webp",
             "新加坡":"assets/routes/singapore.webp","悉尼":"assets/routes/sydney.webp","东京":"assets/routes/tokyo.webp",
             "首尔":"assets/routes/seoul.webp","曼谷":"assets/routes/bangkok.webp","香港":"assets/routes/hongkong.webp",
-            "台北":"assets/routes/taipei.webp"
+            "台北":"assets/routes/taipei.webp",
+            "贵阳":"assets/routes/guiyang.webp","珠海":"assets/routes/zhuhai.webp","舟山":"assets/routes/zhoushan.webp",
+            "呼和浩特":"assets/routes/hohhot.webp","温州":"assets/routes/wenzhou.webp","大阪":"assets/routes/osaka.webp",
+            "澳门":"assets/routes/macau.webp","喀什":"assets/routes/kashgar.webp","伊宁":"assets/routes/yining.webp",
+            "阿勒泰":"assets/routes/altay.webp","漠河":"assets/routes/mohe.webp","长白山":"assets/routes/changbaishan.webp",
+            "稻城":"assets/routes/daocheng.webp","林芝":"assets/routes/linzhi.webp","西双版纳":"assets/routes/banna.webp",
+            "泉州":"assets/routes/quanzhou.webp","北海":"assets/routes/beihai.webp","西宁":"assets/routes/xining.webp",
+            "香格里拉":"assets/routes/shangrila.webp","敦煌":"assets/routes/dunhuang.webp","芽庄":"assets/routes/nhatrang.webp",
+            "富国岛":"assets/routes/phuquoc.webp","清迈":"assets/routes/chiangmai.webp","普吉岛":"assets/routes/phuket.webp",
+            "暹粒":"assets/routes/siemreap.webp","岘港":"assets/routes/danang.webp"
         };
         // 缺图城市的渐变色（按城市名 hash 出柔和雾色）
         const FALLBACKS=[
