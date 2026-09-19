@@ -5,8 +5,9 @@
 :root{
     --ios-card:rgba(255,255,255,0.55);
     --ios-sep:rgba(216,223,230,0.6);
-    --ios-label:#3a4a5c;
-    --ios-secondary:#8a99a8;
+    --ios-label:#1d1d1f;
+    --ios-secondary:#515154;
+    --ios-tertiary:#86868b;
     --ios-accent:#4a5a6e;
     --ios-green:#7ba89a;
     --ios-red:#c98a8a;
@@ -22,18 +23,27 @@ body{
     background-attachment:fixed;
     background-repeat:no-repeat;
     min-height:100vh;
-    font-family:"Nunito",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+    /* 苹果审美：系统字体优先，SF Pro / PingFang SC，Nunito 作西文 fallback */
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Nunito","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
-}
-/* 大标题圆润化：Nunito + Baloo 2 字重饱满、转角圆润，中文回落 PingFang SC 自带 iOS 圆润感 */
-h1,h2,h3,h4,.card-gold h3,.hero h1,.hero h2,.section-title,.deal-city,.deal-from,.text-gold{
-    font-family:"Baloo 2","Nunito","PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif !important;
-    letter-spacing:.2px;
-    font-weight:800;
-}
     -moz-osx-font-smoothing:grayscale;
     letter-spacing:-0.01em;
     color:var(--ios-label);
+    font-size:15px;
+    line-height:1.5;
+}
+/* 大标题：Baloo 2 圆润 + 苹果式紧凑字距 */
+h1,h2,h3,h4,.card-gold h3,.hero h1,.hero h2,.section-title,.deal-city,.deal-from,.text-gold{
+    font-family:"Baloo 2",-apple-system,BlinkMacSystemFont,"SF Pro Display","Nunito","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif !important;
+    letter-spacing:-0.02em;
+    font-weight:700;
+}
+h1{font-size:clamp(32px,5vw,56px);line-height:1.08;font-weight:700;letter-spacing:-0.025em;}
+h2{font-size:clamp(24px,3vw,36px);line-height:1.15;font-weight:700;letter-spacing:-0.02em;}
+h3{font-size:clamp(18px,2vw,22px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;}
+/* 次要文字：苹果灰 */
+.text-textGray, .text-textDark\/70, .text-textDark\/65, .text-textDark\/60{
+    color:var(--ios-secondary) !important;
 }
 
 /* ---- 水滴折射液态玻璃：多层渐变叠加 + 高光弧线 + 双边色框 ---- */
