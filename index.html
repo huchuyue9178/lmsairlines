@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920p"></script>
+    <script src="assets/tailwind-config.js?v=20260920q"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20260920p">
+    <link rel="stylesheet" href="assets/style.css?v=20260920q">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -45,6 +45,23 @@
             </div>
         </section>
 
+        <!-- 特价活动：东航风格 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                    <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">特价活动</h3>
+                    <div class="flex items-center gap-1 p-1 rounded-full" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
+                        <button id="dealTabCn" onclick="switchDeal('cn')" class="deal-tab deal-tab-on px-5 py-1.5 rounded-full text-sm font-semibold">国内</button>
+                        <button id="dealTabIntl" onclick="switchDeal('intl')" class="deal-tab px-5 py-1.5 rounded-full text-sm font-semibold">国际及港澳台</button>
+                    </div>
+                </div>
+                <div id="dealGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+                <div class="text-center mt-8">
+                    <button onclick="location.href='booking.html'" class="deal-more px-10 py-3 rounded-full text-sm font-semibold anim-link">更多特价 <i class="fa fa-angle-right ml-1"></i></button>
+                </div>
+            </div>
+        </section>
+
         <!-- 大卡片 1：机票预订 -->
         <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
             <div class="bg-card card-gold rounded-big shadow-xl text-center" style="padding:70px 20px 40px;min-height:560px;display:flex;flex-direction:column;justify-content:space-between">
@@ -73,7 +90,7 @@
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center items-end">
-                    <img src="assets/railair_icon.png?v=20260920p" alt="空铁联运" class="anim-float" style="height:120px;width:auto;filter:drop-shadow(0 6px 18px rgba(180,60,60,0.25))">
+                    <img src="assets/railair_icon.png?v=20260920q" alt="空铁联运" class="anim-float" style="height:120px;width:auto;filter:drop-shadow(0 6px 18px rgba(180,60,60,0.25))">
                 </div>
             </div>
         </section>
@@ -150,9 +167,9 @@
         </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920p"></script>
-    <script src="assets/common.js?v=20260920p"></script>
-    <script src="assets/routes-data.js?v=20260920p"></script>
+    <script src="assets/data.js?v=20260920q"></script>
+    <script src="assets/common.js?v=20260920q"></script>
+    <script src="assets/routes-data.js?v=20260920q"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
         function routeCard(r){
@@ -176,6 +193,59 @@
             });
         },{threshold:0.15,rootMargin:'0px 0px -60px 0px'});
         document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+        // ===== 特价活动 =====
+        const DEALS={
+            cn:[
+                {city:"南京",img:"assets/deals/nanjing.webp",price:301},
+                {city:"温州",img:"assets/deals/wenzhou.webp",price:321},
+                {city:"武汉",img:"assets/deals/wuhan.webp",price:351},
+                {city:"合肥",img:"assets/deals/hefei.webp",price:341},
+                {city:"杭州",img:"assets/deals/hangzhou.webp",price:401},
+                {city:"成都",img:"assets/deals/chengdu.webp",price:521},
+                {city:"西安",img:"assets/deals/xian.webp",price:451},
+                {city:"广州",img:"assets/deals/guangzhou.webp",price:531}
+            ],
+            intl:[
+                {city:"东京",img:"assets/deals/tokyo.webp",price:1501},
+                {city:"巴黎",img:"assets/deals/paris.webp",price:4201},
+                {city:"伦敦",img:"assets/deals/london.webp",price:4501},
+                {city:"新加坡",img:"assets/deals/singapore.webp",price:2001},
+                {city:"香港",img:"assets/deals/hongkong.webp",price:1001},
+                {city:"曼谷",img:"assets/deals/bangkok.webp",price:1201},
+                {city:"悉尼",img:"assets/deals/sydney.webp",price:3601},
+                {city:"迪拜",img:"assets/deals/dubai.webp",price:3801}
+            ]
+        };
+        let dealTab='cn';
+        function dealCard(d,i){
+            return '<button type="button" class="deal-card text-left overflow-hidden cursor-pointer group" style="animation-delay:'+(i*70)+'ms" onclick="location.href=\'booking.html?start=上海&end='+encodeURIComponent(d.city)+'\'">'+
+                '<div class="deal-imgwrap">'+
+                    '<img src="'+d.img+'" alt="'+d.city+'" class="deal-img" loading="lazy">'+
+                    '<div class="deal-mask"></div>'+
+                    '<span class="deal-price">¥'+d.price+'起</span>'+
+                    '<div class="deal-info">'+
+                        '<p class="deal-from">上海 出发</p>'+
+                        '<p class="deal-city">'+d.city+'</p>'+
+                    '</div>'+
+                '</div>'+
+            '</button>';
+        }
+        function renderDeals(tab){
+            dealTab=tab;
+            const grid=document.getElementById("dealGrid");
+            grid.innerHTML=DEALS[tab].map(dealCard).join('');
+            // 重播动画：移除再添加
+            const cards=grid.querySelectorAll('.deal-card');
+            cards.forEach(c=>{c.classList.remove('deal-in');void c.offsetWidth;c.classList.add('deal-in');});
+        }
+        function switchDeal(tab){
+            if(tab===dealTab)return;
+            document.getElementById("dealTabCn").classList.toggle("deal-tab-on",tab==="cn");
+            document.getElementById("dealTabIntl").classList.toggle("deal-tab-on",tab==="intl");
+            renderDeals(tab);
+        }
+        renderDeals('cn');
     </script>
 </body>
 </html>
