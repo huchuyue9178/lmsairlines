@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260919v"></script>
+    <script src="assets/tailwind-config.js?v=20260919w"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20260919v">
+    <link rel="stylesheet" href="assets/style.css?v=20260919w">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -24,6 +24,33 @@
             <div class="mt-8 flex flex-wrap justify-center gap-4 anim-up d3">
                 <a href="booking.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:19px">查询航班 <i class="fa fa-angle-right ml-1"></i></a>
                 <a href="about.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:19px">了解更多 <i class="fa fa-angle-right ml-1"></i></a>
+            </div>
+        </section>
+
+        <!-- 航空活动 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
+                <div class="flex items-baseline justify-between mb-5">
+                    <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">✈️ 航空活动</h3>
+                    <a href="#" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">查看全部 <i class="fa fa-angle-right ml-1"></i></a>
+                </div>
+                <div id="activityList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="rounded-big p-5" style="background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.6)">
+                        <p class="text-xs font-semibold mb-2" style="color:#c0392b">限时活动</p>
+                        <h4 class="font-bold text-lg text-textDark mb-1">新用户首单立减 100 元</h4>
+                        <p class="text-sm text-textGray mt-2">注册即领，机票预订自动抵扣</p>
+                    </div>
+                    <div class="rounded-big p-5" style="background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.6)">
+                        <p class="text-xs font-semibold mb-2" style="color:#4a5a6e">会员专享</p>
+                        <h4 class="font-bold text-lg text-textDark mb-1">会员日双倍里程</h4>
+                        <p class="text-sm text-textGray mt-2">每月 18 日，会员购票里程翻倍</p>
+                    </div>
+                    <div class="rounded-big p-5" style="background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.6)">
+                        <p class="text-xs font-semibold mb-2" style="color:#1e8449">推荐活动</p>
+                        <h4 class="font-bold text-lg text-textDark mb-1">亲子同行享 8 折</h4>
+                        <p class="text-sm text-textGray mt-2">两位成人带一名儿童同行，儿童票 8 折</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -55,7 +82,7 @@
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center items-end">
-                    <img src="assets/railair_icon.png?v=20260919v" alt="空铁联运" class="anim-float" style="height:110px;width:auto;border-radius:24px;box-shadow:0 10px 30px rgba(74,90,110,0.18);background:#fff;padding:14px 18px">
+                    <img src="assets/railair_icon.png?v=20260919w" alt="空铁联运" class="anim-float" style="height:110px;width:auto;border-radius:24px;box-shadow:0 10px 30px rgba(74,90,110,0.18);background:#fff;padding:14px 18px">
                 </div>
             </div>
         </section>
@@ -147,8 +174,8 @@
         </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260919v"></script>
-    <script src="assets/common.js?v=20260919v"></script>
+    <script src="assets/data.js?v=20260919w"></script>
+    <script src="assets/common.js?v=20260919w"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
         // 滚动浮现动效：每次进入视口都重新播放
