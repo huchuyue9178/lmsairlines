@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>特殊服务申请 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920i"></script>
+    <script src="assets/tailwind-config.js?v=20260920j"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920i">
+    <link rel="stylesheet" href="assets/style.css?v=20260920j">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -49,8 +49,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920i"></script>
-    <script src="assets/common.js?v=20260920i"></script>
+    <script src="assets/data.js?v=20260920j"></script>
+    <script src="assets/common.js?v=20260920j"></script>
     <script>
         const SPECIAL_FORMS={
             meal:{name:"定制特殊餐食",icon:"fa-cutlery",desc:"素食/清真/婴儿餐等特殊餐食定制，需在起飞前24小时申请",
@@ -181,9 +181,31 @@
             const list=getSpecialApps();
             list.push(app);
             saveSpecialApps(list);
-            showToast("申请提交成功！客服将在24小时内审核确认。");
             closeForm();
             renderAppList();
+            // 系统自动审核
+            showToast("申请已提交，系统正在自动审核…");
+            setTimeout(function(){
+                const all=getSpecialApps();
+                const mine=all.find(x=>x.id===app.id);
+                if(!mine)return;
+                let pass=true,reason="";
+                if(currentType==="pet"&&data.vaccinated!=="已接种"){pass=false;reason="宠物未提供有效疫苗接种证明";}
+                if(currentType==="battery"){
+                    const cap=Number(data.capacity||0);
+                    if(cap>160){pass=false;reason="电池额定容量超过160Wh，不符合航空托运规定";}
+                }
+                if(currentType==="child"){
+                    const age=Number(data.childAge||0);
+                    if(age<5||age>12){pass=false;reason="无陪伴儿童服务仅限5-12岁儿童";}
+                }
+                mine.status=pass?"已通过":"已拒绝";
+                mine.reviewedAt=Date.now();
+                mine.reviewReason=reason;
+                saveSpecialApps(all);
+                renderAppList();
+                showToast(pass?"系统审核通过！":"系统审核未通过："+reason);
+            },1500);
         }
         function renderAppList(){
             const list=getSpecialApps(),d=document.getElementById("appList");
@@ -199,10 +221,9 @@
                 if(a.status==="待审核"){
                     actions='<div class="flex gap-2 mt-2">'+
                         '<button onclick="cancelApp('+realIdx+')" class="px-3 py-1 rounded-global text-xs font-bold border border-danger text-danger btn-hover">取消申请</button>'+
-                        '<button onclick="reviewApp('+realIdx+',true)" class="px-3 py-1 rounded-global text-xs font-bold bg-gold text-primary btn-hover">模拟通过</button>'+
-                        '<button onclick="reviewApp('+realIdx+',false)" class="px-3 py-1 rounded-global text-xs font-bold border border-textGray text-textGray btn-hover">模拟拒绝</button>'+
                         '</div>';
                 }
+                const reason=a.reviewReason?'<p class="text-xs text-danger mt-1">未通过原因：'+esc(a.reviewReason)+'</p>':'';
                 return '<div class="bg-black/40 border border-gold/20 rounded-global p-4">'+
                     '<div class="flex justify-between items-start flex-wrap gap-2">'+
                         '<div class="flex items-center gap-3"><i class="fa '+a.icon+' text-gold text-2xl"></i><div>'+
@@ -213,6 +234,7 @@
                         '<p class="text-xs text-textGray">'+new Date(a.createdAt).toLocaleString("zh-CN")+'</p></div>'+
                     '</div>'+
                     '<div class="mt-2 bg-black/30 p-2 rounded-global">'+details+'</div>'+
+                    reason+
                     actions+
                     '</div>';
             }).join('');
