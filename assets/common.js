@@ -563,6 +563,8 @@ function resolveStatus(item){
     }
     function applyReveal(root){
         if(!root) return;
+        // 会员中心动态渲染区域（登录后才显示）完全跳过，避免 Safari 下 display:none→block 后 IntersectionObserver 不触发导致空白
+        if(root.closest && root.closest('#memberAreaMain')) return;
         var targets = root.querySelectorAll(
             'main > *, ' +
             'main .bg-card, main .card-gold, ' +
@@ -572,12 +574,18 @@ function resolveStatus(item){
         );
         targets.forEach(function(el){
             if(el.__revealed) return;
+            // 跳过会员中心内部所有元素
+            if(el.closest && el.closest('#memberAreaMain')) return;
             if(!isVisible(el)) return;
             var pos = getComputedStyle(el).position;
             if(pos==='fixed') return;
             el.__revealed = true;
             el.classList.add('reveal-up');
             io.observe(el);
+            // 安全网：1 秒后仍未进入视口则强制显示（防止 Safari IntersectionObserver 兼容问题导致永久空白）
+            setTimeout(function(){
+                if(!el.classList.contains('in')) el.classList.add('in');
+            }, 1000);
         });
     }
     var io = new IntersectionObserver(function(entries){
