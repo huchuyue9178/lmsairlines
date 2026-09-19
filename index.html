@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920q"></script>
+    <script src="assets/tailwind-config.js?v=20260920r"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20260920q">
+    <link rel="stylesheet" href="assets/style.css?v=20260920r">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -90,7 +90,7 @@
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center items-end">
-                    <img src="assets/railair_icon.png?v=20260920q" alt="空铁联运" class="anim-float" style="height:120px;width:auto;filter:drop-shadow(0 6px 18px rgba(180,60,60,0.25))">
+                    <img src="assets/railair_icon.png?v=20260920r" alt="空铁联运" class="anim-float" style="height:120px;width:auto;filter:drop-shadow(0 6px 18px rgba(180,60,60,0.25))">
                 </div>
             </div>
         </section>
@@ -165,11 +165,27 @@
                 <div id="routesNiche" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
         </section>
+
+        <!-- 牧师商城：推荐商品 -->
+        <section class="px-3 md:px-5 mt-3 md:mt-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:50px 30px">
+                <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
+                    <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">牧师商城</h3>
+                    <a href="shop.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">更多商品 <i class="fa fa-angle-right ml-1"></i></a>
+                </div>
+                <p class="text-textDark/60 text-sm mb-6">老牧师航空官方周边 · 下单→支付→发货→收货全程模拟</p>
+                <div id="shopPreview" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
+                <div class="flex flex-wrap justify-center gap-4 mt-8">
+                    <a href="shop.html" class="deal-more px-10 py-3 rounded-full text-sm font-semibold">进入商城 <i class="fa fa-angle-right ml-1"></i></a>
+                    <a href="shop.html#shopOrders" class="deal-more px-10 py-3 rounded-full text-sm font-semibold">我的商城订单 <i class="fa fa-angle-right ml-1"></i></a>
+                </div>
+            </div>
+        </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920q"></script>
-    <script src="assets/common.js?v=20260920q"></script>
-    <script src="assets/routes-data.js?v=20260920q"></script>
+    <script src="assets/data.js?v=20260920r"></script>
+    <script src="assets/common.js?v=20260920r"></script>
+    <script src="assets/routes-data.js?v=20260920r"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
         function routeCard(r){
@@ -246,6 +262,28 @@
             renderDeals(tab);
         }
         renderDeals('cn');
+
+        // ===== 牧师商城推荐（3个） =====
+        const SHOP_FEATURED=[
+            {id:"plane",name:"波音787 飞机模型（1:400）",img:"assets/shop/plane.webp",price:299,tag:"热卖"},
+            {id:"luggage",name:"老牧师航空 联名登机行李箱",img:"assets/shop/luggage.webp",price:899,tag:"推荐"},
+            {id:"bear",name:"机长熊公仔",img:"assets/shop/bear.webp",price:129,tag:"推荐"}
+        ];
+        document.getElementById("shopPreview").innerHTML=SHOP_FEATURED.map(it=>
+            '<button type="button" onclick="location.href=\'shop.html?buy='+it.id+'\'" class="shop-card text-left overflow-hidden rounded-big cursor-pointer" style="background:rgba(255,255,255,0.42);border:1px solid rgba(255,255,255,0.65)">'+
+                '<div class="relative overflow-hidden" style="aspect-ratio:1/1">'+
+                    '<img src="'+it.img+'" alt="'+esc(it.name)+'" class="shop-img w-full h-full object-cover" loading="lazy">'+
+                    '<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#c0392b,#e67e22)">'+it.tag+'</span>'+
+                '</div>'+
+                '<div class="p-4">'+
+                    '<h4 class="font-bold text-textDark text-[15px] leading-snug">'+esc(it.name)+'</h4>'+
+                    '<div class="flex items-center justify-between mt-3">'+
+                        '<span class="text-lg font-bold text-gold">¥'+it.price+'</span>'+
+                        '<span class="px-4 py-1.5 rounded-full text-sm font-semibold deal-more">立即购买</span>'+
+                    '</div>'+
+                '</div>'+
+            '</button>'
+        ).join('');
     </script>
 </body>
 </html>

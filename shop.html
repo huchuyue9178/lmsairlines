@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牧师商城 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js?v=20260920r"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20260920r">
+</head>
+<body class="text-textDark">
+    <div class="bg-layer" aria-hidden="true"></div>
+    <div id="siteHeader"></div>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div>
+                <h2 class="text-[26px] font-bold text-textDark mb-1">牧师商城</h2>
+                <p class="text-textGray text-sm">老牧师航空官方周边，下单 → 支付 → 发货 → 收货，全程模拟体验</p>
+            </div>
+            <button onclick="scrollToOrders()" class="px-5 py-2 rounded-full text-sm font-semibold deal-more">我的商城订单 <span id="shopOrderBadge" class="ml-1 px-2 py-0.5 rounded-full text-xs" style="background:rgba(74,90,110,0.15)">0</span></button>
+        </div>
+
+        <!-- 商品列表 -->
+        <div id="shopGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10"></div>
+
+        <!-- 我的订单 -->
+        <div id="shopOrders" class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
+            <h3 class="text-xl font-bold text-textDark mb-5"><i class="fa fa-truck mr-2 text-gold"></i>我的商城订单</h3>
+            <div id="shopOrderList" class="space-y-3"></div>
+        </div>
+    </main>
+
+    <!-- 购买弹窗 -->
+    <div id="buyModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(8px)" onclick="if(event.target===this)closeBuy()">
+        <div class="bg-card card-gold p-6 rounded-big shadow-2xl w-full max-w-md form-pop">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-textDark">确认购买</h3>
+                <button onclick="closeBuy()" class="text-textGray hover:text-gold text-2xl"><i class="fa fa-times"></i></button>
+            </div>
+            <div id="buyGoods" class="flex items-center gap-3 p-3 rounded-global mb-4" style="background:rgba(255,255,255,0.5)"></div>
+            <div class="mb-3">
+                <label class="block mb-1 text-sm">购买数量</label>
+                <div class="flex items-center gap-3">
+                    <button onclick="changeQty(-1)" class="w-9 h-9 rounded-full border border-textGray text-textGray btn-hover">−</button>
+                    <span id="buyQty" class="font-bold text-lg w-8 text-center">1</span>
+                    <button onclick="changeQty(1)" class="w-9 h-9 rounded-full border border-textGray text-textGray btn-hover">+</button>
+                    <span class="text-sm text-textGray ml-2">单价 <b id="buyUnit" class="text-gold">¥0</b></span>
+                </div>
+            </div>
+            <div class="mb-3"><label class="block mb-1 text-sm">收货人 <span class="text-danger">*</span></label><input id="buyName" class="w-full border px-4 py-3 rounded-global" placeholder="请输入收货人姓名"></div>
+            <div class="mb-3"><label class="block mb-1 text-sm">手机号码 <span class="text-danger">*</span></label><input id="buyPhone" class="w-full border px-4 py-3 rounded-global" placeholder="请输入11位手机号"></div>
+            <div class="mb-4"><label class="block mb-1 text-sm">收货地址 <span class="text-danger">*</span></label><input id="buyAddr" class="w-full border px-4 py-3 rounded-global" placeholder="请输入详细收货地址"></div>
+            <div class="flex items-center justify-between p-3 rounded-global mb-4" style="background:rgba(255,255,255,0.5)">
+                <span class="text-sm text-textGray">合计</span><span id="buyTotal" class="text-xl font-bold text-gold">¥0</span>
+            </div>
+            <button onclick="goPay()" class="w-full bg-gold text-primary font-bold py-3 rounded-global btn-hover">去支付</button>
+        </div>
+    </div>
+
+    <!-- 支付弹窗 -->
+    <div id="payModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(8px)" onclick="if(event.target===this)closePay()">
+        <div class="bg-card card-gold p-6 rounded-big shadow-2xl w-full max-w-sm form-pop">
+            <div class="text-center mb-5">
+                <div class="w-14 h-14 mx-auto mb-3 rounded-full flex items-center justify-center" style="background:linear-gradient(135deg,#4a5a6e,#8a99a8);color:#fff"><i class="fa fa-credit-card text-2xl"></i></div>
+                <h3 class="text-lg font-bold text-textDark">订单支付</h3>
+                <p class="text-2xl font-bold text-gold mt-2" id="payAmount">¥0</p>
+                <p class="text-xs text-textGray mt-1" id="payGoodsName"></p>
+            </div>
+            <div class="space-y-2 mb-5">
+                <button onclick="setPay('wechat')" class="pay-way w-full flex items-center gap-3 p-3 rounded-global border" data-way="wechat"><i class="fa fa-wechat text-xl" style="color:#07c160"></i><span class="text-sm font-semibold">微信支付</span><i class="fa fa-check-circle ml-auto text-gold hidden"></i></button>
+                <button onclick="setPay('alipay')" class="pay-way w-full flex items-center gap-3 p-3 rounded-global border" data-way="alipay"><i class="fa fa-credit-card text-xl" style="color:#1677ff"></i><span class="text-sm font-semibold">支付宝</span><i class="fa fa-check-circle ml-auto text-gold hidden"></i></button>
+                <button onclick="setPay('bank')" class="pay-way w-full flex items-center gap-3 p-3 rounded-global border" data-way="bank"><i class="fa fa-university text-xl" style="color:#8a5a2b"></i><span class="text-sm font-semibold">银行卡支付</span><i class="fa fa-check-circle ml-auto text-gold hidden"></i></button>
+            </div>
+            <button id="payBtn" onclick="confirmPay()" class="w-full bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认支付</button>
+            <p class="text-center text-xs text-textGray mt-3"><i class="fa fa-lock mr-1"></i>模拟支付环境，不会产生真实扣款</p>
+        </div>
+    </div>
+
+    <div id="siteFooter"></div>
+    <script src="assets/data.js?v=20260920r"></script>
+    <script src="assets/common.js?v=20260920r"></script>
+    <script>
+        const SHOP_ITEMS=[
+            {id:"plane",name:"波音787 飞机模型（1:400）",img:"assets/shop/plane.webp",price:299,desc:"银色涂装 · 老牧师航空定制",tag:"热卖"},
+            {id:"luggage",name:"老牧师航空 联名登机行李箱",img:"assets/shop/luggage.webp",price:899,desc:"20寸 · 雾蓝磨砂 · 航空徽章",tag:"推荐"},
+            {id:"bear",name:"机长熊公仔",img:"assets/shop/bear.webp",price:129,desc:"飞行员制服 · 限量版",tag:"推荐"},
+            {id:"statue",name:"吴景雕像手办",img:"assets/shop/statue.webp",price:588,desc:"Q版牧师 · 底座金铭牌",tag:"限定"},
+            {id:"turtle",name:"偷吃乌龟模型",img:"assets/shop/turtle.webp",price:88,desc:"树脂摆件 · 可爱珍藏",tag:"趣味"},
+            {id:"badge",name:"航空徽章套装（4枚）",img:"assets/shop/badge.webp",price:59,desc:"飞机/云朵/翅膀/跑道",tag:"文创"},
+            {id:"logbook",name:"飞行日志手账本",img:"assets/shop/logbook.webp",price:79,desc:"深蓝皮面 · 烫金飞机",tag:"文创"},
+            {id:"coffee",name:"云端咖啡兑换券",img:"assets/shop/coffee.webp",price:35,desc:"贵宾厅咖啡 · 电子券",tag:"权益"}
+        ];
+        let buyItem=null,buyQty=1,payWay="wechat",payOrderId=null;
+
+        function shopOrders(){try{return JSON.parse(localStorage.getItem("shopOrders")||"[]");}catch(e){return[];}}
+        function saveShopOrders(list){localStorage.setItem("shopOrders",JSON.stringify(list));}
+
+        function shopCard(it){
+            return '<div class="shop-card overflow-hidden rounded-big bg-card card-gold" style="background:rgba(255,255,255,0.42);border:1px solid rgba(255,255,255,0.65)">'+
+                '<div class="relative overflow-hidden" style="aspect-ratio:1/1">'+
+                    '<img src="'+it.img+'" alt="'+esc(it.name)+'" class="shop-img w-full h-full object-cover" loading="lazy">'+
+                    (it.tag?'<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#c0392b,#e67e22)">'+it.tag+'</span>':'')+
+                '</div>'+
+                '<div class="p-4">'+
+                    '<h4 class="font-bold text-textDark text-[15px] leading-snug">'+esc(it.name)+'</h4>'+
+                    '<p class="text-xs text-textGray mt-1">'+esc(it.desc)+'</p>'+
+                    '<div class="flex items-center justify-between mt-3">'+
+                        '<span class="text-lg font-bold text-gold">¥'+it.price+'</span>'+
+                        '<button onclick="openBuy(\''+it.id+'\')" class="px-4 py-1.5 rounded-full text-sm font-semibold deal-more">立即购买</button>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+        }
+        function renderShop(){document.getElementById("shopGrid").innerHTML=SHOP_ITEMS.map(shopCard).join('');}
+
+        function openBuy(id){
+            const it=SHOP_ITEMS.find(x=>x.id===id);if(!it)return;
+            buyItem=it;buyQty=1;
+            document.getElementById("buyQty").textContent=1;
+            document.getElementById("buyUnit").textContent="¥"+it.price;
+            document.getElementById("buyTotal").textContent="¥"+it.price;
+            document.getElementById("buyGoods").innerHTML='<img src="'+it.img+'" class="w-16 h-16 rounded-global object-cover"><div><p class="font-bold text-sm text-textDark">'+esc(it.name)+'</p><p class="text-xs text-textGray">'+esc(it.desc)+'</p></div>';
+            document.getElementById("buyModal").classList.remove("hidden");
+        }
+        function closeBuy(){document.getElementById("buyModal").classList.add("hidden");buyItem=null;}
+        function changeQty(d){
+            buyQty=Math.max(1,Math.min(99,buyQty+d));
+            document.getElementById("buyQty").textContent=buyQty;
+            document.getElementById("buyTotal").textContent="¥"+(buyItem.price*buyQty);
+        }
+        function goPay(){
+            if(!buyItem)return;
+            const name=document.getElementById("buyName").value.trim(),phone=document.getElementById("buyPhone").value.trim(),addr=document.getElementById("buyAddr").value.trim();
+            if(!name){showToast("请填写收货人");return;}
+            if(!/^1\d{10}$/.test(phone)){showToast("请输入11位手机号");return;}
+            if(!addr){showToast("请填写收货地址");return;}
+            const total=buyItem.price*buyQty;
+            const order={id:"SHOP"+Date.now()+Math.floor(Math.random()*1000),itemId:buyItem.id,name:buyItem.name,img:buyItem.img,price:buyItem.price,qty:buyQty,total:total,receiver:name,phone:phone,addr:addr,status:"待付款",createdAt:Date.now()};
+            const list=shopOrders();list.push(order);saveShopOrders(list);
+            payOrderId=order.id;payWay="wechat";
+            document.getElementById("payAmount").textContent="¥"+total;
+            document.getElementById("payGoodsName").textContent=buyItem.name+" × "+buyQty;
+            document.querySelectorAll('.pay-way').forEach(b=>{b.style.borderColor="rgba(74,90,110,0.3)";b.querySelector('.fa-check-circle').classList.add("hidden");});
+            document.querySelector('.pay-way[data-way="wechat"]').style.borderColor="#4a5a6e";
+            document.querySelector('.pay-way[data-way="wechat"] .fa-check-circle').classList.remove("hidden");
+            document.getElementById("buyModal").classList.add("hidden");
+            document.getElementById("payModal").classList.remove("hidden");
+        }
+        function setPay(w){
+            payWay=w;
+            document.querySelectorAll('.pay-way').forEach(b=>{b.style.borderColor="rgba(74,90,110,0.3)";b.querySelector('.fa-check-circle').classList.add("hidden");});
+            const b=document.querySelector('.pay-way[data-way="'+w+'"]');
+            b.style.borderColor="#4a5a6e";b.querySelector('.fa-check-circle').classList.remove("hidden");
+        }
+        function closePay(){document.getElementById("payModal").classList.add("hidden");}
+        function confirmPay(){
+            const btn=document.getElementById("payBtn");
+            btn.disabled=true;btn.textContent="支付中…";
+            setTimeout(()=>{
+                const list=shopOrders(),o=list.find(x=>x.id===payOrderId);
+                if(o){o.status="待发货";o.paidAt=Date.now();o.payWay=payWay;saveShopOrders(list);}
+                closePay();renderOrders();
+                showToast("支付成功！商家正在备货，即将发货…");
+                // 5秒后自动发货
+                setTimeout(()=>{
+                    const l2=shopOrders(),o2=l2.find(x=>x.id===payOrderId);
+                    if(o2&&o2.status==="待发货"){o2.status="已发货";o2.shipAt=Date.now();saveShopOrders(l2);renderOrders();showToast("您的商品已发货，请注意查收！");}
+                },5000);
+                btn.disabled=false;btn.textContent="确认支付";
+            },1200);
+        }
+
+        const STATUS_MAP={"待付款":["text-gold"],"待发货":["text-gold"],"已发货":["text-gold"],"已完成":["text-success"]};
+        function renderOrders(){
+            const list=shopOrders().slice().reverse(),d=document.getElementById("shopOrderList");
+            document.getElementById("shopOrderBadge").textContent=list.length;
+            if(list.length===0){d.innerHTML='<p class="text-textGray">暂无商城订单。挑选喜欢的周边，体验完整购物流程吧。</p>';return;}
+            d.innerHTML=list.map((o,idx)=>{
+                const color=STATUS_MAP[o.status]?STATUS_MAP[o.status][0]:"text-gold";
+                let act='';
+                if(o.status==="已发货"){
+                    act='<button onclick="confirmReceive('+idx+')" class="px-4 py-1.5 rounded-full text-sm font-semibold bg-gold text-primary btn-hover">确认收货</button>';
+                }else if(o.status==="待付款"){
+                    act='<button onclick="repay('+idx+')" class="px-4 py-1.5 rounded-full text-sm font-semibold deal-more">继续支付</button>';
+                }else if(o.status==="已完成"){
+                    act='<span class="text-xs text-textGray"><i class="fa fa-check-circle text-success mr-1"></i>已确认收货</span>';
+                }
+                return '<div class="p-4 rounded-global" style="background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.6)">'+
+                    '<div class="flex flex-wrap items-center gap-3">'+
+                        '<img src="'+o.img+'" class="w-16 h-16 rounded-global object-cover">'+
+                        '<div class="flex-1 min-w-[160px]"><p class="font-bold text-sm text-textDark">'+esc(o.name)+' × '+o.qty+'</p>'+
+                        '<p class="text-xs text-textGray mt-1">收货人：'+esc(o.receiver)+' · '+esc(o.phone)+'</p>'+
+                        '<p class="text-xs text-textGray">地址：'+esc(o.addr)+'</p></div>'+
+                        '<div class="text-right"><p class="font-bold text-gold">¥'+o.total+'</p>'+
+                        '<span class="text-sm font-bold '+color+'">'+o.status+'</span></div>'+
+                    '</div>'+
+                    '<div class="flex items-center justify-between mt-3 pt-3 border-t border-white/40">'+
+                        '<p class="text-xs text-textGray">订单号 '+o.id+'<br>下单 '+new Date(o.createdAt).toLocaleString("zh-CN")+(o.paidAt?" · 支付 "+new Date(o.paidAt).toLocaleString("zh-CN"):"")+(o.shipAt?" · 发货 "+new Date(o.shipAt).toLocaleString("zh-CN"):"")+'</p>'+
+                        '<div class="flex gap-2">'+act+'</div>'+
+                    '</div>'+
+                '</div>';
+            }).join('');
+        }
+        function confirmReceive(idx){
+            const list=shopOrders(),o=list[idx];
+            if(!o||o.status!=="已发货")return;
+            showConfirm("确认已收到「"+o.name+"」？",function(){
+                o.status="已完成";o.doneAt=Date.now();saveShopOrders(list);renderOrders();
+                showToast("收货成功，感谢您的购买！");
+            });
+        }
+        function repay(idx){
+            const list=shopOrders(),o=list[idx];
+            if(!o)return;
+            payOrderId=o.id;payWay="wechat";
+            document.getElementById("payAmount").textContent="¥"+o.total;
+            document.getElementById("payGoodsName").textContent=o.name+" × "+o.qty;
+            document.querySelectorAll('.pay-way').forEach(b=>{b.style.borderColor="rgba(74,90,110,0.3)";b.querySelector('.fa-check-circle').classList.add("hidden");});
+            document.querySelector('.pay-way[data-way="wechat"]').style.borderColor="#4a5a6e";
+            document.querySelector('.pay-way[data-way="wechat"] .fa-check-circle').classList.remove("hidden");
+            document.getElementById("payModal").classList.remove("hidden");
+        }
+        function scrollToOrders(){document.getElementById("shopOrders").scrollIntoView({behavior:"smooth",block:"start"});}
+
+        // 首页带 buy=xxx 参数自动打开购买
+        (function(){
+            const p=new URLSearchParams(location.search);
+            renderShop();renderOrders();
+            if(p.get("buy"))openBuy(p.get("buy"));
+        })();
+    </script>
+</body>
+</html>
