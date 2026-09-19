@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920a"></script>
+    <script src="assets/tailwind-config.js?v=20260920b"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20260920a">
+    <link rel="stylesheet" href="assets/style.css?v=20260920b">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center items-end">
-                    <img src="assets/railair_icon.png?v=20260920a" alt="空铁联运" class="anim-float" style="height:110px;width:auto;border-radius:24px;box-shadow:0 10px 30px rgba(74,90,110,0.18);background:#fff;padding:14px 18px">
+                    <img src="assets/railair_icon.png?v=20260920b" alt="空铁联运" class="anim-float" style="height:110px;width:auto;border-radius:24px;box-shadow:0 10px 30px rgba(74,90,110,0.18);background:#fff;padding:14px 18px">
                 </div>
             </div>
         </section>
@@ -134,41 +134,81 @@
         <section class="px-3 md:px-5 reveal">
             <div class="bg-card card-gold rounded-big shadow-xl" style="padding:50px 30px">
                 <h3 class="font-bold text-textDark text-center" style="font-size:clamp(24px,2.5vw,32px)">热门航线</h3>
-                <p class="text-center text-textDark/60 mt-2 mb-8">精选全球热门目的地</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    <button type="button" class="w-full text-left p-5 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','广州')">
-                        <p class="font-semibold text-lg">北京 → 广州</p>
-                        <p class="text-sm text-textGray mt-1">约 3 小时 · 每日多班</p>
-                    </button>
-                    <button type="button" class="w-full text-left p-5 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','纽约')">
-                        <p class="font-semibold text-lg">上海 → 纽约</p>
-                        <p class="text-sm text-textGray mt-1">约 14 小时 · 直飞</p>
-                    </button>
-                    <button type="button" class="w-full text-left p-5 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','迪拜')">
-                        <p class="font-semibold text-lg">北京 → 迪拜</p>
-                        <p class="text-sm text-textGray mt-1">约 9 小时 · 直飞</p>
-                    </button>
-                    <button type="button" class="w-full text-left p-5 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','悉尼')">
-                        <p class="font-semibold text-lg">上海 → 悉尼</p>
-                        <p class="text-sm text-textGray mt-1">约 10 小时 · 直飞</p>
-                    </button>
-                    <button type="button" class="w-full text-left p-5 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('北京','新加坡')">
-                        <p class="font-semibold text-lg">北京 → 新加坡</p>
-                        <p class="text-sm text-textGray mt-1">约 6 小时 · 直飞</p>
-                    </button>
-                    <button type="button" class="w-full text-left p-5 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch('上海','伦敦')">
-                        <p class="font-semibold text-lg">上海 → 伦敦</p>
-                        <p class="text-sm text-textGray mt-1">约 12 小时 · 直飞</p>
-                    </button>
-                </div>
+                <p class="text-center text-textDark/60 mt-2 mb-8">精选全球热门目的地，含小众旅游城市</p>
+                <h4 class="font-semibold text-textDark/80 mt-2 mb-3">🇨🇳 国内热门干线</h4>
+                <div id="routesDomestic" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
+                <h4 class="font-semibold text-textDark/80 mb-3">🏝️ 国内旅游城市</h4>
+                <div id="routesTravel" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
+                <h4 class="font-semibold text-textDark/80 mb-3">🌏 国际及地区航线</h4>
+                <div id="routesIntl" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-6"></div>
+                <h4 class="font-semibold text-textDark/80 mb-3">✨ 小众宝藏目的地</h4>
+                <div id="routesNiche" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
             </div>
         </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920a"></script>
-    <script src="assets/common.js?v=20260920a"></script>
+    <script src="assets/data.js?v=20260920b"></script>
+    <script src="assets/common.js?v=20260920b"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
+        // 航线数据
+        const routes={
+            domestic:[
+                ['北京','上海','约 2.5 小时 · 每日多班'],['北京','广州','约 3 小时 · 每日多班'],['北京','深圳','约 3.5 小时 · 每日多班'],
+                ['北京','成都','约 3 小时 · 每日多班'],['北京','重庆','约 2.5 小时 · 每日多班'],['北京','杭州','约 2 小时 · 每日多班'],
+                ['北京','西安','约 2 小时 · 每日多班'],['北京','武汉','约 2 小时 · 每日多班'],['北京','长沙','约 2.5 小时 · 每日多班'],
+                ['上海','广州','约 2.5 小时 · 每日多班'],['上海','深圳','约 2.5 小时 · 每日多班'],['上海','成都','约 3 小时 · 每日多班'],
+                ['上海','重庆','约 2.5 小时 · 每日多班'],['上海','西安','约 2.5 小时 · 每日多班'],['上海','武汉','约 1.5 小时 · 每日多班'],
+                ['广州','成都','约 2 小时 · 每日多班'],['广州','重庆','约 1.5 小时 · 每日多班'],['广州','杭州','约 2 小时 · 每日多班'],
+                ['广州','西安','约 2.5 小时 · 每日多班'],['深圳','成都','约 2.5 小时 · 每日多班'],['深圳','重庆','约 2 小时 · 每日多班'],
+                ['深圳','杭州','约 2 小时 · 每日多班'],['成都','重庆','约 1 小时 · 每日多班'],['成都','昆明','约 1.5 小时 · 每日多班']
+            ],
+            travel:[
+                ['北京','三亚','约 4 小时 · 直飞'],['上海','三亚','约 3 小时 · 直飞'],['广州','三亚','约 1.5 小时 · 每日多班'],
+                ['北京','丽江','约 3.5 小时 · 直飞'],['上海','丽江','约 3.5 小时 · 直飞'],['广州','丽江','约 2.5 小时 · 直飞'],
+                ['北京','厦门','约 2.5 小时 · 每日多班'],['上海','厦门','约 1.5 小时 · 每日多班'],['广州','厦门','约 1.5 小时 · 每日多班'],
+                ['北京','青岛','约 1.5 小时 · 每日多班'],['上海','青岛','约 1.5 小时 · 每日多班'],['北京','大连','约 1.5 小时 · 每日多班'],
+                ['上海','大连','约 2 小时 · 每日多班'],['北京','桂林','约 3 小时 · 直飞'],['上海','桂林','约 2.5 小时 · 直飞'],
+                ['北京','贵阳','约 2.5 小时 · 直飞'],['上海','贵阳','约 2.5 小时 · 直飞'],['北京','哈尔滨','约 2 小时 · 每日多班'],
+                ['上海','哈尔滨','约 2.5 小时 · 每日多班'],['北京','珠海','约 3 小时 · 直飞'],['广州','珠海','约 1 小时 · 每日多班'],
+                ['上海','舟山','约 1.5 小时 · 周末班'],['北京','呼和浩特','约 1 小时 · 每日多班'],['上海','温州','约 1.5 小时 · 每日多班']
+            ],
+            intl:[
+                ['上海','纽约','约 14 小时 · 直飞'],['北京','纽约','约 13.5 小时 · 直飞'],['上海','洛杉矶','约 12 小时 · 直飞'],
+                ['北京','洛杉矶','约 12 小时 · 直飞'],['上海','伦敦','约 12 小时 · 直飞'],['北京','伦敦','约 11 小时 · 直飞'],
+                ['上海','巴黎','约 12 小时 · 直飞'],['北京','巴黎','约 11 小时 · 直飞'],['上海','法兰克福','约 11 小时 · 直飞'],
+                ['北京','迪拜','约 9 小时 · 直飞'],['上海','迪拜','约 9.5 小时 · 直飞'],['广州','迪拜','约 8 小时 · 直飞'],
+                ['北京','新加坡','约 6 小时 · 直飞'],['上海','新加坡','约 5.5 小时 · 直飞'],['广州','新加坡','约 4.5 小时 · 直飞'],
+                ['上海','悉尼','约 10 小时 · 直飞'],['北京','悉尼','约 11 小时 · 直飞'],['广州','悉尼','约 9 小时 · 直飞'],
+                ['上海','东京','约 3 小时 · 直飞'],['北京','东京','约 3.5 小时 · 直飞'],['上海','大阪','约 2.5 小时 · 直飞'],
+                ['北京','首尔','约 2 小时 · 直飞'],['上海','首尔','约 2 小时 · 直飞'],['上海','曼谷','约 5 小时 · 直飞'],
+                ['广州','曼谷','约 3 小时 · 直飞'],['上海','台北','约 2 小时 · 直飞'],['香港','上海','约 2.5 小时 · 每日多班'],
+                ['香港','北京','约 3.5 小时 · 每日多班'],['澳门','上海','约 2.5 小时 · 每日多班'],['台北','上海','约 2 小时 · 直飞']
+            ],
+            niche:[
+                ['北京','喀什','约 5.5 小时 · 每周多班'],['上海','喀什','约 6 小时 · 每周多班'],['广州','喀什','约 6.5 小时 · 每周多班'],
+                ['北京','伊宁','约 4.5 小时 · 直飞'],['上海','伊宁','约 5 小时 · 直飞'],['北京','阿勒泰','约 4.5 小时 · 季节性'],
+                ['北京','漠河','约 3.5 小时 · 季节性'],['上海','长白山','约 3 小时 · 季节性'],['北京','稻城','约 2.5 小时 · 季节性'],
+                ['上海','稻城','约 3 小时 · 季节性'],['广州','林芝','约 3.5 小时 · 季节性'],['北京','林芝','约 4.5 小时 · 季节性'],
+                ['成都','西双版纳','约 1.5 小时 · 每日多班'],['广州','西双版纳','约 2.5 小时 · 直飞'],['上海','西双版纳','约 3.5 小时 · 直飞'],
+                ['北京','泉州','约 2.5 小时 · 直飞'],['上海','泉州','约 1.5 小时 · 直飞'],['广州','泉州','约 1.5 小时 · 每日多班'],
+                ['上海','北海','约 2.5 小时 · 直飞'],['北京','北海','约 3.5 小时 · 直飞'],['广州','北海','约 1.5 小时 · 每日多班'],
+                ['上海','西宁','约 3 小时 · 直飞'],['北京','西宁','约 2.5 小时 · 直飞'],['广州','西宁','约 3.5 小时 · 直飞'],
+                ['上海','香格里拉','约 3 小时 · 直飞'],['北京','敦煌','约 3 小时 · 直飞'],['上海','敦煌','约 3.5 小时 · 直飞'],
+                ['广州','芽庄','约 3 小时 · 包机'],['上海','富国岛','约 4 小时 · 包机'],['北京','清迈','约 5 小时 · 直飞'],
+                ['上海','普吉岛','约 5.5 小时 · 直飞'],['广州','普吉岛','约 3.5 小时 · 直飞'],['成都','清迈','约 3 小时 · 直飞'],
+                ['上海','暹粒','约 4.5 小时 · 直飞'],['广州','暹粒','约 3 小时 · 直飞'],['北京','岘港','约 4.5 小时 · 直飞']
+            ]
+        };
+        function routeCard(r){
+            return '<button type="button" class="w-full text-left p-4 rounded-big bounce-hover cursor-pointer border border-white/40" style="background:rgba(255,255,255,0.4);color:#1d1d1f" onclick="quickSearch(\''+r[0]+'\',\''+r[1]+'\')">'+
+                '<p class="font-semibold">'+r[0]+' → '+r[1]+'</p>'+
+                '<p class="text-xs text-textGray mt-1">'+r[2]+'</p></button>';
+        }
+        document.getElementById('routesDomestic').innerHTML=routes.domestic.map(routeCard).join('');
+        document.getElementById('routesTravel').innerHTML=routes.travel.map(routeCard).join('');
+        document.getElementById('routesIntl').innerHTML=routes.intl.map(routeCard).join('');
+        document.getElementById('routesNiche').innerHTML=routes.niche.map(routeCard).join('');
         // 滚动浮现动效：每次进入视口都重新播放
         const io=new IntersectionObserver(entries=>{
             entries.forEach(e=>{
