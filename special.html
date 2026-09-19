@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>特殊服务申请 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920h"></script>
+    <script src="assets/tailwind-config.js?v=20260920i"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920h">
+    <link rel="stylesheet" href="assets/style.css?v=20260920i">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -21,8 +21,9 @@
             <div id="serviceGrid" class="grid grid-cols-2 md:grid-cols-5 gap-4"></div>
         </div>
 
-        <!-- 申请表单 -->
-        <div id="formArea" class="hidden bg-card card-gold p-6 rounded-global shadow-lg mb-8">
+        <!-- 申请表单弹窗 -->
+        <div id="formModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)" onclick="if(event.target===this)closeForm()">
+            <div id="formArea" class="bg-card card-gold p-6 rounded-big shadow-2xl w-full max-w-lg max-h-[88vh] overflow-y-auto form-pop">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-gold"><i id="formIcon" class="fa mr-2"></i><span id="formTitle"></span></h3>
                 <button onclick="closeForm()" class="text-textGray hover:text-gold text-2xl"><i class="fa fa-times"></i></button>
@@ -38,6 +39,7 @@
                 <button onclick="closeForm()" class="flex-1 border border-textGray text-textGray py-3 rounded-global btn-hover">取消</button>
                 <button onclick="submitApplication()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">提交申请</button>
             </div>
+            </div>
         </div>
 
         <!-- 我的申请记录 -->
@@ -47,8 +49,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920h"></script>
-    <script src="assets/common.js?v=20260920h"></script>
+    <script src="assets/data.js?v=20260920i"></script>
+    <script src="assets/common.js?v=20260920i"></script>
     <script>
         const SPECIAL_FORMS={
             meal:{name:"定制特殊餐食",icon:"fa-cutlery",desc:"素食/清真/婴儿餐等特殊餐食定制，需在起飞前24小时申请",
@@ -143,11 +145,10 @@
                 }
                 return '<div><label class="block mb-1 text-sm">'+f.label+' '+req+'</label>'+input+'</div>';
             }).join('');
-            document.getElementById("formArea").classList.remove("hidden");
-            document.getElementById("formArea").scrollIntoView({behavior:"smooth",block:"start"});
+            document.getElementById("formModal").classList.remove("hidden");
         }
         function closeForm(){
-            document.getElementById("formArea").classList.add("hidden");
+            document.getElementById("formModal").classList.add("hidden");
             currentType=null;
         }
         function submitApplication(){
