@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920c"></script>
+    <script src="assets/tailwind-config.js?v=20260920d"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920c">
+    <link rel="stylesheet" href="assets/style.css?v=20260920d">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -87,8 +87,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920c"></script>
-    <script src="assets/common.js?v=20260920c"></script>
+    <script src="assets/data.js?v=20260920d"></script>
+    <script src="assets/common.js?v=20260920d"></script>
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
@@ -114,10 +114,30 @@
             if(!s&&!e&&!fd){renderFlights(flightList,"全部虚拟航班");return;}
             let filter=searchFlights({start:s||undefined,end:e||undefined,date:fd||undefined});
             if(filter.length===0){
-                document.getElementById("flightResult").innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center"><p class="text-red-500 mb-3">没有找到符合“'+esc(s)+' → '+esc(e)+'”条件的航班</p><button onclick="renderFlights(flightList)" class="btn-hover bg-gold text-primary font-bold px-6 py-2 rounded-global">查看全部航班</button></div>';
-                return;
+                // 自动生成模拟航班，避免点热门航线查不到
+                filter=generateDemoFlights(s,e,fd);
             }
             renderFlights(filter,"");
+        }
+        // 为任意城市对生成模拟航班
+        function generateDemoFlights(s,e,fd){
+            if(!s||!e)return [];
+            const intlCity=new Set(['纽约','洛杉矶','伦敦','巴黎','法兰克福','迪拜','阿布扎比','新加坡','悉尼','墨尔本','东京','大阪','首尔','曼谷','吉隆坡','多伦多','台北','香港','澳门','芽庄','富国岛','清迈','普吉岛','暹粒','岘港']);
+            const isIntl=intlCity.has(s)||intlCity.has(e);
+            const base=isIntl?1800+Math.floor((s.length*7+e.length*13)%2200):500+Math.floor((s.length*11+e.length*17)%900);
+            const flights=[];
+            const times=[['07:30','10:10'],['09:40','12:20'],['13:15','15:55'],['16:40','19:25'],['19:50','22:35']];
+            const seeds=(s+e).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+            for(let i=0;i<3;i++){
+                const t=times[(seeds+i)%times.length];
+                flights.push({
+                    flightNo:'LMS'+(1000+((seeds*(i+3))%8999)),
+                    start:s,end:e,date:fd||'2026-09-20',
+                    time:t[0]+'-'+t[1],
+                    price:{eco:base+i*180,superEco:Math.round(base*1.3+i*200),business:Math.round(base*2.4+i*350),first:Math.round(base*4.2+i*600)}
+                });
+            }
+            return flights;
         }
         function renderFlights(list,title){
             currentList=list;shown=0;
