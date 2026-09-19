@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>在线值机 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260919j"></script>
+    <script src="assets/tailwind-config.js?v=20260919k"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260919j">
+    <link rel="stylesheet" href="assets/style.css?v=20260919k">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -17,8 +17,8 @@
         <div id="boardingPass" class="hidden"></div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260919j"></script>
-    <script src="assets/common.js?v=20260919j"></script>
+    <script src="assets/data.js?v=20260919k"></script>
+    <script src="assets/common.js?v=20260919k"></script>
     <script>
         let curOrder=null,selectedSeat=null;
         function hasActiveBenefit(id){
@@ -27,14 +27,44 @@
         const orderId=new URLSearchParams(location.search).get('orderId');
         function init(){
             const box=document.getElementById("checkinBox");
+            if(!orderId){renderMyOrders();return;}
             const orders=loadOrders();
             curOrder=orders.find(o=>o.orderId===orderId);
-            if(!curOrder){box.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">未找到该订单，请从【我的订单】选择要值机的订单。</div>';return;}
+            if(!curOrder){renderMyOrders('未找到该订单，可能已被删除，请从下方列表选择。');return;}
             const status=resolveStatus(curOrder);
             if(status==='已退票'){box.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">该订单已退票，无法办理值机。</div>';return;}
             if(status==='支付处理中'){box.innerHTML='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center">订单支付处理中，请稍候刷新后再办理值机。</div>';return;}
             if(curOrder.checkedIn){renderBoardingPass();return;}
             renderSeatSelect();
+        }
+        function renderMyOrders(warn){
+            const box=document.getElementById("checkinBox");
+            const orders=loadOrders().filter(o=>{
+                const st=resolveStatus(o);
+                return st!=='已退票'&&st!=='支付处理中'&&st!=='恶劣天气取消'&&o.type!=='railair';
+            }).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+            let h='';
+            if(warn)h+='<div class="bg-card card-gold p-4 rounded-global mb-4 text-sm text-orange-500"><i class="fa fa-info-circle"></i> '+warn+'</div>';
+            h+='<h3 class="text-lg font-bold text-gold mb-4"><i class="fa fa-list"></i> 我的可值机订单</h3>';
+            if(orders.length===0){
+                h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg text-center text-textGray">暂无待值机的机票订单，请先完成购票。</div>';
+            }else{
+                h+='<div class="space-y-3">';
+                orders.forEach(o=>{
+                    const done=!!o.checkedIn;
+                    h+='<div class="bg-card card-gold p-5 rounded-global shadow-lg flex flex-wrap items-center justify-between gap-3">'+
+                        '<div class="flex-1 min-w-[220px]">'+
+                            '<p class="font-bold text-gold text-lg">'+esc(o.flightNo)+'　'+esc(o.start)+' <i class="fa fa-plane mx-1"></i> '+esc(o.end)+'</p>'+
+                            '<p class="text-sm text-textGray mt-1"><i class="fa fa-calendar"></i> '+esc(o.date)+' '+esc(o.time)+'　<i class="fa fa-user ml-2"></i> '+esc(o.username)+'　<i class="fa fa-tag ml-2"></i> '+esc(o.cabin)+'</p>'+
+                        '</div>'+
+                        (done
+                            ?'<span class="px-4 py-2 rounded-global text-sm font-bold border border-success text-success"><i class="fa fa-check-circle"></i> 已完成 · 座位 '+esc(o.seat||'-')+'</span>'
+                            :'<a href="checkin.html?orderId='+encodeURIComponent(o.orderId)+'" class="px-4 py-2 bg-gold text-primary font-bold rounded-global btn-hover"><i class="fa fa-qrcode"></i> 立即值机</a>')+
+                    '</div>';
+                });
+                h+='</div>';
+            }
+            box.innerHTML=h;
         }
         function orderInfoHtml(){
             const o=curOrder,isRA=o.type==="railair";
