@@ -347,12 +347,11 @@
                     setTimeout(movePill,30);
                 }
             });
-            // Pointer Events 统一处理触摸/鼠标滑动切换（含 pointer capture，移出元素不丢事件）
+            // Pointer Events 统一处理触摸/鼠标滑动切换
             var pStartX=0,pDx=0,pDragging=false,pMoved=false;
             container.addEventListener('pointerdown',function(e){
                 pDragging=true; pMoved=false;
                 pStartX=e.clientX; pDx=0;
-                try{ container.setPointerCapture(e.pointerId); }catch(err){}
             });
             container.addEventListener('pointermove',function(e){
                 if(!pDragging)return;
@@ -362,7 +361,6 @@
             function pEnd(e){
                 if(!pDragging)return;
                 pDragging=false;
-                try{ container.releasePointerCapture(e.pointerId); }catch(err){}
                 if(pMoved && Math.abs(pDx)>30){
                     var idx=tabs.indexOf(container.querySelector('.deal-tab-on'));
                     var next=Math.max(0,Math.min(tabs.length-1, idx+(pDx<0?1:-1)));
@@ -371,6 +369,7 @@
             }
             container.addEventListener('pointerup',pEnd);
             container.addEventListener('pointercancel',pEnd);
+            container.addEventListener('pointerleave',function(){pDragging=false;});
         }
         document.querySelectorAll('.airpods-tabs').forEach(setupAirpodTabs);
     </script>
