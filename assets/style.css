@@ -263,3 +263,9 @@ hr{border-color:var(--ios-sep);}
 }
 #newsArrow{transition:transform .3s cubic-bezier(0.22,1,0.36,1);display:inline-block;}
 #newsArrow.up{transform:rotate(180deg);}
+
+/* Apple 风格首页动画 */
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.anim-float{animation:floatY 4s ease-in-out infinite;}
+.anim-link{display:inline-block;transition:opacity .2s ease,transform .2s ease;}
+.anim-link:hover{opacity:0.7;}
