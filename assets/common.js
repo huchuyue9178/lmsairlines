@@ -118,7 +118,7 @@
                 '<b style="font-size:14px">背景音乐</b>'+
                 '<span style="margin-left:auto;font-size:12px;opacity:.6;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
             '</div>'+
-            '<div id="bgmLyricBox" style="height:54px;overflow:hidden;margin-bottom:10px;position:relative;border-radius:12px;background:rgba(0,0,0,0.22)"><div id="bgmLyricTrack" style="position:absolute;left:0;right:0;top:0;transition:transform .5s ease;text-align:center"></div></div>'+
+            '<div style="text-align:center;margin-bottom:10px;padding:8px;border-radius:12px;background:rgba(0,0,0,0.22);font-size:13px;letter-spacing:.5px"><i class="fa fa-headphones mr-2" style="color:#4a5a6e"></i>DJ版《琵琶行》</div>'+
             '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8;margin-bottom:6px">'+
                 '<span id="bgmCur">0:00</span>'+
                 '<input id="bgmSeek" type="range" min="0" max="100" value="0" style="flex:1;accent-color:#4a5a6e">'+
@@ -135,38 +135,6 @@
         const vol=document.getElementById('bgmVol');
         const cur=document.getElementById('bgmCur');
         const dur=document.getElementById('bgmDur');
-        // 歌词：[{t:秒, text:"..."}]
-        const LYRICS=[
-            {t:0,text:"《琵琶行》· DJ版"},
-            {t:6,text:"—— 白居易 ——"},
-            {t:14,text:"莫辞更坐弹一曲"},
-            {t:21,text:"为君翻作琵琶行"},
-            {t:28,text:"感我此言良久立"},
-            {t:35,text:"却坐促弦弦转急"},
-            {t:42,text:"凄凄不似向前声"},
-            {t:49,text:"满座重闻皆掩泣"},
-            {t:56,text:"座中泣下谁最多"},
-            {t:63,text:"江州司马青衫湿"},
-            {t:71,text:"莫辞更坐弹一曲"},
-            {t:78,text:"为君翻作琵琶行"},
-            {t:85,text:"感我此言良久立"},
-            {t:92,text:"却坐促弦弦转急"},
-            {t:99,text:"凄凄不似向前声"},
-            {t:106,text:"满座重闻皆掩泣"}
-        ];
-        const track=document.getElementById('bgmLyricTrack');
-        track.innerHTML=LYRICS.map((l,i)=>'<div data-i="'+i+'" style="height:27px;line-height:27px;font-size:12px;opacity:.55;transition:opacity .4s">'+l.text+'</div>').join('');
-        function renderLyric(now){
-            let idx=0;
-            for(let i=0;i<LYRICS.length;i++){if(now>=LYRICS[i].t)idx=i;}
-            const rows=track.children;
-            for(let i=0;i<rows.length;i++){
-                rows[i].style.opacity=(i===idx)?'1':'.45';
-                rows[i].style.fontWeight=(i===idx)?'bold':'normal';
-            }
-            track.style.transform='translateY(calc(27px * '+( -idx +1.5)+'))';
-        }
-        renderLyric(0);
         const fmt=s=>{s=Math.floor(s||0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
         p.addEventListener('loadedmetadata',()=>{dur.textContent=fmt(p.duration);seek.max=Math.floor(p.duration||100);});
         dur.textContent=fmt(p.duration);
@@ -176,7 +144,6 @@
             if(!document.getElementById('bgmPanel')){clearInterval(window._bgmTick);return;}
             if(!p.paused){seek.value=Math.floor(p.currentTime);}
             cur.textContent=fmt(p.currentTime);
-            renderLyric(p.currentTime);
         },500);
         seek.addEventListener('input',()=>{p.currentTime=seek.value;saveBgmState();});
         vol.addEventListener('input',()=>{p.volume=vol.value/100;saveBgmState();});
