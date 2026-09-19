@@ -492,6 +492,9 @@ function resolveStatus(item){
             sessionStorage.setItem('access_notice_seen','1');
             box.style.opacity='0';
             box.style.transform='translateY(-10px) scale(0.96)';
+            // 高级动效：第二个"访问模式"弹窗上浮到第一个的位置
+            var dn=document.getElementById('deviceModeNotice');
+            if(dn){ dn.style.top='76px'; }
             setTimeout(function(){ box.remove(); },350);
         });
     }
