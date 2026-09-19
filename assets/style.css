@@ -462,3 +462,20 @@ hr{border-color:var(--ios-sep);}
     box-shadow:none !important;
     font-weight:800;
 }
+
+/* ===== 全局下滑浮现动效（所有页面） ===== */
+.reveal-up{
+    opacity:0;
+    transform:translateY(36px);
+    transition:opacity .8s cubic-bezier(.2,.9,.3,1), transform .8s cubic-bezier(.2,.9,.3,1);
+    will-change:opacity, transform;
+}
+.reveal-up.in{
+    opacity:1;
+    transform:translateY(0);
+}
+/* 触屏模式下动效减弱，避免卡顿 */
+body.touch-mode .reveal-up{ transition-duration:.45s; }
+@media (prefers-reduced-motion: reduce){
+    .reveal-up{opacity:1;transform:none;transition:none;}
+}

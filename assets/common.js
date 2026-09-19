@@ -551,3 +551,52 @@ function resolveStatus(item){
     else show();
 })();
 
+
+// ===== 全局下滑浮现动效 =====
+(function(){
+    function applyReveal(root){
+        if(!root) return;
+        // 选择主内容里的主要块：section、卡片、grid 直接子项、h2 标题
+        var targets = root.querySelectorAll(
+            'main > *, ' +
+            'main .bg-card, main .card-gold, ' +
+            'main .grid > *, main .space-y-4 > *, main .space-y-3 > *, ' +
+            'main h2, main h3, ' +
+            '.route-card, .deal-card, .order-card, .shop-card, .faq-item, .activity-card'
+        );
+        targets.forEach(function(el){
+            if(el.__revealed) return;
+            // 跳过固定定位/弹窗
+            var pos = getComputedStyle(el).position;
+            if(pos==='fixed') return;
+            el.__revealed = true;
+            el.classList.add('reveal-up');
+            io.observe(el);
+        });
+    }
+    var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+            if(e.isIntersecting){
+                e.target.classList.add('in');
+                io.unobserve(e.target);
+            }
+        });
+    },{threshold:0.08, rootMargin:'0px 0px -40px 0px'});
+
+    function start(){
+        var main = document.querySelector('main');
+        if(!main) return;
+        applyReveal(document);
+        // 动态渲染的内容（订单列表等）自动加动画
+        var mo = new MutationObserver(function(muts){
+            muts.forEach(function(m){
+                m.addedNodes.forEach(function(n){
+                    if(n.nodeType===1) applyReveal(n);
+                });
+            });
+        });
+        mo.observe(main,{childList:true,subtree:true});
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
+    else start();
+})();
