@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap');
 /* ============================================================
    老牧师航空 - iOS 液态玻璃（Liquid Glass）高端主题
    ============================================================ */
@@ -21,8 +22,15 @@ body{
     background-attachment:fixed;
     background-repeat:no-repeat;
     min-height:100vh;
-    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;
+    font-family:"Nunito",-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
+}
+/* 大标题圆润化：Nunito + Baloo 2 字重饱满、转角圆润，中文回落 PingFang SC 自带 iOS 圆润感 */
+h1,h2,h3,h4,.card-gold h3,.hero h1,.hero h2,.section-title,.deal-city,.deal-from,.text-gold{
+    font-family:"Baloo 2","Nunito","PingFang SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,sans-serif !important;
+    letter-spacing:.2px;
+    font-weight:800;
+}
     -moz-osx-font-smoothing:grayscale;
     letter-spacing:-0.01em;
     color:var(--ios-label);
