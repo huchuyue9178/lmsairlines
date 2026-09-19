@@ -135,22 +135,24 @@
         const vol=document.getElementById('bgmVol');
         const cur=document.getElementById('bgmCur');
         const dur=document.getElementById('bgmDur');
-        // 歌词：[{t:秒, text:"..."}]  替换此数组即可
+        // 歌词：[{t:秒, text:"..."}]
         const LYRICS=[
-            {t:0,text:"（音乐播放中）"},
-            {t:4,text:"老牧师航空 · 云端之旅"},
-            {t:10,text:"欢迎来到这里"},
-            {t:18,text:"一段旅程，一份心情"},
-            {t:26,text:"三万英尺之上"},
-            {t:34,text:"白云在窗外流淌"},
-            {t:44,text:"把烦恼都留在地面"},
-            {t:54,text:"把梦想带上天空"},
-            {t:64,text:"Hello, Welcome"},
-            {t:72,text:"to Laomusi Airlines"},
-            {t:82,text:"下一站，美好前程"},
-            {t:92,text:"一路向北，一路向暖"},
-            {t:102,text:"感谢你的聆听"},
-            {t:110,text:"—— 老牧师航空 ——"}
+            {t:0,text:"《琵琶行》· DJ版"},
+            {t:6,text:"—— 白居易 ——"},
+            {t:14,text:"莫辞更坐弹一曲"},
+            {t:21,text:"为君翻作琵琶行"},
+            {t:28,text:"感我此言良久立"},
+            {t:35,text:"却坐促弦弦转急"},
+            {t:42,text:"凄凄不似向前声"},
+            {t:49,text:"满座重闻皆掩泣"},
+            {t:56,text:"座中泣下谁最多"},
+            {t:63,text:"江州司马青衫湿"},
+            {t:71,text:"莫辞更坐弹一曲"},
+            {t:78,text:"为君翻作琵琶行"},
+            {t:85,text:"感我此言良久立"},
+            {t:92,text:"却坐促弦弦转急"},
+            {t:99,text:"凄凄不似向前声"},
+            {t:106,text:"满座重闻皆掩泣"}
         ];
         const track=document.getElementById('bgmLyricTrack');
         track.innerHTML=LYRICS.map((l,i)=>'<div data-i="'+i+'" style="height:27px;line-height:27px;font-size:12px;opacity:.55;transition:opacity .4s">'+l.text+'</div>').join('');
