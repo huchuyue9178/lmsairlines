@@ -158,6 +158,8 @@ hr{border-color:var(--ios-sep);}
 .lv-card .lv-deco{position:absolute;inset:0;pointer-events:none;opacity:.55;transition:opacity .4s;}
 .lv-card:hover .lv-deco{opacity:.8;}
 .lv-card>*{position:relative;}
+.lv-card .text-textGray{color:rgba(255,255,255,.75) !important;}
+.lv-card .text-textDark{color:#fff !important;}
 
 /* 普卡：低调沉稳黑 */
 .lv-plain{background:linear-gradient(135deg,#1c1c1e,#2c2c2e) !important;border-color:rgba(255,255,255,.10) !important;}

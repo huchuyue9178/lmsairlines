@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>出行预订 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920yy"></script>
+    <script src="assets/tailwind-config.js?v=20260920zz"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920yy">
+    <link rel="stylesheet" href="assets/style.css?v=20260920zz">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -24,9 +24,9 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div><label class="block mb-2">出发城市</label><input id="startCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
                     <div><label class="block mb-2">到达城市</label><input id="endCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：纽约"></div>
-                    <div><label class="block mb-2">出发日期</label><input id="flyDate" type="date" class="w-full border px-4 py-3 rounded-global" style="height:48px"></div>
+                    <div><label class="block mb-2">出发日期</label><input id="flyDate" type="date" class="w-full border px-4 py-3 rounded-global" style="-webkit-appearance:none;appearance:none;height:48px"></div>
                 </div>
-                <button onclick="searchFlight()" class="btn-hover w-full mt-8 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
+                <button onclick="searchFlight()" class="btn-hover w-full mt-10 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
             </div>
             <!-- 天气查询（模拟） -->
             <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
@@ -87,8 +87,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920yy"></script>
-    <script src="assets/common.js?v=20260920yy"></script>
+    <script src="assets/data.js?v=20260920zz"></script>
+    <script src="assets/common.js?v=20260920zz"></script>
     <script>
         const PAGE_SIZE=8;
         let currentList=[],shown=0,selectFlight=null,selectCabin="eco",selectType="flight",selectPlan=null,selectWeatherRisk=null,currentRailList=[];
