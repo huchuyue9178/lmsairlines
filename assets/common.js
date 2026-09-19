@@ -26,7 +26,7 @@
                 '<button id="bgmBtn" onclick="onBgmClick()" ondblclick="openBgmPanel()" class="hover:text-gold transition-colors cursor-pointer" title="单击播放/暂停，双击打开播放栏"><i class="fa fa-music text-lg" id="bgmIcon"></i></button>'+
                 '<a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                 '<span id="memberArea"></span>'+
-                '<span class="text-textGray"><i class="fa fa-phone"></i> 400-888-9999</span>'+
+                '<span class="text-textGray"><i class="fa fa-envelope"></i> 3686319507@qq.com</span>'+
             '</div>'+
             '<button id="menuBtn" class="lg:hidden text-textDark text-2xl"><i class="fa fa-bars"></i></button>'+
         '</div>'+
