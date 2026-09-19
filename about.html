@@ -5,30 +5,354 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>关于我们 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920kk"></script>
+    <script src="assets/tailwind-config.js?v=20260920ll"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920kk">
+    <link rel="stylesheet" href="assets/style.css?v=20260920ll">
+    <style>
+        /* 关于页专属 */
+        .about-hero{
+            position:relative;
+            padding:100px 24px 80px;
+            text-align:center;
+            background:
+                radial-gradient(800px 400px at 50% -10%, rgba(255,255,255,0.6), transparent 60%),
+                linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0.1));
+            border-radius:28px;
+            margin:24px 0;
+            overflow:hidden;
+        }
+        .about-hero::before{
+            content:'';
+            position:absolute;inset:0;
+            background:
+                radial-gradient(600px 200px at 20% 110%, rgba(74,90,110,0.12), transparent 60%),
+                radial-gradient(500px 200px at 85% 100%, rgba(123,168,154,0.12), transparent 60%);
+            pointer-events:none;
+        }
+        .about-stat{
+            background:rgba(255,255,255,0.5);
+            border:1px solid rgba(255,255,255,0.7);
+            backdrop-filter:blur(20px) saturate(160%);
+            -webkit-backdrop-filter:blur(20px) saturate(160%);
+            border-radius:22px;
+            padding:28px 16px;
+            text-align:center;
+            box-shadow:0 8px 24px rgba(74,90,110,0.08);
+            transition:transform .4s cubic-bezier(.2,.9,.3,1.2), box-shadow .4s;
+        }
+        .about-stat:hover{
+            transform:translateY(-6px);
+            box-shadow:0 16px 40px rgba(74,90,110,0.16);
+        }
+        .about-stat .num{
+            font-family:"Baloo 2","Nunito",sans-serif;
+            font-size:42px;
+            font-weight:800;
+            color:#4a5a6e;
+            line-height:1;
+            display:block;
+        }
+        .about-stat .unit{font-size:14px;color:#8a99a8;margin-left:2px;}
+        .about-stat .label{font-size:13px;color:#8a99a8;margin-top:8px;}
+        .value-card{
+            background:rgba(255,255,255,0.5);
+            border:1px solid rgba(255,255,255,0.7);
+            backdrop-filter:blur(20px);
+            border-radius:22px;
+            padding:32px 24px;
+            transition:all .4s cubic-bezier(.2,.9,.3,1.2);
+            height:100%;
+        }
+        .value-card:hover{
+            transform:translateY(-6px);
+            box-shadow:0 16px 40px rgba(74,90,110,0.15);
+        }
+        .value-card .icon{
+            width:56px;height:56px;
+            border-radius:18px;
+            background:linear-gradient(135deg,#4a5a6e,#6b7e92);
+            color:#fff;
+            display:flex;align-items:center;justify-content:center;
+            font-size:24px;
+            margin-bottom:18px;
+            box-shadow:0 8px 20px rgba(74,90,110,0.25);
+        }
+        /* 手风琴 */
+        .acc-item{
+            background:rgba(255,255,255,0.5);
+            border:1px solid rgba(255,255,255,0.7);
+            border-radius:18px;
+            margin-bottom:12px;
+            overflow:hidden;
+            transition:box-shadow .3s;
+        }
+        .acc-item.open{box-shadow:0 8px 24px rgba(74,90,110,0.12);}
+        .acc-head{
+            width:100%;
+            display:flex;justify-content:space-between;align-items:center;
+            padding:18px 22px;
+            cursor:pointer;
+            background:transparent;border:none;
+            font-size:15px;font-weight:700;color:#3a4a5c;
+            font-family:inherit;
+        }
+        .acc-head i{transition:transform .35s;}
+        .acc-item.open .acc-head i{transform:rotate(180deg);}
+        .acc-body{
+            max-height:0;
+            overflow:hidden;
+            transition:max-height .45s cubic-bezier(.2,.9,.3,1), padding .3s;
+            padding:0 22px;
+            color:#4a5a6e;
+            line-height:1.8;
+            font-size:14px;
+        }
+        .acc-item.open .acc-body{
+            max-height:400px;
+            padding:0 22px 20px;
+        }
+        /* 下滑浮现 */
+        .reveal-up{
+            opacity:0;
+            transform:translateY(40px);
+            transition:opacity .8s cubic-bezier(.2,.9,.3,1), transform .8s cubic-bezier(.2,.9,.3,1);
+        }
+        .reveal-up.in{
+            opacity:1;
+            transform:translateY(0);
+        }
+        .timeline{
+            position:relative;
+            padding-left:28px;
+        }
+        .timeline::before{
+            content:'';
+            position:absolute;left:8px;top:8px;bottom:8px;
+            width:2px;
+            background:linear-gradient(180deg,#4a5a6e,#a8b8c8);
+            border-radius:2px;
+        }
+        .tl-item{position:relative;padding-bottom:24px;}
+        .tl-item::before{
+            content:'';
+            position:absolute;left:-26px;top:6px;
+            width:14px;height:14px;border-radius:50%;
+            background:#fff;
+            border:3px solid #4a5a6e;
+            box-shadow:0 0 0 4px rgba(74,90,110,0.1);
+        }
+    </style>
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
-    <main class="pt-24 pb-16 container mx-auto px-4 max-w-4xl">
-        <h2 class="text-[26px] font-bold text-gold mb-8 text-center">关于老牧师航空</h2>
-        <div class="bg-card card-gold p-8 rounded-global shadow-lg">
-            <h3 class="text-xl font-bold text-gold mb-4">品牌初心</h3>
-            <p class="mb-6 leading-relaxed">老牧师航空，主打小众高端轻奢公务航空出行。我们以“虔诚、严谨、安心”作为服务内核，像牧师一般严谨负责，温柔守护每一段航程。我们致力于为商务人士、家庭舒适出行、高端私人出行旅客提供安全、静谧、贴心、专属的飞行服务，航线网络覆盖国内主要城市、东南亚、中东、欧洲、美洲、大洋洲。</p>
-            <h3 class="text-xl font-bold text-gold mb-4">企业愿景</h3>
-            <p class="mb-6 leading-relaxed">区别于廉价航空，我们坚持高端、沉稳、复古轻奢的服务路线，严控飞行安全标准，做到零差错购票、全程安心服务、静谧舒适飞行。让每一位乘客在高空之中享受一段宁静放松的旅程。</p>
-            <h3 class="text-xl font-bold text-gold mb-4">服务承诺</h3>
-            <ul class="space-y-2 pl-4">
-                <li>✅ 严谨规范的票务服务，透明无隐形消费</li>
-                <li>✅ 高标准安全管理，守护旅客出行安全</li>
-                <li>✅ 静谧机舱环境，打造舒适放松飞行体验</li>
-                <li>✅ 贴心售后客服，快速响应旅客出行问题</li>
-            </ul>
-        </div>
+    <main class="pt-24 pb-16 container mx-auto px-4 max-w-5xl">
+
+        <!-- Hero -->
+        <section class="about-hero reveal-up">
+            <p class="text-sm tracking-[0.3em] mb-4" style="color:#8a99a8">ABOUT LAOMUSI AIRLINES</p>
+            <h1 class="font-bold text-textDark" style="font-size:clamp(36px,5vw,60px);line-height:1.15">
+                像牧师守护灵魂那样<br><span style="background:linear-gradient(135deg,#4a5a6e,#7ba89a);-webkit-background-clip:text;background-clip:text;color:transparent">守护每一段航程</span>
+            </h1>
+            <p class="mt-6 max-w-2xl mx-auto text-textDark/70 leading-relaxed">
+                老牧师航空成立于 2025 年，是一家主打小众高端轻奢出行的模拟航空公司。<br>
+                我们以"虔诚、严谨、安心"为服务内核，为每一位乘客打造静谧、舒适、可信赖的飞行体验。
+            </p>
+        </section>
+
+        <!-- 核心数据 -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-10 reveal-up">
+            <div class="about-stat">
+                <span class="num"><span class="cnt" data-to="2025">0</span></span>
+                <div class="label">成立年份</div>
+            </div>
+            <div class="about-stat">
+                <span class="num"><span class="cnt" data-to="114">0</span><span class="unit">+</span></span>
+                <div class="label">精选航线</div>
+            </div>
+            <div class="about-stat">
+                <span class="num"><span class="cnt" data-to="86">0</span><span class="unit">+</span></span>
+                <div class="label">覆盖城市</div>
+            </div>
+            <div class="about-stat">
+                <span class="num"><span class="cnt" data-to="99.2" data-dec="1">0</span><span class="unit">%</span></span>
+                <div class="label">旅客满意度</div>
+            </div>
+        </section>
+
+        <!-- 品牌故事 -->
+        <section class="mt-14 reveal-up">
+            <div class="bg-card card-gold rounded-big shadow-xl p-8 md:p-12">
+                <p class="text-xs tracking-[0.3em] mb-3" style="color:#8a99a8">OUR STORY</p>
+                <h2 class="font-bold text-textDark mb-6" style="font-size:clamp(26px,3vw,36px)">品牌故事</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-textDark/75 leading-[1.9]">
+                    <p>
+                        "老牧师"这个名字，源自一个朴素的愿望——在喧闹、匆忙、充满不确定的出行世界里，
+                        做那个沉稳、可靠、始终在线的同行者。我们相信，飞行不该只是一张机票，
+                        而应是一段被认真对待的时光。
+                    </p>
+                    <p>
+                        从订票的那一刻起，到落地后的再次重逢，我们希望每一个细节都经得住推敲：
+                        透明无隐藏的价格、安静有序的机舱、恰到好处的服务、随时响应的售后。
+                        这是老牧师航空的承诺，也是我们日复一日打磨的方向。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 核心价值观 -->
+        <section class="mt-14 reveal-up">
+            <p class="text-xs tracking-[0.3em] mb-3 text-center" style="color:#8a99a8">OUR VALUES</p>
+            <h2 class="font-bold text-textDark mb-8 text-center" style="font-size:clamp(26px,3vw,36px)">我们坚持的四件事</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="value-card">
+                    <div class="icon"><i class="fa fa-heart"></i></div>
+                    <h3 class="font-bold text-lg mb-2">虔诚</h3>
+                    <p class="text-sm text-textDark/65 leading-relaxed">以敬畏之心对待每一次起飞与降落，把每一位乘客的旅程当作自己的旅程。</p>
+                </div>
+                <div class="value-card">
+                    <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                    <h3 class="font-bold text-lg mb-2">严谨</h3>
+                    <p class="text-sm text-textDark/65 leading-relaxed">从票价规则到退改签政策，公开透明，无隐藏消费，每一个数字都经得起推敲。</p>
+                </div>
+                <div class="value-card">
+                    <div class="icon"><i class="fa fa-shield"></i></div>
+                    <h3 class="font-bold text-lg mb-2">安心</h3>
+                    <p class="text-sm text-textDark/65 leading-relaxed">高安全标准、完整的订单追踪、值机与改签闭环，让出行全程心中有数。</p>
+                </div>
+                <div class="value-card">
+                    <div class="icon"><i class="fa fa-leaf"></i></div>
+                    <h3 class="font-bold text-lg mb-2">静谧</h3>
+                    <p class="text-sm text-textDark/65 leading-relaxed">不喧哗、不打扰，用克制的服务设计，还给旅客一段属于自己的高空时光。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 发展历程 -->
+        <section class="mt-14 reveal-up">
+            <div class="bg-card card-gold rounded-big shadow-xl p-8 md:p-12">
+                <p class="text-xs tracking-[0.3em] mb-3" style="color:#8a99a8">JOURNEY</p>
+                <h2 class="font-bold text-textDark mb-8" style="font-size:clamp(26px,3vw,36px)">发展历程</h2>
+                <div class="timeline">
+                    <div class="tl-item">
+                        <h4 class="font-bold" style="color:#4a5a6e">2025 · 起步</h4>
+                        <p class="text-sm text-textDark/65 mt-1 leading-relaxed">老牧师航空官网上线，首批 24 条国内热门干线启航，服务模拟出行体验。</p>
+                    </div>
+                    <div class="tl-item">
+                        <h4 class="font-bold" style="color:#4a5a6e">2026 春 · 扩展</h4>
+                        <p class="text-sm text-textDark/65 mt-1 leading-relaxed">航线扩展至 80+ 城市，覆盖东南亚、中东、欧洲与北美，上线会员常旅客体系与里程兑换。</p>
+                    </div>
+                    <div class="tl-item">
+                        <h4 class="font-bold" style="color:#4a5a6e">2026 夏 · 升级</h4>
+                        <p class="text-sm text-textDark/65 mt-1 leading-relaxed">完成 iOS 液态玻璃视觉改版，推出空铁联运、在线值机、特殊服务申请、牧师商城等完整业务闭环。</p>
+                    </div>
+                    <div class="tl-item">
+                        <h4 class="font-bold" style="color:#4a5a6e">未来 · 继续</h4>
+                        <p class="text-sm text-textDark/65 mt-1 leading-relaxed">持续打磨每一个细节，做你云端上那位可靠的老牧师。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 服务承诺（手风琴） -->
+        <section class="mt-14 reveal-up">
+            <p class="text-xs tracking-[0.3em] mb-3 text-center" style="color:#8a99a8">OUR PROMISE</p>
+            <h2 class="font-bold text-textDark mb-8 text-center" style="font-size:clamp(26px,3vw,36px)">服务承诺</h2>
+
+            <div class="acc-item">
+                <button class="acc-head">
+                    <span><i class="fa fa-check-circle mr-2" style="color:#7ba89a"></i>透明定价，无隐藏消费</span>
+                    <i class="fa fa-chevron-down text-xs"></i>
+                </button>
+                <div class="acc-body">
+                    所有票价均在下单前完整展示，包含机建、燃油、行李额等全部费用。退改签规则公开可查，绝不以模糊条款在最后一步加价。
+                </div>
+            </div>
+            <div class="acc-item">
+                <button class="acc-head">
+                    <span><i class="fa fa-check-circle mr-2" style="color:#7ba89a"></i>安全为底，严谨规范</span>
+                    <i class="fa fa-chevron-down text-xs"></i>
+                </button>
+                <div class="acc-body">
+                    从航班生成、到值机座位分配、再到特殊旅客服务审批，全流程模拟真实航司标准。任何异常状态都有明确的下一步指引。
+                </div>
+            </div>
+            <div class="acc-item">
+                <button class="acc-head">
+                    <span><i class="fa fa-check-circle mr-2" style="color:#7ba89a"></i>静谧舒适，克制服务</span>
+                    <i class="fa fa-chevron-down text-xs"></i>
+                </button>
+                <div class="acc-body">
+                    不做过度推销、不弹窗打扰，只在你需要的地方出现。背景音乐可一键关闭，界面信息层级克制而清晰。
+                </div>
+            </div>
+            <div class="acc-item">
+                <button class="acc-head">
+                    <span><i class="fa fa-check-circle mr-2" style="color:#7ba89a"></i>全程闭环，售后无忧</span>
+                    <i class="fa fa-chevron-down text-xs"></i>
+                </button>
+                <div class="acc-body">
+                    购票 → 值机 → 升降舱 → 退改签 → 里程兑换 → 商城购物，每一步都有完整状态反馈。遇到问题随时通过页面右上角邮箱联系我们。
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="mt-14 text-center reveal-up">
+            <p class="text-textDark/60 mb-4">准备好开启下一段旅程了吗？</p>
+            <a href="booking.html" class="inline-block px-10 py-4 rounded-full font-bold text-white" style="background:linear-gradient(135deg,#4a5a6e,#6b7e92);box-shadow:0 10px 30px rgba(74,90,110,0.3)">
+                <i class="fa fa-search mr-2"></i>立即查询航班
+            </a>
+        </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920kk"></script>
-    <script src="assets/common.js?v=20260920kk"></script>
+    <script src="assets/data.js?v=20260920ll"></script>
+    <script src="assets/common.js?v=20260920ll"></script>
+    <script>
+        // 下滑浮现动效
+        const io=new IntersectionObserver((entries)=>{
+            entries.forEach((e,i)=>{
+                if(e.isIntersecting){
+                    setTimeout(()=>e.target.classList.add('in'), i*80);
+                    io.unobserve(e.target);
+                }
+            });
+        },{threshold:0.12});
+        document.querySelectorAll('.reveal-up').forEach(el=>io.observe(el));
+
+        // 数字滚动
+        function animateNum(el){
+            const to=parseFloat(el.dataset.to);
+            const dec=parseInt(el.dataset.dec||'0');
+            const dur=1400;
+            const start=performance.now();
+            function tick(now){
+                const p=Math.min(1,(now-start)/dur);
+                const ease=1-Math.pow(1-p,3);
+                const v=to*ease;
+                el.textContent=dec>0?v.toFixed(dec):Math.round(v);
+                if(p<1) requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+        const numIo=new IntersectionObserver((entries)=>{
+            entries.forEach(e=>{
+                if(e.isIntersecting){
+                    animateNum(e.target);
+                    numIo.unobserve(e.target);
+                }
+            });
+        },{threshold:0.5});
+        document.querySelectorAll('.cnt').forEach(el=>numIo.observe(el));
+
+        // 手风琴
+        document.querySelectorAll('.acc-item').forEach(item=>{
+            const head=item.querySelector('.acc-head');
+            head.addEventListener('click',()=>{
+                const wasOpen=item.classList.contains('open');
+                document.querySelectorAll('.acc-item.open').forEach(i=>i.classList.remove('open'));
+                if(!wasOpen) item.classList.add('open');
+            });
+        });
+    </script>
 </body>
 </html>
