@@ -38,6 +38,12 @@ h1,h2,h3,h4,.card-gold h3,.hero h1,.hero h2,.section-title,.deal-city,.deal-from
     letter-spacing:-0.02em;
     font-weight:700;
 }
+/* Font Awesome 图标：强制用 FontAwesome 字体，不被标题字体覆盖 */
+.fa{
+    font-family:FontAwesome !important;
+    font-weight:normal !important;
+    letter-spacing:0 !important;
+}
 h1{font-size:clamp(32px,5vw,56px);line-height:1.08;font-weight:700;letter-spacing:-0.025em;}
 h2{font-size:clamp(24px,3vw,36px);line-height:1.15;font-weight:700;letter-spacing:-0.02em;}
 h3{font-size:clamp(18px,2vw,22px);line-height:1.2;font-weight:600;letter-spacing:-0.01em;}
@@ -545,4 +551,58 @@ body.touch-mode .reveal-up{
 }
 @media (prefers-reduced-motion: reduce){
     .reveal-up{opacity:1;transform:none;filter:none;transition:none;}
+}
+
+/* ===== 深色模式（跟随系统） ===== */
+@media (prefers-color-scheme: dark){
+    body{
+        background:
+            radial-gradient(1000px 600px at 85% -10%, rgba(74,90,110,.3), transparent 60%),
+            radial-gradient(900px 700px at 5% 110%, rgba(60,75,95,.3), transparent 60%),
+            linear-gradient(180deg,#1a2028 0%,#222b36 40%,#1a2028 100%) !important;
+        color:#e8edf2 !important;
+    }
+    .bg-card, .card-gold{
+        background:
+            radial-gradient(120% 120% at 18% 0%, rgba(255,255,255,.08) 0%, rgba(255,255,255,0) 46%),
+            linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.05)) !important;
+        border:1px solid rgba(255,255,255,0.12) !important;
+        box-shadow:
+            0 12px 40px rgba(0,0,0,0.3),
+            inset 0 1px 0 rgba(255,255,255,0.15),
+            inset 0 -1px 0 rgba(0,0,0,0.2);
+    }
+    .text-textDark, h1,h2,h3,h4{ color:#e8edf2 !important; }
+    .text-textGray, .text-textDark\/70, .text-textDark\/65, .text-textDark\/60{ color:#9aa8b8 !important; }
+    input, select, textarea{
+        background:rgba(255,255,255,0.08) !important;
+        border:1px solid rgba(255,255,255,0.15) !important;
+        color:#e8edf2 !important;
+    }
+    input::placeholder{ color:#6b7a8a; }
+    .nav-glass{
+        background:rgba(26,32,40,0.7) !important;
+        border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .airpods-tabs{
+        background:rgba(255,255,255,0.08) !important;
+        border:1px solid rgba(255,255,255,0.12);
+    }
+    .airpods-pill{
+        background:linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
+    }
+    .deal-tab{ color:#9aa8b8 !important; }
+    .deal-tab-on{ color:#fff !important; }
+    #moreMenu{
+        background:rgba(30,38,48,0.9) !important;
+        border:1px solid rgba(255,255,255,0.12);
+    }
+    #moreMenu a{ color:#e8edf2 !important; }
+    #moreMenu a:hover{ background:rgba(255,255,255,0.08) !important; }
+    .chat-mask{ background:rgba(0,0,0,0.5); }
+    .chat-modal{
+        background:rgba(30,38,48,0.85) !important;
+        border:1px solid rgba(255,255,255,0.12);
+    }
+    .msg-bot{ background:rgba(255,255,255,0.08) !important; color:#e8edf2; }
 }

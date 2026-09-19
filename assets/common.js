@@ -3,15 +3,15 @@
     const HEADER_HTML=
     '<header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">'+
         '<div class="container mx-auto px-4 py-3 flex justify-between items-center">'+
-            '<a href="index.html" class="flex items-center gap-2 text-textDark"><i class="fa fa-plane text-gold text-2xl"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
-            '<nav class="hidden lg:flex gap-5 text-textDark text-[15px] font-medium items-center">'+
+            '<a href="index.html" class="flex items-center gap-2 text-textDark" aria-label="老牧师航空首页"><i class="fa fa-plane text-gold text-2xl" aria-hidden="true"></i><span class="text-xl font-bold tracking-tight">老牧师航空</span></a>'+
+            '<nav class="hidden lg:flex gap-5 text-textDark text-[15px] font-medium items-center" aria-label="主导航">'+
                 '<a href="index.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">首页</a>'+
                 '<a href="booking.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">机票预订</a>'+
                 '<a href="checkin.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">在线值机</a>'+
                 '<a href="order.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">我的订单</a>'+
                 '<a href="member.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">会员中心</a>'+
                 '<div class="relative">'+
-                    '<button onclick="toggleMore()" class="hover:text-gold transition-colors flex items-center gap-1">更多 <i class="fa fa-chevron-down text-xs"></i></button>'+
+                    '<button onclick="toggleMore()" aria-label="更多导航选项" class="hover:text-gold transition-colors flex items-center gap-1">更多 <i class="fa fa-chevron-down text-xs" aria-hidden="true"></i></button>'+
                     '<div id="moreMenu" class="absolute right-0 top-full mt-2 w-44 rounded-2xl p-2 shadow-2xl" style="background:rgba(242,244,242,0.85);backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.7);box-shadow:0 10px 32px rgba(120,140,160,0.25)">'+
                         '<a href="flight.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">航班动态</a>'+
                         '<a href="special.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">特殊服务</a>'+
@@ -23,8 +23,8 @@
                 '</div>'+
             '</nav>'+
             '<div class="hidden lg:flex items-center gap-4 text-textDark text-sm">'+
-                '<button id="bgmBtn" onclick="onBgmClick()" ondblclick="openBgmPanel()" class="hover:text-gold transition-colors cursor-pointer" title="单击播放/暂停，双击打开播放栏"><i class="fa fa-music text-lg" id="bgmIcon"></i></button>'+
-                '<a href="cart.html" class="hover:text-gold"><i class="fa fa-shopping-cart"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
+                '<button id="bgmBtn" onclick="onBgmClick()" ondblclick="openBgmPanel()" aria-label="播放或暂停背景音乐" class="hover:text-gold transition-colors cursor-pointer" title="单击播放/暂停，双击打开播放栏"><i class="fa fa-music text-lg" id="bgmIcon" aria-hidden="true"></i></button>'+
+                '<a href="cart.html" aria-label="购物车" class="hover:text-gold"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                 '<span id="memberArea"></span>'+
                 '<span class="text-textGray"><i class="fa fa-envelope"></i> 3686319507@qq.com</span>'+
             '</div>'+
