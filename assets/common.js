@@ -110,8 +110,8 @@
         if(panel){panel.remove();return;}
         panel=document.createElement('div');
         panel.id='bgmPanel';
-        panel.className='fixed top-16 right-4 z-[9999] p-4 rounded-2xl shadow-2xl';
-        panel.style.cssText='background:rgba(30,36,54,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,0.18);width:280px;color:#fff';
+        panel.className='fixed top-16 right-4 z-[9999] p-4 rounded-2xl shadow-2xl bgm-pop';
+        panel.style.cssText='background:rgba(30,36,54,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,0.18);width:280px;color:#fff;transform-origin:top right';
         panel.innerHTML=
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
                 '<i class="fa fa-music" style="color:#4a5a6e"></i>'+
