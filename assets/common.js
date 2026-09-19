@@ -113,11 +113,12 @@
         panel.className='fixed top-16 right-4 z-[9999] p-4 rounded-2xl shadow-2xl bgm-pop';
         panel.style.cssText='background:rgba(30,36,54,0.82);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,0.18);width:280px;color:#fff;transform-origin:top right';
         panel.innerHTML=
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">'+
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
                 '<i class="fa fa-music" style="color:#4a5a6e"></i>'+
                 '<b style="font-size:14px">背景音乐</b>'+
                 '<span style="margin-left:auto;font-size:12px;opacity:.6;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
             '</div>'+
+            '<div id="bgmLyricBox" style="height:54px;overflow:hidden;margin-bottom:10px;position:relative;border-radius:12px;background:rgba(0,0,0,0.22)"><div id="bgmLyricTrack" style="position:absolute;left:0;right:0;top:0;transition:transform .5s ease;text-align:center"></div></div>'+
             '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.8;margin-bottom:6px">'+
                 '<span id="bgmCur">0:00</span>'+
                 '<input id="bgmSeek" type="range" min="0" max="100" value="0" style="flex:1;accent-color:#4a5a6e">'+
@@ -134,6 +135,36 @@
         const vol=document.getElementById('bgmVol');
         const cur=document.getElementById('bgmCur');
         const dur=document.getElementById('bgmDur');
+        // 歌词：[{t:秒, text:"..."}]  替换此数组即可
+        const LYRICS=[
+            {t:0,text:"（音乐播放中）"},
+            {t:4,text:"老牧师航空 · 云端之旅"},
+            {t:10,text:"欢迎来到这里"},
+            {t:18,text:"一段旅程，一份心情"},
+            {t:26,text:"三万英尺之上"},
+            {t:34,text:"白云在窗外流淌"},
+            {t:44,text:"把烦恼都留在地面"},
+            {t:54,text:"把梦想带上天空"},
+            {t:64,text:"Hello, Welcome"},
+            {t:72,text:"to Laomusi Airlines"},
+            {t:82,text:"下一站，美好前程"},
+            {t:92,text:"一路向北，一路向暖"},
+            {t:102,text:"感谢你的聆听"},
+            {t:110,text:"—— 老牧师航空 ——"}
+        ];
+        const track=document.getElementById('bgmLyricTrack');
+        track.innerHTML=LYRICS.map((l,i)=>'<div data-i="'+i+'" style="height:27px;line-height:27px;font-size:12px;opacity:.55;transition:opacity .4s">'+l.text+'</div>').join('');
+        function renderLyric(now){
+            let idx=0;
+            for(let i=0;i<LYRICS.length;i++){if(now>=LYRICS[i].t)idx=i;}
+            const rows=track.children;
+            for(let i=0;i<rows.length;i++){
+                rows[i].style.opacity=(i===idx)?'1':'.45';
+                rows[i].style.fontWeight=(i===idx)?'bold':'normal';
+            }
+            track.style.transform='translateY(calc(27px * '+( -idx +1.5)+'))';
+        }
+        renderLyric(0);
         const fmt=s=>{s=Math.floor(s||0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
         p.addEventListener('loadedmetadata',()=>{dur.textContent=fmt(p.duration);seek.max=Math.floor(p.duration||100);});
         dur.textContent=fmt(p.duration);
@@ -143,6 +174,7 @@
             if(!document.getElementById('bgmPanel')){clearInterval(window._bgmTick);return;}
             if(!p.paused){seek.value=Math.floor(p.currentTime);}
             cur.textContent=fmt(p.currentTime);
+            renderLyric(p.currentTime);
         },500);
         seek.addEventListener('input',()=>{p.currentTime=seek.value;saveBgmState();});
         vol.addEventListener('input',()=>{p.volume=vol.value/100;saveBgmState();});
