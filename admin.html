@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>访问统计后台 | 老牧师航空</title>
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<style>
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#e8eef3;}
+.login-box{background:rgba(255,255,255,0.75);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.8);border-radius:24px;box-shadow:0 20px 60px rgba(74,90,110,0.15);}
+.stat-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 16px rgba(74,90,110,0.08);}
+.stat-num{font-size:32px;font-weight:800;color:#4a5a6e;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:#4a5a6e;color:#fff;padding:10px 12px;text-align:left;font-weight:600;}
+td{padding:10px 12px;border-bottom:1px solid #eef2f5;}
+tr:hover td{background:#f5f8fb;}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;}
+.badge-pc{background:#e3edf7;color:#2c5aa0;}
+.badge-touch{background:#fde8e8;color:#c0392b;}
+</style>
+</head>
+<body class="min-h-screen p-6">
+
+<!-- 登录框 -->
+<div id="loginView" class="max-w-md mx-auto mt-20 login-box p-8">
+    <h1 class="text-2xl font-bold text-center mb-2" style="color:#4a5a6e">老牧师航空 · 访问统计</h1>
+    <p class="text-center text-sm mb-6" style="color:#8a99a8">请输入管理员密码</p>
+    <input id="pw" type="password" placeholder="管理员密码" class="w-full border rounded-xl px-4 py-3 mb-4 outline-none focus:border-blue-400">
+    <button onclick="login()" class="w-full py-3 rounded-xl text-white font-bold" style="background:linear-gradient(135deg,#4a5a6e,#6b7e92)">登 录</button>
+    <p id="err" class="text-red-500 text-sm mt-3 text-center"></p>
+</div>
+
+<!-- 数据视图 -->
+<div id="dataView" class="hidden max-w-7xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold" style="color:#4a5a6e">访问统计后台</h1>
+        <div>
+            <button onclick="load()" class="px-4 py-2 rounded-lg text-white text-sm mr-2" style="background:#4a5a6e">刷新</button>
+            <button onclick="logout()" class="px-4 py-2 rounded-lg text-sm bg-gray-200">退出</button>
+        </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="stat-card"><div class="text-sm" style="color:#8a99a8">总访问数</div><div class="stat-num" id="sTotal">-</div></div>
+        <div class="stat-card"><div class="text-sm" style="color:#8a99a8">今日访问</div><div class="stat-num" id="sToday">-</div></div>
+        <div class="stat-card"><div class="text-sm" style="color:#8a99a8">今日独立 IP</div><div class="stat-num" id="sIP">-</div></div>
+        <div class="stat-card"><div class="text-sm" style="color:#8a99a8">浏览器分布</div><div id="sBrowser" class="text-sm mt-2" style="color:#4a5a6e">-</div></div>
+    </div>
+    <div class="bg-white rounded-2xl shadow p-4 overflow-x-auto">
+        <table>
+            <thead><tr>
+                <th>时间</th><th>IP</th><th>设备</th><th>浏览器/系统</th><th>访问页面</th><th>分辨率</th><th>停留</th><th>会员</th>
+            </tr></thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function login(){
+    var pw = document.getElementById('pw').value.trim();
+    if(!pw){document.getElementById('err').textContent='请输入密码';return;}
+    sessionStorage.setItem('admin_pw', pw);
+    load();
+}
+function logout(){
+    sessionStorage.removeItem('admin_pw');
+    location.reload();
+}
+function fmtTime(ts){
+    var d = new Date(ts);
+    function pad(n){return n<10?'0'+n:n;}
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+}
+function load(){
+    var pw = sessionStorage.getItem('admin_pw');
+    if(!pw){document.getElementById('loginView').classList.remove('hidden');return;}
+    fetch('/api/visits?password='+encodeURIComponent(pw))
+        .then(r=>{
+            if(r.status===401){
+                document.getElementById('err').textContent='密码错误';
+                sessionStorage.removeItem('admin_pw');
+                throw new Error('401');
+            }
+            return r.json();
+        })
+        .then(d=>{
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('dataView').classList.remove('hidden');
+            document.getElementById('sTotal').textContent = d.stats.total;
+            document.getElementById('sToday').textContent = d.stats.today;
+            document.getElementById('sIP').textContent = d.stats.uniqueIP;
+            var bs = d.stats.browserStats;
+            document.getElementById('sBrowser').innerHTML = Object.entries(bs).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k,v])=>k+' '+v).join('<br>');
+            var html = '';
+            d.list.forEach(function(r){
+                var badge = r.touch ? '<span class="badge badge-touch">触屏</span>' : '<span class="badge badge-pc">PC</span>';
+                var dur = r.duration>0 ? r.duration+'s' : '-';
+                html += '<tr>'+
+                    '<td style="white-space:nowrap">'+fmtTime(r.ts)+'</td>'+
+                    '<td style="font-family:monospace;font-size:12px">'+r.ip+'</td>'+
+                    '<td>'+badge+'</td>'+
+                    '<td>'+r.browser+' '+r.browserVer+'<br><span style="color:#8a99a8;font-size:12px">'+r.os+'</span></td>'+
+                    '<td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+r.path+'">'+r.path+'</td>'+
+                    '<td style="font-size:12px;color:#8a99a8">'+r.screen+'</td>'+
+                    '<td>'+dur+'</td>'+
+                    '<td>'+(r.member||'-')+'</td>'+
+                '</tr>';
+            });
+            document.getElementById('tbody').innerHTML = html || '<tr><td colspan="8" style="text-align:center;color:#8a99a8;padding:30px">暂无访问记录</td></tr>';
+        })
+        .catch(e=>{ if(e.message!=='401') alert('加载失败: '+e.message); });
+}
+// 回车登录
+document.getElementById('pw').addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+// 自动每 15 秒刷新
+setInterval(function(){ if(!document.getElementById('dataView').classList.contains('hidden')) load(); }, 15000);
+load();
+</script>
+</body>
+</html>
