@@ -458,6 +458,7 @@ function resolveStatus(item){
 
 // 首次访问：右上角"最佳访问环境"小弹窗
 (function(){
+    if(sessionStorage.getItem('access_notice_seen')) return;
     function show(){
         const box=document.createElement('div');
         box.id='accessNotice';
@@ -486,6 +487,7 @@ function resolveStatus(item){
             box.style.transform='translateY(0) scale(1)';
         });
         document.getElementById('accessNoticeOk').addEventListener('click',function(){
+            sessionStorage.setItem('access_notice_seen','1');
             box.style.opacity='0';
             box.style.transform='translateY(-10px) scale(0.96)';
             setTimeout(function(){ box.remove(); },350);
