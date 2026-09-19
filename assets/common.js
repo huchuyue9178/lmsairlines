@@ -472,6 +472,7 @@ function resolveStatus(item){
                 '<span style="font-size:18px">✨</span>'+
                 '<strong style="font-size:15px;font-weight:800">最佳访问环境</strong>'+
             '</div>'+
+            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.1)">⚠️ 本网站包含大量液态玻璃效果、动效模糊以及动态，请确保您的设备运行内存 ≥ 4GB。</p>'+
             '<ul style="font-size:12.5px;line-height:1.7;color:#4a5a6e;list-style:none;padding:0;margin:0 0 12px">'+
                 '<li>· 建议使用 Chrome 79+ / Safari 13.1+ / iOS 13.4+</li>'+
                 '<li>· 需联网加载 CDN 资源，建议 4G 或 WiFi</li>'+
