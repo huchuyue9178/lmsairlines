@@ -554,9 +554,15 @@ function resolveStatus(item){
 
 // ===== 全局下滑浮现动效 =====
 (function(){
+    function isVisible(el){
+        // 跳过 hidden / display:none 的元素，等它真正显示时再由 MutationObserver 补
+        if(el.closest && el.closest('.hidden')) return false;
+        var st = getComputedStyle(el);
+        if(st.display==='none' || st.visibility==='hidden') return false;
+        return true;
+    }
     function applyReveal(root){
         if(!root) return;
-        // 选择主内容里的主要块：section、卡片、grid 直接子项、h2 标题
         var targets = root.querySelectorAll(
             'main > *, ' +
             'main .bg-card, main .card-gold, ' +
@@ -566,7 +572,7 @@ function resolveStatus(item){
         );
         targets.forEach(function(el){
             if(el.__revealed) return;
-            // 跳过固定定位/弹窗
+            if(!isVisible(el)) return;
             var pos = getComputedStyle(el).position;
             if(pos==='fixed') return;
             el.__revealed = true;
@@ -578,7 +584,9 @@ function resolveStatus(item){
         entries.forEach(function(e){
             if(e.isIntersecting){
                 e.target.classList.add('in');
-                io.unobserve(e.target);
+            } else {
+                // 离开视口时重置，再次进入会重新播动画
+                e.target.classList.remove('in');
             }
         });
     },{threshold:0.08, rootMargin:'0px 0px -40px 0px'});
@@ -587,7 +595,6 @@ function resolveStatus(item){
         var main = document.querySelector('main');
         if(!main) return;
         applyReveal(document);
-        // 动态渲染的内容（订单列表等）自动加动画
         var mo = new MutationObserver(function(muts){
             muts.forEach(function(m){
                 m.addedNodes.forEach(function(n){
