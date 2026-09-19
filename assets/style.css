@@ -58,18 +58,18 @@ h3{font-size:clamp(18px,2vw,22px);line-height:1.2;font-weight:600;letter-spacing
 /* ---- 水滴折射液态玻璃：多层渐变叠加 + 高光弧线 + 双边色框 ---- */
 .bg-card{
     background:
-        radial-gradient(120% 120% at 18% 0%, rgba(255,255,255,.92) 0%, rgba(255,255,255,0) 46%),
-        radial-gradient(100% 100% at 85% 105%, rgba(216,223,230,.65) 0%, rgba(216,223,230,0) 52%),
-        linear-gradient(135deg, rgba(255,255,255,.62), rgba(255,255,255,.34)) !important;
-    -webkit-backdrop-filter:blur(28px) saturate(160%);
-    backdrop-filter:blur(28px) saturate(160%);
-    border:1px solid rgba(255,255,255,0.7);
+        radial-gradient(120% 120% at 18% 0%, rgba(255,255,255,.95) 0%, rgba(255,255,255,0) 46%),
+        radial-gradient(100% 100% at 85% 105%, rgba(216,223,230,.7) 0%, rgba(216,223,230,0) 52%),
+        linear-gradient(135deg, rgba(255,255,255,.68), rgba(255,255,255,.38)) !important;
+    -webkit-backdrop-filter:blur(40px) saturate(180%) brightness(1.05);
+    backdrop-filter:blur(40px) saturate(180%) brightness(1.05);
+    border:1px solid rgba(255,255,255,0.75);
     box-shadow:
-        0 8px 32px rgba(120,140,160,0.16),
-        inset 0 1px 0 rgba(255,255,255,0.95),
-        inset 0 -1px 0 rgba(150,175,200,0.28),
-        inset 1px 0 0 rgba(255,255,255,0.45),
-        inset -1px 0 0 rgba(150,175,200,0.18);
+        0 12px 40px rgba(120,140,160,0.18),
+        inset 0 1.5px 0 rgba(255,255,255,1),
+        inset 0 -1.5px 0 rgba(150,175,200,0.3),
+        inset 1px 0 0 rgba(255,255,255,0.5),
+        inset -1px 0 0 rgba(150,175,200,0.2);
 }
 .card-gold{
     border:1px solid rgba(255,255,255,0.65);
@@ -518,16 +518,31 @@ hr{border-color:var(--ios-sep);}
 /* ===== 全局下滑浮现动效（所有页面） ===== */
 .reveal-up{
     opacity:0;
-    transform:translateY(36px);
-    transition:opacity .8s cubic-bezier(.2,.9,.3,1), transform .8s cubic-bezier(.2,.9,.3,1);
-    will-change:opacity, transform;
+    transform:translateY(72px) scale(0.98);
+    filter:blur(10px);
+    transition:
+        opacity .9s cubic-bezier(0.22,1,0.36,1),
+        transform .9s cubic-bezier(0.22,1,0.36,1),
+        filter .9s cubic-bezier(0.22,1,0.36,1);
+    will-change:opacity, transform, filter;
 }
 .reveal-up.in{
     opacity:1;
-    transform:translateY(0);
+    transform:translateY(0) scale(1);
+    filter:blur(0);
+}
+/* 离开视口时快速淡出（上滑不重播动画，保证流畅） */
+.reveal-up:not(.in){
+    transition:
+        opacity .4s ease-out,
+        transform .4s ease-out,
+        filter .4s ease-out;
 }
 /* 触屏模式下动效减弱，避免卡顿 */
-body.touch-mode .reveal-up{ transition-duration:.45s; }
+body.touch-mode .reveal-up{
+    transition-duration:.5s;
+    transform:translateY(40px);
+}
 @media (prefers-reduced-motion: reduce){
-    .reveal-up{opacity:1;transform:none;transition:none;}
+    .reveal-up{opacity:1;transform:none;filter:none;transition:none;}
 }
