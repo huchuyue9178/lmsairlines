@@ -275,7 +275,7 @@ hr{border-color:var(--ios-sep);}
 .reveal.visible{opacity:1;transform:translateY(0) scale(1);}
 
 /* 首页固定背景层 */
-.bg-layer{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(242,244,242,0.92) 0%,rgba(242,244,242,0.78) 35%,rgba(216,223,230,0.55) 65%,rgba(216,223,230,0.72) 100%),url('hero_bg.jpg') center/cover no-repeat;will-change:transform;}
+.bg-layer{position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(242,244,242,0.92) 0%,rgba(242,244,242,0.78) 35%,rgba(216,223,230,0.55) 65%,rgba(216,223,230,0.72) 100%),url('hero_bg.webp') center/cover no-repeat;will-change:transform;background-color:#D8DFE6;}
 
 /* Hero 大标题滑入 */
 @keyframes heroSlideUp{
