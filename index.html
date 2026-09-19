@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260919x"></script>
+    <script src="assets/tailwind-config.js?v=20260919y"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20260919x">
+    <link rel="stylesheet" href="assets/style.css?v=20260919y">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -35,7 +35,12 @@
                     <a href="#" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">查看全部 <i class="fa fa-angle-right ml-1"></i></a>
                 </div>
                 <div id="activityList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <!-- 活动卡片将由后续配置加入，每个活动点击进入独立详情页 -->
+                    <a href="activity-1.html" class="block rounded-big p-5 bounce-hover" style="background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.6)">
+                        <p class="text-xs font-semibold mb-2" style="color:#c0392b">视频征集</p>
+                        <h4 class="font-bold text-lg text-textDark mb-1">逐梦云天 · 定格航影</h4>
+                        <p class="text-sm text-textGray mt-2">原创航空视频征集，赢免费机票与定制好礼</p>
+                        <p class="text-xs text-textGray mt-3">2026.09.19 — 10.19</p>
+                    </a>
                 </div>
             </div>
         </section>
@@ -68,7 +73,7 @@
                     </div>
                 </div>
                 <div class="mt-8 flex justify-center items-end">
-                    <img src="assets/railair_icon.png?v=20260919x" alt="空铁联运" class="anim-float" style="height:110px;width:auto;border-radius:24px;box-shadow:0 10px 30px rgba(74,90,110,0.18);background:#fff;padding:14px 18px">
+                    <img src="assets/railair_icon.png?v=20260919y" alt="空铁联运" class="anim-float" style="height:110px;width:auto;border-radius:24px;box-shadow:0 10px 30px rgba(74,90,110,0.18);background:#fff;padding:14px 18px">
                 </div>
             </div>
         </section>
@@ -160,8 +165,8 @@
         </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260919x"></script>
-    <script src="assets/common.js?v=20260919x"></script>
+    <script src="assets/data.js?v=20260919y"></script>
+    <script src="assets/common.js?v=20260919y"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
         // 滚动浮现动效：每次进入视口都重新播放
