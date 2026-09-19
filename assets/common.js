@@ -551,25 +551,3 @@ function resolveStatus(item){
     else show();
 })();
 
-// ===== 访问埋点（自动上报到 /api/log）=====
-(function(){
-    var start = Date.now();
-    var path = location.pathname + location.search;
-    var referrer = document.referrer || '';
-    function send(duration){
-        try{
-            var screen = window.screen.width + 'x' + window.screen.height + '@' + (window.devicePixelRatio||1);
-            var touch = document.body.classList.contains('touch-mode');
-            var member = '';
-            try { var u = JSON.parse(localStorage.getItem('lms_user')||'{}'); member = u.name || u.phone || ''; } catch(e){}
-            var data = JSON.stringify({path:path, referrer:referrer, screen:screen, touch:touch, member:member, duration:duration});
-            if(navigator.sendBeacon){
-                navigator.sendBeacon('/api/log', new Blob([data],{type:'application/json'}));
-            } else {
-                fetch('/api/log',{method:'POST',body:data,headers:{'Content-Type':'application/json'},keepalive:true});
-            }
-        }catch(e){}
-    }
-    send(0);
-    window.addEventListener('beforeunload', function(){ send(Math.round((Date.now()-start)/1000)); });
-})();
