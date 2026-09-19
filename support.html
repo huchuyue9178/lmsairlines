@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>访问环境说明 | 老牧师航空</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js?v=20260920gg"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20260920gg">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-28 pb-16 container mx-auto px-4 max-w-4xl">
+        <h2 class="text-[28px] font-bold text-gold mb-2">访问环境说明</h2>
+        <p class="text-textGray text-sm mb-8">老牧师航空 · 最佳浏览器、设备与网络要求</p>
+
+        <!-- 自动检测卡片 -->
+        <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-textDark mb-4" style="font-size:22px">
+                <i class="fa fa-desktop mr-2" style="color:#4a5a6e"></i>我的设备自检
+            </h3>
+            <div id="detectResult" class="space-y-2 text-sm"></div>
+            <div id="detectVerdict" class="mt-5 p-4 rounded-xl text-center font-semibold" style="display:none"></div>
+        </div>
+
+        <!-- 浏览器版本表 -->
+        <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-textDark mb-4" style="font-size:22px">
+                <i class="fa fa-globe mr-2" style="color:#4a5a6e"></i>支持的浏览器版本
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b" style="border-color:rgba(74,90,110,0.15)">
+                            <th class="text-left py-2 pr-4 font-semibold">浏览器</th>
+                            <th class="text-left py-2 pr-4 font-semibold">最低版本</th>
+                            <th class="text-left py-2 font-semibold">发布年份</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-textDark/80">
+                        <tr class="border-b" style="border-color:rgba(74,90,110,0.08)">
+                            <td class="py-2.5 pr-4">Google Chrome</td>
+                            <td class="py-2.5 pr-4">79 及以上</td>
+                            <td class="py-2.5">2019 年初</td>
+                        </tr>
+                        <tr class="border-b" style="border-color:rgba(74,90,110,0.08)">
+                            <td class="py-2.5 pr-4">Microsoft Edge</td>
+                            <td class="py-2.5 pr-4">79 及以上（Chromium 内核）</td>
+                            <td class="py-2.5">2020 年初</td>
+                        </tr>
+                        <tr class="border-b" style="border-color:rgba(74,90,110,0.08)">
+                            <td class="py-2.5 pr-4">Safari</td>
+                            <td class="py-2.5 pr-4">13.1 及以上</td>
+                            <td class="py-2.5">2019 年中</td>
+                        </tr>
+                        <tr class="border-b" style="border-color:rgba(74,90,110,0.08)">
+                            <td class="py-2.5 pr-4">Firefox</td>
+                            <td class="py-2.5 pr-4">75 及以上</td>
+                            <td class="py-2.5">2020 年中</td>
+                        </tr>
+                        <tr class="border-b" style="border-color:rgba(74,90,110,0.08)">
+                            <td class="py-2.5 pr-4">iOS Safari</td>
+                            <td class="py-2.5 pr-4">iOS 13.4 及以上</td>
+                            <td class="py-2.5">2020 年</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2.5 pr-4">Chrome / Edge（安卓）</td>
+                            <td class="py-2.5 pr-4">79 及以上</td>
+                            <td class="py-2.5">2019 年起</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 p-3 rounded-lg text-xs" style="background:rgba(201,138,138,0.1);color:#a05050">
+                <i class="fa fa-exclamation-triangle mr-1"></i>
+                不支持：Internet Explorer 全系列、2018 年以前的老旧浏览器、未升级的微信内置浏览器（iOS 端）。
+            </div>
+        </div>
+
+        <!-- 设备要求 -->
+        <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-textDark mb-4" style="font-size:22px">
+                <i class="fa fa-laptop mr-2" style="color:#4a5a6e"></i>支持的设备
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-xl" style="background:rgba(255,255,255,0.4)">
+                    <div class="font-semibold mb-2">💻 桌面 / 笔记本</div>
+                    <ul class="text-textDark/70 space-y-1">
+                        <li>· 屏幕宽度 ≥ 1280px 体验最佳</li>
+                        <li>· 系统：Windows 10/11、macOS 10.15+</li>
+                        <li>· 内存 ≥ 4GB</li>
+                    </ul>
+                </div>
+                <div class="p-4 rounded-xl" style="background:rgba(255,255,255,0.4)">
+                    <div class="font-semibold mb-2">📱 手机 / 平板</div>
+                    <ul class="text-textDark/70 space-y-1">
+                        <li>· iPhone：iOS 13.4 及以上（SE 及更新）</li>
+                        <li>· 安卓：Android 8.0 及以上</li>
+                        <li>· 屏幕宽度 ≥ 360px（再窄会挤压）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 网络与设置 -->
+        <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-textDark mb-4" style="font-size:22px">
+                <i class="fa fa-wifi mr-2" style="color:#4a5a6e"></i>网络与浏览器设置
+            </h3>
+            <ul class="text-sm text-textDark/80 space-y-2">
+                <li>🌐 <b>必须联网</b>：网站依赖 Tailwind CDN、Font Awesome 图标、Google Fonts 在线加载</li>
+                <li>📶 <b>建议带宽</b>：4G / WiFi；首屏约 1-2MB，图片懒加载</li>
+                <li>⚙️ <b>开启 JavaScript</b>：购票、值机、会员等所有交互均由 JS 驱动</li>
+                <li>🔐 <b>允许本地存储（localStorage）</b>：订单、会员等级、兑换记录保存在本机；无痕模式下数据不保留</li>
+                <li>🔊 <b>如需背景音乐</b>：浏览器需允许自动播放/用户手势触发音频</li>
+            </ul>
+        </div>
+
+        <!-- 如何判断 -->
+        <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
+            <h3 class="font-bold text-textDark mb-4" style="font-size:22px">
+                <i class="fa fa-search mr-2" style="color:#4a5a6e"></i>如何判断自己的设备是否支持
+            </h3>
+            <ol class="text-sm text-textDark/80 space-y-3 list-decimal pl-5">
+                <li>
+                    <b>看上面"我的设备自检"卡片</b>：本站已自动读取你的浏览器类型、版本、操作系统，并给出"✅ 推荐访问"或"⚠️ 建议升级"的结论。
+                </li>
+                <li>
+                    <b>视觉自检</b>：如果首页有明显的毛玻璃模糊效果（导航栏、卡片背景半透明）、标题圆润饱满、滚动时模块依次滑入浮现，说明你的浏览器支持完整效果。
+                </li>
+                <li>
+                    <b>功能自检</b>：尝试点击顶部导航、首页热门航线卡片切换标签——若能正常点击、切换、跳转，说明 JS 与交互正常。
+                </li>
+                <li>
+                    <b>升级浏览器</b>：若页面错位、模糊消失、按钮无反应，请到浏览器官网下载最新版（Chrome / Edge / Safari 均为免费自动更新）。
+                </li>
+            </ol>
+            <div class="mt-5 text-center">
+                <a href="index.html" class="inline-block px-8 py-3 rounded-full text-sm font-semibold" style="background:#4a5a6e;color:#fff">
+                    <i class="fa fa-arrow-left mr-1"></i>返回首页
+                </a>
+            </div>
+        </div>
+    </main>
+    <div id="siteFooter"></div>
+    <script src="assets/data.js?v=20260920gg"></script>
+    <script src="assets/common.js?v=20260920gg"></script>
+    <script>
+        // 自动检测浏览器
+        (function(){
+            var ua=navigator.userAgent;
+            var platform=navigator.platform||navigator.userAgentData?.platform||'';
+            var name='未知浏览器', major=0, os='未知系统';
+            // OS
+            if(/Windows NT 10/.test(ua)) os='Windows 10/11';
+            else if(/Windows NT 6\.1/.test(ua)) os='Windows 7';
+            else if(/Mac OS X/.test(ua)) os='macOS';
+            else if(/iPhone|iPad/.test(ua)) os='iOS (iPhone/iPad)';
+            else if(/Android/.test(ua)) os='Android';
+            else if(/Linux/.test(ua)) os='Linux';
+            // 浏览器（按优先级匹配）
+            var m;
+            if(/Edg(?:e|A|iOS)?\/(\d+)/.test(ua) && /Edg/.test(ua)){
+                m=ua.match(/Edg(?:e|A|iOS)?\/(\d+)/);
+                if(m){name='Microsoft Edge';major=+m[1];}
+            }
+            if(!m && /OPR\/(\d+)/.test(ua)){
+                m=ua.match(/OPR\/(\d+)/);name='Opera';major=+m[1];
+            }
+            if(!m && /Chrome\/(\d+)/.test(ua) && !/Chromium/.test(ua)){
+                m=ua.match(/Chrome\/(\d+)/);name='Google Chrome';major=+m[1];
+            }
+            if(!m && /Firefox\/(\d+)/.test(ua)){
+                m=ua.match(/Firefox\/(\d+)/);name='Firefox';major=+m[1];
+            }
+            if(!m && /Version\/(\d+)\.\d+.*Safari/.test(ua)){
+                m=ua.match(/Version\/(\d+)/);name='Safari';major=+m[1];
+            }
+            // 判断最低版本
+            var minVer={
+                'Google Chrome':79,'Microsoft Edge':79,'Firefox':75,'Safari':13.1,'Opera':66
+            };
+            var required=minVer[name];
+            var supported = required? (name==='Safari'? major>=13.1 : major>=required) : false;
+            // iOS 单独判
+            if(/iPhone|iPad/.test(ua) && major===0){
+                var v=ua.match(/OS (\d+)_/);
+                if(v){ os='iOS '+v[1]; supported = +v[1]>=13; name='iOS Safari'; required='13.4'; }
+            }
+            // 渲染
+            function row(k,v){
+                return '<div class="flex justify-between py-1" style="border-bottom:1px dashed rgba(74,90,110,0.1)"><span class="text-textGray">'+k+'</span><b>'+v+'</b></div>';
+            }
+            var html='';
+            html+=row('检测到的浏览器', name+' '+major);
+            html+=row('操作系统', os);
+            html+=row('要求最低版本', required||'—');
+            html+=row('JavaScript', '已启用');
+            html+=row('本地存储', (typeof localStorage!=='undefined'?'可用':'不可用'));
+            document.getElementById('detectResult').innerHTML=html;
+            var verdict=document.getElementById('detectVerdict');
+            verdict.style.display='block';
+            if(supported){
+                verdict.innerHTML='<i class="fa fa-check-circle mr-1"></i>✅ 你的设备符合要求，推荐访问本站';
+                verdict.style.background='rgba(123,168,154,0.18)';
+                verdict.style.color='#4a6b5e';
+            }else{
+                verdict.innerHTML='<i class="fa fa-exclamation-triangle mr-1"></i>⚠️ 建议升级浏览器后再访问，可能存在显示异常';
+                verdict.style.background='rgba(201,138,138,0.18)';
+                verdict.style.color='#a05050';
+            }
+        })();
+    </script>
+</body>
+</html>

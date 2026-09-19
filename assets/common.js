@@ -478,7 +478,8 @@ function resolveStatus(item){
                 '<li>· 请开启 JavaScript 与本地存储</li>'+
                 '<li style="color:#8a99a8;font-size:11.5px;margin-top:4px">老版本浏览器可能出现玻璃模糊、动效缺失</li>'+
             '</ul>'+
-            '<div style="display:flex;justify-content:flex-end">'+
+            '<div style="display:flex;justify-content:flex-end;gap:8px">'+
+                '<a id="accessNoticeDetail" href="support.html" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
                 '<button id="accessNoticeOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:6px 18px;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我已知晓</button>'+
             '</div>';
         document.body.appendChild(box);
