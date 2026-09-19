@@ -269,3 +269,7 @@ hr{border-color:var(--ios-sep);}
 .anim-float{animation:floatY 4s ease-in-out infinite;}
 .anim-link{display:inline-block;transition:opacity .2s ease,transform .2s ease;}
 .anim-link:hover{opacity:0.7;}
+
+/* 首页滚动浮现动效 */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(0.22,1,0.36,1),transform .8s cubic-bezier(0.22,1,0.36,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
