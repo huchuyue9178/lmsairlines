@@ -568,8 +568,7 @@ function resolveStatus(item){
         var targets = root.querySelectorAll(
             'main > *, ' +
             'main .bg-card, main .card-gold, ' +
-            'main .grid > *, main .space-y-4 > *, main .space-y-3 > *, ' +
-            'main h2, main h3, ' +
+            'main .grid > *, ' +
             '.route-card, .deal-card, .order-card, .shop-card, .faq-item, .activity-card'
         );
         targets.forEach(function(el){
