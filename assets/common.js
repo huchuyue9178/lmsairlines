@@ -497,10 +497,11 @@ function resolveStatus(item){
             '</div>'+
             // 性能模式
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">性能模式</p>'+
-            '<div style="display:flex;gap:8px;margin-bottom:14px">'+
+            '<div style="display:flex;gap:8px;margin-bottom:8px">'+
                 '<button id="setupFull" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">✨ 完整版<br><span style="font-weight:400;font-size:11px">全部动效+玻璃</span></button>'+
                 '<button id="setupLite" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">⚡ 节省性能版<br><span style="font-weight:400;font-size:11px">保留玻璃+减动画</span></button>'+
             '</div>'+
+            '<p style="font-size:12px;margin:0 0 14px;color:'+(dev.lowEnd?'#c98a8a':'#7ba89a')+'">'+(dev.lowEnd?'💡 系统判断：您的设备推荐使用节省性能版':'💡 系统判断：您的设备适合使用完整版')+'</p>'+
             // 确认按钮
             '<div style="display:flex;justify-content:flex-end;gap:8px">'+
                 '<a id="setupDetail" href="support.html" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
