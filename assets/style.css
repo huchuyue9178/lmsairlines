@@ -556,12 +556,12 @@ hr{border-color:var(--ios-sep);}
     transform:translateY(0) scale(1) rotate(0deg);
     filter:blur(0) brightness(1);
 }
-/* 离开视口时快速淡出 */
+/* 离开视口时快速淡出（不偏移，避免卡在偏移状态） */
 .reveal-up:not(.in){
     transition:
-        opacity .4s ease-out,
-        transform .4s ease-out,
-        filter .4s ease-out;
+        opacity .35s ease-out,
+        transform .35s ease-out,
+        filter .35s ease-out;
 }
 /* 触屏模式下动效减弱 */
 body.touch-mode .reveal-up{

@@ -591,11 +591,12 @@ function resolveStatus(item){
         entries.forEach(function(e){
             if(e.isIntersecting){
                 e.target.classList.add('in');
-                // 一旦显示过就取消观察，避免 Safari 上离开视口被误判导致卡在偏移状态
-                io.unobserve(e.target);
+            } else {
+                // 离开视口时重置，再次进入会重播动画
+                e.target.classList.remove('in');
             }
         });
-    },{threshold:0.01, rootMargin:'0px 0px 0px 0px'});
+    },{threshold:0.01, rootMargin:'0px 0px -5% 0px'});
 
     function start(){
         var main = document.querySelector('main');
