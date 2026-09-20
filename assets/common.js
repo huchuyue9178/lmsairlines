@@ -488,12 +488,7 @@ function resolveStatus(item){
                 '<strong style="font-size:16px;font-weight:800">欢迎使用老牧师航空</strong>'+
             '</div>'+
             // 环境提示
-            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.08)">⚠️ 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
-            // 设备识别结果
-            '<div style="font-size:12px;color:#4a5a6e;line-height:1.6;margin:0 0 12px;padding:8px 10px;border-radius:10px;background:rgba(74,90,110,0.06)">'+
-                '📊 设备识别：<b>'+(dev.isMobile?'移动端':'桌面端')+'</b> · CPU '+dev.cores+' 核 · 内存 '+dev.mem+'GB<br>'+
-                (dev.lowEnd?'<span style="color:#c98a8a">检测到设备性能有限，推荐「节省性能版」</span>':'<span style="color:#7ba89a">设备性能充足，推荐「完整版」</span>')+
-            '</div>'+
+            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 14px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.08)">⚠️ 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
             // 设备类型
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">设备类型</p>'+
             '<div style="display:flex;gap:8px;margin-bottom:14px">'+
