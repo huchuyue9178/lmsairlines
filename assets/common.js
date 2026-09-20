@@ -116,7 +116,7 @@
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
                 '<i class="fa fa-music" style="color:#4a5a6e"></i>'+
                 '<b style="font-size:14px;color:#3a4a5c">背景音乐</b>'+
-                '<span style="margin-left:auto;font-size:12px;opacity:.55;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()">✕</span>'+
+                '<span style="margin-left:auto;font-size:12px;opacity:.55;cursor:pointer" onclick="document.getElementById(\'bgmPanel\').remove()"><i class="fa fa-times"></i></span>'+
             '</div>'+
             '<div style="text-align:center;margin-bottom:10px;padding:8px;border-radius:12px;background:rgba(255,255,255,0.55);backdrop-filter:blur(12px);font-size:13px;letter-spacing:.5px;color:#4a5a6e"><i class="fa fa-headphones mr-2"></i>DJ版《琵琶行》</div>'+
             '<div style="display:flex;align-items:center;gap:8px;font-size:12px;opacity:.75;margin-bottom:6px;color:#3a4a5c">'+

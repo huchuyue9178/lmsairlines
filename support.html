@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>访问环境说明 | 老牧师航空</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920kkk"></script>
+    <script src="assets/tailwind-config.js?v=20260920lll"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20260920kkk">
+    <link rel="stylesheet" href="assets/style.css?v=20260920lll">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -85,7 +85,7 @@
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div class="p-4 rounded-xl" style="background:rgba(255,255,255,0.4)">
-                    <div class="font-semibold mb-2">💻 桌面 / 笔记本</div>
+                    <div class="font-semibold mb-2"><i class="fa fa-desktop mr-1"></i> 桌面 / 笔记本</div>
                     <ul class="text-textDark/70 space-y-1">
                         <li>· 屏幕宽度 ≥ 1280px 体验最佳</li>
                         <li>· 系统：Windows 10/11、macOS 10.15+</li>
@@ -93,7 +93,7 @@
                     </ul>
                 </div>
                 <div class="p-4 rounded-xl" style="background:rgba(255,255,255,0.4)">
-                    <div class="font-semibold mb-2">📱 手机 / 平板</div>
+                    <div class="font-semibold mb-2"><i class="fa fa-mobile mr-1"></i> 手机 / 平板</div>
                     <ul class="text-textDark/70 space-y-1">
                         <li>· iPhone：iOS 13.4 及以上（SE 及更新）</li>
                         <li>· 安卓：Android 8.0 及以上</li>
@@ -109,11 +109,11 @@
                 <i class="fa fa-wifi mr-2" style="color:#4a5a6e"></i>网络与浏览器设置
             </h3>
             <ul class="text-sm text-textDark/80 space-y-2">
-                <li>🌐 <b>必须联网</b>：网站依赖 Tailwind CDN、Font Awesome 图标、Google Fonts 在线加载</li>
-                <li>📶 <b>建议带宽</b>：4G / WiFi；首屏约 1-2MB，图片懒加载</li>
-                <li>⚙️ <b>开启 JavaScript</b>：购票、值机、会员等所有交互均由 JS 驱动</li>
-                <li>🔐 <b>允许本地存储（localStorage）</b>：订单、会员等级、兑换记录保存在本机；无痕模式下数据不保留</li>
-                <li>🔊 <b>如需背景音乐</b>：浏览器需允许自动播放/用户手势触发音频</li>
+                <li><i class="fa fa-globe mr-1"></i> <b>必须联网</b>：网站依赖 Tailwind CDN、Font Awesome 图标、Google Fonts 在线加载</li>
+                <li><i class="fa fa-wifi mr-1"></i> <b>建议带宽</b>：4G / WiFi；首屏约 1-2MB，图片懒加载</li>
+                <li><i class="fa fa-cog mr-1"></i> <b>开启 JavaScript</b>：购票、值机、会员等所有交互均由 JS 驱动</li>
+                <li><i class="fa fa-lock mr-1"></i> <b>允许本地存储（localStorage）</b>：订单、会员等级、兑换记录保存在本机；无痕模式下数据不保留</li>
+                <li><i class="fa fa-volume-up mr-1"></i> <b>如需背景音乐</b>：浏览器需允许自动播放/用户手势触发音频</li>
             </ul>
         </div>
 
@@ -124,7 +124,7 @@
             </h3>
             <ol class="text-sm text-textDark/80 space-y-3 list-decimal pl-5">
                 <li>
-                    <b>看上面"我的设备自检"卡片</b>：本站已自动读取你的浏览器类型、版本、操作系统，并给出"✅ 推荐访问"或"⚠️ 建议升级"的结论。
+                    <b>看上面"我的设备自检"卡片</b>：本站已自动读取你的浏览器类型、版本、操作系统，并给出"<i class="fa fa-check-circle mr-1"></i> 推荐访问"或"<i class="fa fa-exclamation-triangle mr-1"></i> 建议升级"的结论。
                 </li>
                 <li>
                     <b>视觉自检</b>：如果首页有明显的毛玻璃模糊效果（导航栏、卡片背景半透明）、标题圆润饱满、滚动时模块依次滑入浮现，说明你的浏览器支持完整效果。
@@ -144,8 +144,8 @@
         </div>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920kkk"></script>
-    <script src="assets/common.js?v=20260920kkk"></script>
+    <script src="assets/data.js?v=20260920lll"></script>
+    <script src="assets/common.js?v=20260920lll"></script>
     <script>
         // 自动检测浏览器
         (function(){
@@ -202,11 +202,11 @@
             var verdict=document.getElementById('detectVerdict');
             verdict.style.display='block';
             if(supported){
-                verdict.innerHTML='<i class="fa fa-check-circle mr-1"></i>✅ 你的设备符合要求，推荐访问本站';
+                verdict.innerHTML='<i class="fa fa-check-circle mr-1"></i><i class="fa fa-check-circle mr-1"></i> 你的设备符合要求，推荐访问本站';
                 verdict.style.background='rgba(123,168,154,0.18)';
                 verdict.style.color='#4a6b5e';
             }else{
-                verdict.innerHTML='<i class="fa fa-exclamation-triangle mr-1"></i>⚠️ 建议升级浏览器后再访问，可能存在显示异常';
+                verdict.innerHTML='<i class="fa fa-exclamation-triangle mr-1"></i><i class="fa fa-exclamation-triangle mr-1"></i> 建议升级浏览器后再访问，可能存在显示异常';
                 verdict.style.background='rgba(201,138,138,0.18)';
                 verdict.style.color='#a05050';
             }
