@@ -5,46 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
-    <script src="assets/tailwind-config.js?v=20260920fff"></script>
+    <script src="assets/tailwind-config.js?v=20260920ggg"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20260920fff">
+    <link rel="stylesheet" href="assets/style.css?v=20260920ggg">
 </head>
 <body class="text-textDark">
-    <!-- 开场动画：飞机跟随滚动从右飞到左，黑屏渐变到主页 -->
-    <div id="introPlane" style="position:fixed;inset:0;z-index:9999;pointer-events:none;background:#000;display:flex;align-items:center;justify-content:center;">
-        <img id="planeImg" src="assets/plane-cutout.png" alt="" style="width:60%;max-width:900px;position:absolute;right:-60%;top:50%;transform:translateY(-50%);">
-    </div>
-    <script>
-        (function(){
-            var intro=document.getElementById('introPlane');
-            var plane=document.getElementById('planeImg');
-            var maxScroll=window.innerHeight*2;
-
-            function onScroll(){
-                var y=window.scrollY||document.documentElement.scrollTop||0;
-                var progress=Math.min(y/maxScroll,1);
-
-                // 第一段 0-0.5：飞机飞行
-                var flyP=Math.min(progress*2,1);
-                var pos=-60+flyP*180;
-                plane.style.right=pos+'%';
-
-                // 第二段 0.5-1：黑屏渐变到主页
-                var fadeP=Math.max(0,(progress-0.5)*2);
-                intro.style.opacity=String(1-fadeP);
-                // 背景从纯黑渐变到雾蓝
-                var b=Math.round(fadeP*216); // 0→216
-                intro.style.background='rgb('+b+','+b+','+b+')';
-
-                if(progress>=1){
-                    intro.remove();
-                    window.removeEventListener('scroll',onScroll);
-                }
-            }
-            window.addEventListener('scroll',onScroll,{passive:true});
-        })();
-    </script>
     <div class="bg-layer" aria-hidden="true"></div>
     <div id="siteHeader"></div>
     <main class="pt-24 pb-12">
@@ -108,7 +74,7 @@
                     </div>
                 </div>
                 <div class="mt-4 flex justify-center">
-                    <img src="assets/icons/plane.webp?v=20260920fff" alt="机票预订" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(74,120,180,0.3))">
+                    <img src="assets/icons/plane.webp?v=20260920ggg" alt="机票预订" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(74,120,180,0.3))">
                 </div>
             </div>
             <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:34px 24px 26px;min-height:310px;display:flex;flex-direction:column;justify-content:space-between">
@@ -120,7 +86,7 @@
                     </div>
                 </div>
                 <div class="mt-4 flex justify-center items-end">
-                    <img src="assets/railair_icon.png?v=20260920fff" alt="空铁联运" class="anim-float" style="height:62px;width:auto;filter:drop-shadow(0 6px 18px rgba(180,60,60,0.25))">
+                    <img src="assets/railair_icon.png?v=20260920ggg" alt="空铁联运" class="anim-float" style="height:62px;width:auto;filter:drop-shadow(0 6px 18px rgba(180,60,60,0.25))">
                 </div>
             </div>
         </section>
@@ -136,7 +102,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex justify-center">
-                    <img src="assets/icons/checkin.webp?v=20260920fff" alt="在线值机" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(120,100,200,0.3))">
+                    <img src="assets/icons/checkin.webp?v=20260920ggg" alt="在线值机" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(120,100,200,0.3))">
                 </div>
             </div>
             <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
@@ -148,7 +114,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex justify-center">
-                    <img src="assets/icons/flight.webp?v=20260920fff" alt="航班动态" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(60,180,170,0.3));animation-delay:.2s">
+                    <img src="assets/icons/flight.webp?v=20260920ggg" alt="航班动态" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(60,180,170,0.3));animation-delay:.2s">
                 </div>
             </div>
             <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
@@ -160,7 +126,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex justify-center">
-                    <img src="assets/icons/member.webp?v=20260920fff" alt="会员中心" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(200,160,80,0.3));animation-delay:.4s">
+                    <img src="assets/icons/member.webp?v=20260920ggg" alt="会员中心" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(200,160,80,0.3));animation-delay:.4s">
                 </div>
             </div>
             <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
@@ -172,7 +138,7 @@
                     </div>
                 </div>
                 <div class="mt-6 flex justify-center">
-                    <img src="assets/icons/cart.webp?v=20260920fff" alt="购物车" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(230,140,60,0.3));animation-delay:.6s">
+                    <img src="assets/icons/cart.webp?v=20260920ggg" alt="购物车" class="anim-float" style="height:72px;width:auto;filter:drop-shadow(0 6px 16px rgba(230,140,60,0.3));animation-delay:.6s">
                 </div>
             </div>
         </section>
@@ -215,9 +181,9 @@
         </section>
     </main>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20260920fff"></script>
-    <script src="assets/common.js?v=20260920fff"></script>
-    <script src="assets/routes-data.js?v=20260920fff"></script>
+    <script src="assets/data.js?v=20260920ggg"></script>
+    <script src="assets/common.js?v=20260920ggg"></script>
+    <script src="assets/routes-data.js?v=20260920ggg"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
         // 热门航线带图卡片
