@@ -456,45 +456,99 @@ function resolveStatus(item){
     return item.status;
 }
 
-// 首次访问：右上角"最佳访问环境"小弹窗
+// 首次访问：合并弹窗（环境提示 + 设备类型 + 性能模式）
 (function(){
-    if(sessionStorage.getItem('access_notice_seen')) return;
+    if(sessionStorage.getItem('setup_done')) return;
+
+    // 设备识别
+    function detectDevice(){
+        var ua=navigator.userAgent;
+        var isMobile=/Android|iPhone|iPad|iPod|Mobile|SymbianOS|Windows Phone/i.test(ua);
+        var cores=navigator.hardwareConcurrency||4;
+        var mem=navigator.deviceMemory||4;
+        // 低端设备：CPU<4核 或 内存<4GB 或 移动端
+        var lowEnd=(cores<4)||(mem<4)||isMobile;
+        return {isMobile:isMobile,cores:cores,mem:mem,lowEnd:lowEnd};
+    }
+
     function show(){
-        const box=document.createElement('div');
-        box.id='accessNotice';
-        box.style.cssText='position:fixed;top:76px;right:16px;z-index:9999;width:300px;max-width:calc(100vw - 32px);'+
-            'background:rgba(255,255,255,0.65);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);'+
-            'border:1px solid rgba(255,255,255,0.8);border-radius:20px;box-shadow:0 12px 40px rgba(74,90,110,0.18);'+
-            'padding:18px 18px 14px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;'+
-            'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .45s cubic-bezier(.2,.9,.3,1.2);color:#3a4a5c;';
+        var dev=detectDevice();
+        var recommended=dev.lowEnd?'lite':'full';
+
+        var box=document.createElement('div');
+        box.id='setupDialog';
+        box.style.cssText='position:fixed;top:76px;right:16px;z-index:9999;width:340px;max-width:calc(100vw - 32px);'+
+            'background:rgba(255,255,255,0.7);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
+            'border:1px solid rgba(255,255,255,0.8);border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
+            'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:#3a4a5c;'+
+            'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .5s cubic-bezier(.2,.9,.3,1.2);';
         box.innerHTML=
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-                '<span style="font-size:18px">✨</span>'+
-                '<strong style="font-size:15px;font-weight:800">最佳访问环境</strong>'+
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+                '<span style="font-size:20px">✨</span>'+
+                '<strong style="font-size:16px;font-weight:800">欢迎使用老牧师航空</strong>'+
             '</div>'+
-            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.1)">⚠️ 本网站包含大量液态玻璃效果、动效模糊以及动态，请确保您的设备运行内存 ≥ 4GB。</p>'+
-            '<ul style="font-size:12.5px;line-height:1.7;color:#4a5a6e;list-style:none;padding:0;margin:0 0 12px">'+
-                '<li>· 建议使用 Chrome 79+ / Safari 13.1+ / iOS 13.4+</li>'+
-                '<li>· 需联网加载 CDN 资源，建议 4G 或 WiFi</li>'+
-                '<li>· 请开启 JavaScript 与本地存储</li>'+
-                '<li style="color:#8a99a8;font-size:11.5px;margin-top:4px">老版本浏览器可能出现玻璃模糊、动效缺失</li>'+
-            '</ul>'+
+            // 环境提示
+            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 10px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.08)">⚠️ 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
+            // 设备识别结果
+            '<div style="font-size:12px;color:#4a5a6e;line-height:1.6;margin:0 0 12px;padding:8px 10px;border-radius:10px;background:rgba(74,90,110,0.06)">'+
+                '📊 设备识别：<b>'+(dev.isMobile?'移动端':'桌面端')+'</b> · CPU '+dev.cores+' 核 · 内存 '+dev.mem+'GB<br>'+
+                (dev.lowEnd?'<span style="color:#c98a8a">检测到设备性能有限，推荐「节省性能版」</span>':'<span style="color:#7ba89a">设备性能充足，推荐「完整版」</span>')+
+            '</div>'+
+            // 设备类型
+            '<p style="font-size:13px;font-weight:700;margin:0 0 6px">设备类型</p>'+
+            '<div style="display:flex;gap:8px;margin-bottom:14px">'+
+                '<button id="setupPC" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">💻 电脑端</button>'+
+                '<button id="setupTouch" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">📱 触控端</button>'+
+            '</div>'+
+            // 性能模式
+            '<p style="font-size:13px;font-weight:700;margin:0 0 6px">性能模式</p>'+
+            '<div style="display:flex;gap:8px;margin-bottom:14px">'+
+                '<button id="setupFull" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">✨ 完整版<br><span style="font-weight:400;font-size:11px">全部动效+玻璃</span></button>'+
+                '<button id="setupLite" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">⚡ 节省性能版<br><span style="font-weight:400;font-size:11px">保留玻璃+减动画</span></button>'+
+            '</div>'+
+            // 确认按钮
             '<div style="display:flex;justify-content:flex-end;gap:8px">'+
-                '<a id="accessNoticeDetail" href="support.html" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
-                '<button id="accessNoticeOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:6px 18px;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我已知晓</button>'+
+                '<a id="setupDetail" href="support.html" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
+                '<button id="setupOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">开始体验</button>'+
             '</div>';
         document.body.appendChild(box);
         requestAnimationFrame(function(){
             box.style.opacity='1';
             box.style.transform='translateY(0) scale(1)';
         });
-        document.getElementById('accessNoticeOk').addEventListener('click',function(){
-            sessionStorage.setItem('access_notice_seen','1');
+
+        // 选中态管理
+        var selType=dev.isMobile?'touch':'pc';
+        var selPerf=recommended;
+        function refreshSel(){
+            var pc=document.getElementById('setupPC'),tc=document.getElementById('setupTouch');
+            var f=document.getElementById('setupFull'),l=document.getElementById('setupLite');
+            pc.style.background=selType==='pc'?'#4a5a6e':'rgba(255,255,255,0.6)';
+            pc.style.color=selType==='pc'?'#fff':'#4a5a6e';
+            tc.style.background=selType==='touch'?'#4a5a6e':'rgba(255,255,255,0.6)';
+            tc.style.color=selType==='touch'?'#fff':'#4a5a6e';
+            f.style.background=selPerf==='full'?'#4a5a6e':'rgba(255,255,255,0.6)';
+            f.style.color=selPerf==='full'?'#fff':'#4a5a6e';
+            l.style.background=selPerf==='lite'?'#4a5a6e':'rgba(255,255,255,0.6)';
+            l.style.color=selPerf==='lite'?'#fff':'#4a5a6e';
+        }
+        refreshSel();
+
+        document.getElementById('setupPC').addEventListener('click',function(){selType='pc';refreshSel();});
+        document.getElementById('setupTouch').addEventListener('click',function(){selType='touch';refreshSel();});
+        document.getElementById('setupFull').addEventListener('click',function(){selPerf='full';refreshSel();});
+        document.getElementById('setupLite').addEventListener('click',function(){selPerf='lite';refreshSel();});
+
+        document.getElementById('setupOk').addEventListener('click',function(){
+            sessionStorage.setItem('setup_done','1');
+            sessionStorage.setItem('device_mode',selType);
+            sessionStorage.setItem('perf_mode',selPerf);
+            if(selType==='touch') document.body.classList.add('touch-mode');
+            else document.body.classList.remove('touch-mode');
+            if(selPerf==='lite') document.body.classList.add('lite-mode');
+            else document.body.classList.remove('lite-mode');
             box.style.opacity='0';
             box.style.transform='translateY(-10px) scale(0.96)';
-            // 高级动效：第二个"访问模式"弹窗上浮到第一个的位置
-            var dn=document.getElementById('deviceModeNotice');
-            if(dn){ dn.style.top='76px'; }
             setTimeout(function(){ box.remove(); },350);
         });
     }
@@ -502,53 +556,12 @@ function resolveStatus(item){
     else show();
 })();
 
-// 已选过模式：立刻给 body 加 class（在弹窗出现前就生效）
+// 已选过模式：立刻给 body 加 class
 (function(){
     var mode=sessionStorage.getItem('device_mode');
     if(mode==='touch') document.body.classList.add('touch-mode');
-})();
-
-// 访问模式选择弹窗（紧接环境弹窗下方）
-(function(){
-    if(sessionStorage.getItem('device_prompt_seen')) return;
-    function show(){
-        var box=document.createElement('div');
-        box.id='deviceModeNotice';
-        box.style.cssText='position:fixed;top:460px;right:16px;z-index:9998;width:300px;max-width:calc(100vw - 32px);'+
-            'background:rgba(255,255,255,0.65);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);'+
-            'border:1px solid rgba(255,255,255,0.8);border-radius:20px;box-shadow:0 12px 40px rgba(74,90,110,0.18);'+
-            'padding:18px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:#3a4a5c;'+
-            'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .45s cubic-bezier(.2,.9,.3,1.2);';
-        box.innerHTML=
-            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
-                '<span style="font-size:18px">🖥️</span>'+
-                '<strong style="font-size:15px;font-weight:800">选择访问模式</strong>'+
-            '</div>'+
-            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 12px">请选择您正在使用的设备，以便本站自动优化交互体验：</p>'+
-            '<div style="display:flex;gap:8px">'+
-                '<button id="modePC" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:12px 8px;font-size:13px;font-weight:700;cursor:pointer">💻<br>电脑端</button>'+
-                '<button id="modeTouch" style="flex:1;background:#4a5a6e;color:#fff;border:none;border-radius:14px;padding:12px 8px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">📱<br>触控移动端</button>'+
-            '</div>';
-        document.body.appendChild(box);
-        requestAnimationFrame(function(){
-            box.style.opacity='1';
-            box.style.transform='translateY(0) scale(1)';
-        });
-        function choose(mode){
-            sessionStorage.setItem('device_prompt_seen','1');
-            sessionStorage.setItem('device_mode',mode);
-            if(mode==='touch') document.body.classList.add('touch-mode');
-            else document.body.classList.remove('touch-mode');
-            box.style.opacity='0';
-            box.style.transform='translateY(-10px) scale(0.96)';
-            setTimeout(function(){ box.remove(); },350);
-            if(typeof showToast==='function') showToast(mode==='touch'?'已切换为触控模式，按钮与卡片已加大':'已切换为电脑端模式');
-        }
-        document.getElementById('modePC').addEventListener('click',function(){choose('pc');});
-        document.getElementById('modeTouch').addEventListener('click',function(){choose('touch');});
-    }
-    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',show);
-    else show();
+    var perf=sessionStorage.getItem('perf_mode');
+    if(perf==='lite') document.body.classList.add('lite-mode');
 })();
 
 

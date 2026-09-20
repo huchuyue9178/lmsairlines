@@ -627,3 +627,21 @@ body.touch-mode .reveal-up{
     }
     .msg-bot{ background:rgba(255,255,255,0.08) !important; color:#e8edf2; }
 }
+
+/* ===== 节省性能版模式：减动画，保留液态玻璃 ===== */
+body.lite-mode .reveal-up{
+    transition-duration:.4s !important;
+    filter:none !important;
+    transform:translateY(30px) !important;
+}
+body.lite-mode .reveal-up.in{
+    transform:translateY(0) !important;
+}
+body.lite-mode *{
+    animation-duration:.3s !important;
+    transition-duration:.25s !important;
+}
+body.lite-mode .bg-card{
+    backdrop-filter:blur(20px) saturate(150%) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(150%) !important;
+}
