@@ -484,24 +484,24 @@ function resolveStatus(item){
             'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .5s cubic-bezier(.2,.9,.3,1.2);';
         box.innerHTML=
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
-                '<span style="font-size:20px">✨</span>'+
+                '<i class="fa fa-paper-plane" style="font-size:18px;color:#4a5a6e"></i>'+
                 '<strong style="font-size:16px;font-weight:800">欢迎使用老牧师航空</strong>'+
             '</div>'+
             // 环境提示
-            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 14px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.08)">⚠️ 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
+            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 14px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.08)"><i class="fa fa-exclamation-triangle mr-1"></i> 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
             // 设备类型
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">设备类型</p>'+
             '<div style="display:flex;gap:8px;margin-bottom:14px">'+
-                '<button id="setupPC" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">💻 电脑端</button>'+
-                '<button id="setupTouch" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">📱 触控端</button>'+
+                '<button id="setupPC" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-desktop mb-1"></i><br>电脑端</button>'+
+                '<button id="setupTouch" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-mobile mb-1"></i><br>触控端</button>'+
             '</div>'+
             // 性能模式
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">性能模式</p>'+
             '<div style="display:flex;gap:8px;margin-bottom:8px">'+
-                '<button id="setupFull" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">✨ 完整版<br><span style="font-weight:400;font-size:11px">全部动效+玻璃</span></button>'+
-                '<button id="setupLite" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer">⚡ 节省性能版<br><span style="font-weight:400;font-size:11px">保留玻璃+减动画</span></button>'+
+                '<button id="setupFull" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-star mb-1"></i><br>完整版<br><span style="font-weight:400;font-size:11px">全部动效+玻璃</span></button>'+
+                '<button id="setupLite" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-bolt mb-1"></i><br>节省性能版<br><span style="font-weight:400;font-size:11px">保留玻璃+减动画</span></button>'+
             '</div>'+
-            '<p style="font-size:12px;margin:0 0 14px;color:'+(dev.lowEnd?'#c98a8a':'#7ba89a')+'">'+(dev.lowEnd?'💡 系统判断：您的设备推荐使用节省性能版':'💡 系统判断：您的设备适合使用完整版')+'</p>'+
+            '<p style="font-size:12px;margin:0 0 14px;color:'+(dev.lowEnd?'#c98a8a':'#7ba89a')+'"><i class="fa fa-lightbulb-o mr-1"></i>'+(dev.lowEnd?'系统判断：您的设备推荐使用节省性能版':'系统判断：您的设备适合使用完整版')+'</p>'+
             // 确认按钮
             '<div style="display:flex;justify-content:flex-end;gap:8px">'+
                 '<a id="setupDetail" href="support.html" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
