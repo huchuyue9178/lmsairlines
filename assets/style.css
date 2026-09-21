@@ -649,6 +649,10 @@ body.lite-mode .bg-card{
     backdrop-filter:blur(20px) saturate(150%) !important;
     -webkit-backdrop-filter:blur(20px) saturate(150%) !important;
 }
+/* lite-mode 下禁用图标浮动动画，防止快速跳动 */
+body.lite-mode .anim-float{
+    animation:none !important;
+}
 
 /* ===== 移动端菜单文字颜色修复（深色模式下也保持深色文字） ===== */
 #mobileMenu{
