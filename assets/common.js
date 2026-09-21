@@ -590,12 +590,44 @@ function resolveStatus(item){
             else document.body.classList.remove('lite-mode');
             box.style.opacity='0';
             box.style.transform='translateY(-10px) scale(0.96)';
-            setTimeout(function(){ box.remove(); },350);
+            setTimeout(function(){ box.remove(); showActivityNotice(); },350);
         });
     }
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',show);
     else show();
 })();
+
+// 活动结束公告弹窗（设置弹窗关闭后弹出）
+function showActivityNotice(){
+    if(sessionStorage.getItem('activity_notice_seen')) return;
+    var box=document.createElement('div');
+    box.id='activityNotice';
+    box.style.cssText='position:fixed;top:76px;right:16px;z-index:9998;width:340px;max-width:calc(100vw - 32px);'+
+        'background:rgba(255,255,255,0.7);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
+        'border:1px solid rgba(255,255,255,0.8);border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
+        'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:#3a4a5c;'+
+        'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .5s cubic-bezier(.2,.9,.3,1.2);';
+    box.innerHTML=
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
+            '<i class="fa fa-bullhorn" style="font-size:18px;color:#b8860b"></i>'+
+            '<strong style="font-size:16px;font-weight:800">活动公告</strong>'+
+        '</div>'+
+        '<p style="font-size:13px;line-height:1.7;color:#4a5a6e;margin:0 0 14px">「光影星踪 · 影像创作计划」征集活动已圆满结束，感谢所有参与者的热情投稿。获奖名单将在后续公布，敬请期待！</p>'+
+        '<div style="display:flex;justify-content:flex-end">'+
+            '<button id="activityNoticeOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我知道了</button>'+
+        '</div>';
+    document.body.appendChild(box);
+    requestAnimationFrame(function(){
+        box.style.opacity='1';
+        box.style.transform='translateY(0) scale(1)';
+    });
+    document.getElementById('activityNoticeOk').addEventListener('click',function(){
+        sessionStorage.setItem('activity_notice_seen','1');
+        box.style.opacity='0';
+        box.style.transform='translateY(-10px) scale(0.96)';
+        setTimeout(function(){ box.remove(); },350);
+    });
+}
 
 // 已选过模式：立刻给 body 加 class
 (function(){
