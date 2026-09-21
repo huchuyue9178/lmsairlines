@@ -1,4 +1,36 @@
 // 老牧师航空 - 公共逻辑（页头/页脚注入、导航、购物车、工具函数）
+
+// 全局图片加载失败兜底
+(function(){
+    function imgFallback(img){
+        if(img.dataset.fallback) return;
+        img.dataset.fallback='1';
+        var wrap=img.parentElement;
+        if(wrap){
+            wrap.classList.add('img-fallback');
+            img.style.display='none';
+            if(!wrap.querySelector('i')){
+                var icon=document.createElement('i');
+                icon.className='fa fa-image';
+                wrap.insertBefore(icon, img);
+                var txt=document.createElement('span');
+                txt.textContent='图片加载中';
+                txt.style.fontSize='12px';
+                wrap.appendChild(txt);
+            }
+        }
+    }
+    window.addEventListener('error',function(e){
+        if(e.target.tagName==='IMG') imgFallback(e.target);
+    },true);
+    // 对动态插入的图片也生效
+    document.addEventListener('load',function(){
+        document.querySelectorAll('img').forEach(function(img){
+            if(img.complete && img.naturalWidth===0) imgFallback(img);
+        });
+    },true);
+})();
+
 (function(){
     const HEADER_HTML=
     '<header id="mainNav" class="fixed top-0 left-0 w-full z-50 nav-glass transition-all duration-500">'+
