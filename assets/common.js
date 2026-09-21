@@ -62,7 +62,7 @@
             '</div>'+
             '<button id="menuBtn" class="lg:hidden text-textDark text-2xl"><i class="fa fa-bars"></i></button>'+
         '</div>'+
-        '<div id="mobileMenu" class="hidden lg:hidden bg-mistWhite/90 backdrop-blur-xl px-4 pb-5 pt-2 text-textDark">'+
+        '<div id="mobileMenu" class="lg:hidden menu-closed bg-mistWhite/90 backdrop-blur-xl px-4 pb-5 pt-2 text-textDark">'+
             '<div class="flex flex-col gap-3 text-[15px]">'+
                 '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</div>'+
@@ -215,8 +215,21 @@
         if(nav)window.addEventListener('scroll',()=>{if(window.scrollY>50){nav.style.backgroundColor='rgba(216,223,230,0.75)';nav.style.backdropFilter='blur(24px) saturate(160%)';nav.style.webkitBackdropFilter='blur(24px) saturate(160%)';nav.style.borderBottom='1px solid rgba(255,255,255,0.6)';}else{nav.style.backgroundColor='';nav.style.backdropFilter='';nav.style.webkitBackdropFilter='';nav.style.borderBottom='';}});
         const menuBtn=document.getElementById('menuBtn'),mobileMenu=document.getElementById('mobileMenu');
         if(menuBtn&&mobileMenu){
-            menuBtn.addEventListener('click',()=>mobileMenu.classList.toggle('hidden'));
-            mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mobileMenu.classList.add('hidden')));
+            let menuOpen=false;
+            function setMenu(open){
+                menuOpen=open;
+                if(open){
+                    mobileMenu.classList.remove('menu-closed');
+                    mobileMenu.classList.add('menu-open');
+                    menuBtn.innerHTML='<i class="fa fa-times"></i>';
+                }else{
+                    mobileMenu.classList.remove('menu-open');
+                    mobileMenu.classList.add('menu-closed');
+                    menuBtn.innerHTML='<i class="fa fa-bars"></i>';
+                }
+            }
+            menuBtn.addEventListener('click',()=>setMenu(!menuOpen));
+            mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
         }
     }
 
