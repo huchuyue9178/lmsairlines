@@ -469,11 +469,12 @@ hr{border-color:var(--ios-sep);}
         inset 0 1px 1px rgba(255,255,255,1),
         inset 0 -1px 1px rgba(74,90,110,0.05);
     transition:
-        transform .55s cubic-bezier(0.34, 1.56, 0.64, 1),
-        width .45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transform .45s cubic-bezier(0.34, 1.56, 0.64, 1),
+        width .4s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index:0;
     pointer-events:none;
     overflow:hidden;
+    will-change:transform,width;
 }
 /* 点击高光（从中心向外扩散的白光） */
 .airpods-pill .pill-flash{
@@ -653,6 +654,14 @@ body.lite-mode .bg-card{
 body.lite-mode .anim-float{
     animation:none !important;
 }
+/* lite-mode 下 AirPods 按钮简化动画，防掉帧 */
+body.lite-mode .airpods-pill{
+    transition:transform .25s ease-out, width .2s ease-out;
+}
+body.lite-mode .airpods-tabs{
+    backdrop-filter:blur(10px) saturate(150%) !important;
+    -webkit-backdrop-filter:blur(10px) saturate(150%) !important;
+}
 
 /* ===== 移动端菜单文字颜色修复（深色模式下也保持深色文字） ===== */
 #mobileMenu{
@@ -673,6 +682,13 @@ body.lite-mode .anim-float{
     .deal-card, .bg-card{border-radius:16px !important;}
     .deal-imgwrap{height:160px !important;}
     h1{letter-spacing:-0.02em !important;}
+    .airpods-tabs{
+        width:100% !important;
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+    }
+    .airpods-pill{display:none;}
+    .deal-tab{white-space:nowrap; font-size:13px !important;}
 }
 
 /* ===== 图片加载骨架屏 ===== */
