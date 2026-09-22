@@ -48,11 +48,11 @@
         <!-- 特价活动：东航风格 -->
         <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
             <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
-                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex flex-col md:flex-row md:flex-wrap items-start md:items-center justify-between gap-4 mb-6">
                     <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">特价活动</h3>
-                    <div class="airpods-tabs flex items-center gap-1 p-1 rounded-full" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
-                        <button id="dealTabCn" onclick="switchDeal('cn')" class="deal-tab deal-tab-on px-5 py-1.5 rounded-full text-sm font-semibold">国内</button>
-                        <button id="dealTabIntl" onclick="switchDeal('intl')" class="deal-tab px-5 py-1.5 rounded-full text-sm font-semibold">国际及港澳台</button>
+                    <div class="airpods-tabs flex items-center gap-1 p-1 rounded-full w-full md:w-auto overflow-x-auto" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
+                        <button id="dealTabCn" onclick="switchDeal('cn')" class="deal-tab deal-tab-on px-5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国内</button>
+                        <button id="dealTabIntl" onclick="switchDeal('intl')" class="deal-tab px-5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国际及港澳台</button>
                     </div>
                 </div>
                 <div id="dealGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
@@ -148,15 +148,15 @@
         <!-- 热门航线：Apple 式窄卡片 -->
         <section class="px-3 md:px-5 reveal">
             <div class="bg-card card-gold rounded-big shadow-xl" style="padding:50px 30px">
-                <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div class="flex flex-col md:flex-row md:flex-wrap items-start md:items-center justify-between gap-4 mb-6">
                     <div>
                         <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">热门航线</h3>
                         <p class="text-textDark/60 text-sm mt-1">精选全球目的地，含地标风景大片</p>
                     </div>
-                    <div class="airpods-tabs flex items-center gap-1 p-1 rounded-full" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
-                        <button id="rtTabCn" onclick="switchRt('cn')" class="deal-tab deal-tab-on px-4 py-1.5 rounded-full text-sm font-semibold">国内热门干线</button>
-                        <button id="rtTabTravel" onclick="switchRt('travel')" class="deal-tab px-4 py-1.5 rounded-full text-sm font-semibold">国内旅游城市</button>
-                        <button id="rtTabIntl" onclick="switchRt('intl')" class="deal-tab px-4 py-1.5 rounded-full text-sm font-semibold">国际及地区航线</button>
+                    <div class="airpods-tabs flex items-center gap-1 p-1 rounded-full w-full md:w-auto overflow-x-auto" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
+                        <button id="rtTabCn" onclick="switchRt('cn')" class="deal-tab deal-tab-on px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国内热门干线</button>
+                        <button id="rtTabTravel" onclick="switchRt('travel')" class="deal-tab px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国内旅游城市</button>
+                        <button id="rtTabIntl" onclick="switchRt('intl')" class="deal-tab px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国际及地区航线</button>
                     </div>
                 </div>
                 <div id="routesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
