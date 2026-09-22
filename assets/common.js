@@ -230,6 +230,17 @@
             }
             menuBtn.addEventListener('click',()=>setMenu(!menuOpen));
             mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+            // 右滑关闭菜单
+            let touchStartX=0,touchStartY=0;
+            mobileMenu.addEventListener('touchstart',function(e){
+                touchStartX=e.touches[0].clientX;
+                touchStartY=e.touches[0].clientY;
+            },{passive:true});
+            mobileMenu.addEventListener('touchend',function(e){
+                const dx=e.changedTouches[0].clientX-touchStartX;
+                const dy=e.changedTouches[0].clientY-touchStartY;
+                if(dx>60 && Math.abs(dy)<50) setMenu(false);
+            },{passive:true});
         }
     }
 
