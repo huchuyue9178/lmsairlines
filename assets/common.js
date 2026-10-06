@@ -459,9 +459,9 @@ function showConfirm(msg,onOk){
     d.innerHTML='<div class="w-[300px] overflow-hidden text-center shadow-2xl" style="background:rgba(255,255,255,0.96);border-radius:14px;border:1px solid rgba(0,0,0,0.06);box-shadow:0 20px 60px rgba(0,0,0,0.25)">'+
         '<div class="px-5 py-5 text-[15px] text-[#1d1d1f] leading-relaxed">'+msg+'</div>'+
         '<div class="flex border-t" style="border-color:rgba(0,0,0,0.08)">'+
-        '<button class="flex-1 py-3 text-[17px] font-normal text-[#86868b]" data-a="cancel">取消</button>'+
+        '<button type="button" class="flex-1 py-3 text-[17px] font-normal text-[#86868b]" data-a="cancel">取消</button>'+
         '<div style="width:1px;background:rgba(0,0,0,0.08)"></div>'+
-        '<button class="flex-1 py-3 text-[17px] font-semibold text-[#4a5a6e]" data-a="ok">确认</button>'+
+        '<button type="button" class="flex-1 py-3 text-[17px] font-semibold text-[#4a5a6e]" data-a="ok">确认</button>'+
         '</div></div>';
     d.querySelector('[data-a="cancel"]').onclick=function(){d.remove();};
     d.querySelector('[data-a="ok"]').onclick=function(){d.remove();onOk&&onOk();};
