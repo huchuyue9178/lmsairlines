@@ -323,7 +323,7 @@ function openElite(){
         m.elite=true;m.level="黑钻卡";saveMember(m);
         if(typeof renderMemberArea==="function")renderMemberArea();
         if(typeof renderPage==="function")renderPage();
-        showToast("恭喜，黑钻卡已开通！尊享黑钻至尊专属权益。");
+        showToast("恭喜，黑钻卡已开通！尊享黑钻至尊专属权益。","success");
     });
 }
 // 支付后累积里程（1 元 = 1 里程，四舍五入），返回本次获得里程
@@ -381,7 +381,7 @@ window.redeemCode=function(){
     c.push({code:"GIFT50-"+Date.now(),value:50,status:"可用",createdAt:Date.now()});
     saveCoupons(c);
     localStorage.setItem('redeem_day',dayKey);
-    showToast("兑换成功！已领取 ¥50 优惠券，可在会员中心查看");
+    showToast("兑换成功！已领取 ¥50 优惠券，可在会员中心查看","success");
     inp.value='';
 };
 
@@ -428,27 +428,56 @@ function redeemItem(id){
         }
         if(typeof renderMemberCenter==="function")renderMemberCenter();
         if(typeof renderPage==="function")renderPage();
-        showToast("兑换成功！已获得「"+item.name+"」。");
+        showToast("兑换成功！已获得「"+item.name+"」。","success");
     });
 }
 
 // ---- 页面内轻提示 / 确认框（替代原生 alert/confirm，统一黑金风格） ----
-function showToast(msg){
+function showToast(msg,type){
     const old=document.getElementById("lmsToast");if(old)old.remove();
+    const theme={
+        success:{bg:"#e7f6ec",color:"#1e7e34",border:"rgba(30,126,52,0.18)",icon:"fa-check-circle"},
+        warn:{bg:"#fdf6e3",color:"#9a6a00",border:"rgba(154,106,0,0.20)",icon:"fa-exclamation-triangle"},
+        error:{bg:"#fdeeec",color:"#c0392b",border:"rgba(192,57,43,0.18)",icon:"fa-times-circle"},
+        info:{bg:"rgba(255,255,255,0.96)",color:"#1d1d1f",border:"rgba(0,0,0,0.08)",icon:"fa-info-circle"}
+    };
+    const s=theme[type]||theme.info;
     const t=document.createElement("div");
     t.id="lmsToast";
-    t.className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[120] px-5 py-3 text-sm font-medium rounded-full shadow-2xl";
-    t.style.background="rgba(255,255,255,0.9)";
-    t.style.color="#1d1d1f";
-    t.style.backdropFilter="blur(20px) saturate(180%)";
-    t.style.webkitBackdropFilter="blur(20px) saturate(180%)";
-    t.style.border="1px solid rgba(0,0,0,0.06)";
-    t.style.boxShadow="0 8px 30px rgba(0,0,0,0.18)";
+    t.className="lms-toast fixed top-[76px] left-1/2 z-[120] px-5 py-3 text-sm font-medium rounded-full shadow-2xl flex items-center gap-2.5";
+    t.style.background=s.bg;
+    t.style.color=s.color;
+    t.style.border="1px solid "+s.border;
+    t.style.boxShadow="0 12px 36px rgba(0,0,0,0.16)";
     t.style.maxWidth="88vw";
-    t.style.textAlign="center";
-    t.textContent=msg;
+    t.style.whiteSpace="nowrap";
+    t.innerHTML='<i class="fa '+s.icon+'" aria-hidden="true" style="font-size:15px"></i><span>'+msg+'</span>';
     document.body.appendChild(t);
-    setTimeout(()=>t.remove(),3200);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add("show")));
+    setTimeout(()=>{t.classList.remove("show");setTimeout(()=>t.remove(),320);},3000);
+}
+// ---- 表单校验工具 ----
+function validName(v){v=(v||"").trim();return v.length>=2&&v.length<=20;}
+function validPhone(v){return /^1\d{10}$/.test((v||"").trim());}
+function validIdCard(v){v=(v||"").trim();return /^\d{17}[\dXx]$/.test(v)||/^[A-Za-z][A-Za-z0-9]{5,11}$/.test(v);}
+// 绑定实时校验：输入/失焦时检查，不通过时显示红色提示文字
+function bindFieldValidation(id,fn,msgElId){
+    const el=document.getElementById(id);
+    if(!el)return;
+    const errEl=document.getElementById(msgElId||(id+"Err"));
+    function check(){
+        const v=el.value;
+        const ok=fn(v);
+        if(errEl){
+            if(!ok&&v.length>0){errEl.classList.remove("hidden");el.classList.add("field-err");}
+            else{errEl.classList.add("hidden");el.classList.remove("field-err");}
+        }else{
+            el.classList.toggle("field-err",!ok&&v.length>0);
+        }
+    }
+    el.addEventListener("input",check);
+    el.addEventListener("blur",check);
+    window.addEventListener("load",check);
 }
 function showConfirm(msg,onOk){
     const old=document.getElementById("lmsConfirmModal");if(old)old.remove();

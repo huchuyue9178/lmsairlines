@@ -132,7 +132,7 @@
             const coupon=code==="0"?null:getCoupons().find(x=>x.code===code);
             const couponValue=coupon?coupon.value:0;
             const payTotal=Math.max(0,total-couponValue);
-            if(!acc){showToast("请输入支付账号/手机号");return;}
+            if(!acc){showToast("请输入支付账号/手机号","warn");document.getElementById("payAccount").focus();return;}
             const doPay=async function(){
                 btn.disabled=true;btn.innerText="支付加载中，请稍候...";
                 await new Promise(r=>setTimeout(r,3000));
@@ -151,7 +151,7 @@
                 saveOrders(orders);
                 localStorage.removeItem("airCart");
                 updateCartBadge();
-                showToast("支付成功！"+(m?"已累积 "+Math.round(payTotal)+" 里程。":"（登录会员可累积里程）")+"订单已生成，稍后可在【我的订单】查看。");
+                showToast("支付成功！"+(m?"已累积 "+Math.round(payTotal)+" 里程。":"（登录会员可累积里程）")+"订单已生成，稍后可在【我的订单】查看。","success");
                 btn.disabled=false;btn.innerText="确认支付";
                 setTimeout(function(){location.href="order.html";},1600);
             };

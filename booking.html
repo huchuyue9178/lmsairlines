@@ -71,8 +71,8 @@
                         <hr class="my-5" style="border-color:rgba(0,0,0,0.08)">
                         <h4 class="font-bold text-textDark mb-3">乘客信息</h4>
                         <div class="space-y-4">
-                            <div><label class="block mb-1.5 text-sm text-textGray">乘客姓名</label><input id="userName" type="text" class="w-full px-4 py-3 rounded-global" placeholder="请输入姓名"></div>
-                            <div><label class="block mb-1.5 text-sm text-textGray">身份证号 / 护照号</label><input id="userIdCard" type="text" class="w-full px-4 py-3 rounded-global" placeholder="请输入证件号码"></div>
+                            <div><label class="block mb-1.5 text-sm text-textGray">乘客姓名</label><input id="userName" type="text" class="w-full px-4 py-3 rounded-global" placeholder="请输入姓名" autocomplete="name"><p id="userNameErr" class="field-error-msg hidden">请输入 2-20 位姓名</p></div>
+                            <div><label class="block mb-1.5 text-sm text-textGray">身份证号 / 护照号</label><input id="userIdCard" type="text" class="w-full px-4 py-3 rounded-global" placeholder="请输入证件号码" autocomplete="off"><p id="userIdCardErr" class="field-error-msg hidden">请输入 18 位身份证号或有效护照号</p></div>
                         </div>
                     </div>
                     <!-- 右栏：订单摘要（sticky 苹果商城式） -->
@@ -281,13 +281,14 @@
             if(selectType==="railair"){addRailToCart();}else{addToCart();}
         }
         function addToCart(){
-            if(!selectFlight){showToast("请先选择要预订的航班");return;}
+            if(!selectFlight){showToast("请先选择要预订的航班","warn");return;}
             let u=document.getElementById("userName").value.trim(),id=document.getElementById("userIdCard").value.trim();
-            if(!u||!id){showToast("请填写乘客姓名和证件号码");return;}
+            if(!validName(u)){showToast("请填写正确的乘客姓名（2-20 位）","warn");document.getElementById("userName").focus();return;}
+            if(!validIdCard(id)){showToast("请填写正确的 18 位身份证号或护照号","warn");document.getElementById("userIdCard").focus();return;}
             let c=getCart();
             c.push({cartId:"CART"+Date.now()+Math.floor(Math.random()*1000),flightNo:selectFlight.no,start:selectFlight.start,end:selectFlight.end,date:selectFlight.date,time:selectFlight.time,cabin:cabinNameMap[selectCabin],price:selectFlight.price[selectCabin],username:u,idcard:id,weatherRisk:selectWeatherRisk?true:false,weatherReason:selectWeatherRisk?selectWeatherRisk.city+' '+selectWeatherRisk.reason:''});
             saveCart(c);
-            showToast("已加入购物车");
+            showToast("已加入购物车","success");
             closeModal();
         }
         // ============ 空铁联运 ============
@@ -355,9 +356,10 @@
             document.getElementById("buyModal").classList.remove("hidden");
         }
         function addRailToCart(){
-            if(!selectPlan){showToast("请先选择联运方案");return;}
+            if(!selectPlan){showToast("请先选择联运方案","warn");return;}
             let u=document.getElementById("userName").value.trim(),id=document.getElementById("userIdCard").value.trim();
-            if(!u||!id){showToast("请填写乘客姓名和证件号码");return;}
+            if(!validName(u)){showToast("请填写正确的乘客姓名（2-20 位）","warn");document.getElementById("userName").focus();return;}
+            if(!validIdCard(id)){showToast("请填写正确的 18 位身份证号或护照号","warn");document.getElementById("userIdCard").focus();return;}
             const p=selectPlan,f=p.flight,t=p.train;
             const seatPrice=t.price.second;
             const price=f.price[selectCabin]+seatPrice;
@@ -368,9 +370,12 @@
                 trainSeat:TRAIN_SEAT_NAME['second'],trainSeatPrice:seatPrice,trainPrice:t.price,
                 start:p.start,end:p.end,date:p.date,time:f.time,cabin:cabinNameMap[selectCabin],price:price,username:u,idcard:id});
             saveCart(c);
-            showToast("空铁联运方案已加入购物车");
+            showToast("空铁联运方案已加入购物车","success");
             closeModal();
         }
+        // 乘客信息实时校验
+        bindFieldValidation("userName",validName);
+        bindFieldValidation("userIdCard",validIdCard);
         if(params.get('mode')==='railair'){switchTab('railair');searchRailAirUI();}
         else if(params.get('start')||params.get('end')){searchFlight();}
     </script>

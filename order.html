@@ -212,7 +212,7 @@
                     saveMember(m);
                 }
                 renderOrderList();
-                showToast("退票成功"+(milesBack?"，已回退 "+milesBack+" 里程。":"。"));
+                showToast("退票成功"+(milesBack?"，已回退 "+milesBack+" 里程。":"。"),"success");
             });
         }
         function openChange(idx,free){
@@ -241,14 +241,14 @@
                 document.getElementById("changeModal").classList.add("hidden");
                 changeFree=false;
                 renderOrderList();
-                showToast("免费改签成功！已为您改至 "+f.date+" "+f.time+"，免收差价。");
+                showToast("免费改签成功！已为您改至 "+f.date+" "+f.time+"，免收差价。","success");
                 return;
             }
             item.changed=true;
             saveOrders(orders);
             document.getElementById("changeModal").classList.add("hidden");
             renderOrderList();
-            showToast("改签成功！已为您改至 "+f.date+" "+f.time+"，票价无差价。");
+            showToast("改签成功！已为您改至 "+f.date+" "+f.time+"，票价无差价。","success");
         }
         function closeChange(){document.getElementById("changeModal").classList.add("hidden");changeFree=false;}
         // ============ 恶劣天气：航班可能取消 ============
@@ -415,7 +415,7 @@
                 }
                 document.getElementById("cabinModal").classList.add("hidden");
                 renderOrderList();
-                showToast("舱位调整成功！"+(diff>0?'已补差价 ¥'+diffAmt+'，':'已退回差价 ¥'+diffAmt+'，')+"请重新选择座位办理值机。");
+                showToast("舱位调整成功！"+(diff>0?'已补差价 ¥'+diffAmt+'，':'已退回差价 ¥'+diffAmt+'，')+"请重新选择座位办理值机。","success");
             });
         }
         function closeCabinChange(){document.getElementById("cabinModal").classList.add("hidden");cabinTargetKey=null;}

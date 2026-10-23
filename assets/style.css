@@ -688,7 +688,7 @@ body.lite-mode .airpods-tabs{
         -webkit-overflow-scrolling:touch;
     }
     .airpods-pill{display:none;}
-    .deal-tab{white-space:nowrap; font-size:13px !important;}
+    .deal-tab{white-space:nowrap; font-size:12px !important; padding-left:12px !important; padding-right:12px !important;}
 }
 
 /* ===== 图片加载骨架屏 ===== */
@@ -725,6 +725,59 @@ body.lite-mode .airpods-tabs{
     filter:drop-shadow(0 6px 18px rgba(100,120,150,0.25)) !important;
     mix-blend-mode:multiply;
     opacity:0.85;
+}
+
+/* ===== Toast 顶部滑出动画 ===== */
+.lms-toast{
+    opacity:0;
+    transform:translate(-50%,-18px) scale(0.95);
+    transition:opacity .3s ease,transform .35s cubic-bezier(0.22,1,0.36,1);
+    pointer-events:none;
+}
+.lms-toast.show{
+    opacity:1;
+    transform:translate(-50%,0) scale(1);
+}
+
+/* ===== 表单实时校验 ===== */
+.field-err{border-color:#d9534f !important;background:#fff5f5 !important;}
+.field-error-msg{font-size:12px;color:#d9534f;margin-top:6px;padding-left:2px;}
+
+/* ===== 移动端触摸目标（最小 44×44px） ===== */
+@media (max-width: 768px){
+    #mobileMenu a{
+        min-height:44px;
+        display:flex;
+        align-items:center;
+        padding:0 6px;
+    }
+    .deal-tab{
+        min-height:44px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+    }
+    .deal-more{
+        min-height:44px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+    }
+    .btn-hover, .card-gold a[class*="anim-link"], .card-gold button{
+        min-height:44px;
+    }
+    .card-gold a[class*="anim-link"]{
+        display:inline-flex;
+        align-items:center;
+    }
+    input, select, textarea{
+        min-height:44px;
+    }
+    textarea{min-height:88px;}
+    #menuBtn{
+        width:44px;height:44px;
+        display:flex;align-items:center;justify-content:center;
+    }
 }
 
 /* ===== 移动端菜单流畅动画 ===== */

@@ -130,10 +130,10 @@
         function confirmCheckin(){
             if(!selectedSeat)return;
             if(doCheckin(curOrder.orderId,selectedSeat)){
-                showToast("值机成功！座位 "+selectedSeat+"，请提前到达登机口。");
+                showToast("值机成功！座位 "+selectedSeat+"，请提前到达登机口。","success");
                 renderBoardingPass();
             }else{
-                showToast("值机失败，请重试。");
+                showToast("值机失败，请重试。","error");
             }
         }
         function renderBoardingPass(){
