@@ -623,7 +623,7 @@ function showActivityNotice(){
             '<i class="fa fa-bullhorn" style="font-size:18px;color:#b8860b"></i>'+
             '<strong style="font-size:16px;font-weight:800">活动公告</strong>'+
         '</div>'+
-        '<p style="font-size:13px;line-height:1.7;color:#4a5a6e;margin:0 0 14px">「光影星踪 · 影像创作计划」征集活动已圆满结束，感谢所有参与者的热情投稿。获奖名单将在后续公布，敬请期待！</p>'+
+        '<p style="font-size:13px;line-height:1.7;color:#4a5a6e;margin:0 0 14px">「逐梦云天 · 定格航影」2026 原创航空视频征集活动已圆满结束，感谢所有参与者的热情投稿。获奖名单将在后续公布，敬请期待！</p>'+
         '<div style="display:flex;justify-content:flex-end">'+
             '<button id="activityNoticeOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我知道了</button>'+
         '</div>';
