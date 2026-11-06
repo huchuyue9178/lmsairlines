@@ -300,6 +300,20 @@ hr{border-color:var(--ios-sep);}
     transform:translateY(0);
     pointer-events:auto;
 }
+/* 会员中心下拉：同款淡入 + 下滑 + 轻微缩放 */
+#memberMenu{
+    opacity:0;
+    transform:translateY(-14px);
+    transform-origin:top right;
+    transition:opacity .3s cubic-bezier(0.34,1.8,0.64,1), transform .55s cubic-bezier(0.34,1.8,0.64,1);
+    pointer-events:none;
+    border-radius:20px;
+}
+#memberMenu.open{
+    opacity:1;
+    transform:translateY(0);
+    pointer-events:auto;
+}
 /* 更新公告：高度 + 透明度展开，内部可滚动 */
 #newsList{
     max-height:0;
@@ -625,6 +639,12 @@ body.touch-mode .reveal-up.in{
     }
     #moreMenu a{ color:#e8edf2 !important; }
     #moreMenu a:hover{ background:rgba(255,255,255,0.08) !important; }
+    #memberMenu{
+        background:rgba(30,38,48,0.9) !important;
+        border:1px solid rgba(255,255,255,0.12);
+    }
+    #memberMenu a{ color:#e8edf2 !important; }
+    #memberMenu a:hover{ background:rgba(255,255,255,0.08) !important; }
     .chat-mask{ background:rgba(0,0,0,0.5); }
     .chat-modal{
         background:rgba(30,38,48,0.85) !important;

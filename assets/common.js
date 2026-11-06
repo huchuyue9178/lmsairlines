@@ -41,30 +41,35 @@
                 '<a href="booking.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">机票预订</a>'+
                 '<a href="checkin.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">在线值机</a>'+
                 '<a href="order.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">我的订单</a>'+
-                '<a href="member.html" style="display:inline-block;line-height:1.5" class="hover:text-gold transition-colors nav-link">会员中心</a>'+
                 '<div class="relative">'+
                     '<button onclick="toggleMore()" aria-label="更多导航选项" class="hover:text-gold transition-colors flex items-center gap-1">更多 <i class="fa fa-chevron-down text-xs" aria-hidden="true"></i></button>'+
                     '<div id="moreMenu" class="absolute right-0 top-full mt-2 w-44 rounded-2xl p-2 shadow-2xl" style="background:rgba(242,244,242,0.85);backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.7);box-shadow:0 10px 32px rgba(120,140,160,0.25)">'+
                         '<a href="flight.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">航班动态</a>'+
                         '<a href="special.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">特殊服务</a>'+
-                        '<a href="cart.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">购物车</a>'+
+                        '<a href="cart.html" class="px-4 py-2 rounded-xl hover:bg-white/60 transition-colors flex items-center justify-between">购物车<span id="cartBadgeMore" class="bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
                         '<a href="policy.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">服务指南</a>'+
                         '<a href="about.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">关于我们</a>'+
                         '<a href="customer.html" class="block px-4 py-2 rounded-xl hover:bg-white/60 transition-colors">在线客服</a>'+
                     '</div>'+
                 '</div>'+
             '</nav>'+
-            '<div class="hidden lg:flex items-center gap-4 text-textDark text-sm">'+
-                '<button id="bgmBtn" onclick="onBgmClick()" ondblclick="openBgmPanel()" aria-label="播放或暂停背景音乐" class="hover:text-gold transition-colors cursor-pointer" title="单击播放/暂停，双击打开播放栏"><i class="fa fa-music text-lg" id="bgmIcon" aria-hidden="true"></i></button>'+
-                '<a href="cart.html" aria-label="购物车" class="hover:text-gold"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span id="cartBadge" class="ml-1 bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a>'+
+            '<div class="hidden lg:flex items-center gap-5 text-textDark text-sm">'+
+                '<div class="relative">'+
+                    '<button onclick="toggleMemberMenu()" aria-label="会员中心菜单" class="hover:text-gold transition-colors flex items-center gap-1.5"><i class="fa fa-diamond text-gold" aria-hidden="true"></i>会员中心 <i class="fa fa-chevron-down text-xs" aria-hidden="true"></i></button>'+
+                    '<div id="memberMenu" class="absolute right-0 top-full mt-2 w-52 rounded-2xl p-2 shadow-2xl" style="background:rgba(242,244,242,0.85);backdrop-filter:blur(24px) saturate(160%);border:1px solid rgba(255,255,255,0.7);box-shadow:0 10px 32px rgba(120,140,160,0.25)">'+
+                        '<a href="member.html" class="flex items-center gap-2.5 px-4 py-2 rounded-xl hover:bg-white/60 transition-colors"><i class="fa fa-home w-4 text-center text-gold" aria-hidden="true"></i>会员中心首页</a>'+
+                        '<a href="member.html#exchange" class="flex items-center gap-2.5 px-4 py-2 rounded-xl hover:bg-white/60 transition-colors"><i class="fa fa-exchange w-4 text-center text-gold" aria-hidden="true"></i>里程兑换</a>'+
+                        '<a href="member.html#benefits" class="flex items-center gap-2.5 px-4 py-2 rounded-xl hover:bg-white/60 transition-colors"><i class="fa fa-star w-4 text-center text-gold" aria-hidden="true"></i>会员权益与等级</a>'+
+                        '<a href="member.html#elite" class="flex items-center gap-2.5 px-4 py-2 rounded-xl hover:bg-white/60 transition-colors"><i class="fa fa-diamond w-4 text-center text-gold" aria-hidden="true"></i>黑钻至尊卡</a>'+
+                    '</div>'+
+                '</div>'+
                 '<span id="memberArea"></span>'+
-                '<span class="text-textGray"><i class="fa fa-envelope"></i> 3686319507@qq.com</span>'+
             '</div>'+
             '<button id="menuBtn" class="lg:hidden text-textDark text-2xl"><i class="fa fa-bars"></i></button>'+
         '</div>'+
         '<div id="mobileMenu" class="lg:hidden menu-closed bg-mistWhite/90 backdrop-blur-xl px-4 pb-5 pt-2 text-textDark">'+
             '<div class="flex flex-col gap-3 text-[15px]">'+
-                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="login.html" class="hover:text-gold transition-colors">登录 / 注册</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
+                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors flex items-center gap-2">购物车<span id="cartBadgeMobile" class="bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="login.html" class="hover:text-gold transition-colors">登录 / 注册</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</div>'+
         '</div>'+
     '</header>';
@@ -107,33 +112,40 @@
             if(st.playing){
                 p.play().then(()=>{
                     window._bgmOn=true;
-                    const ic=document.getElementById('bgmIcon');
-                    if(ic){ic.style.color='#4a5a6e';ic.style.animation='bgmSpin 2.4s linear infinite';}
+                    syncBgmUi();
                 }).catch(()=>{/* 浏览器拦截时保持暂停，用户点一下即继续 */});
             }
         };
         if(p.readyState>=1)apply(); else p.addEventListener('loadedmetadata',apply,{once:true});
     };
 
+    function syncBgmUi(){
+        const ic=document.getElementById('bgmIcon');
+        if(ic){
+            ic.style.color=window._bgmOn?'#4a5a6e':'';
+            ic.style.animation=window._bgmOn?'bgmSpin 2.4s linear infinite':'';
+        }
+        const fb=document.getElementById('bgmFooterBtn');
+        if(fb)fb.innerHTML='<i class="fa fa-music mr-1"></i>背景音乐：'+(window._bgmOn?'开':'关');
+    }
     // 单击：播放/暂停（延迟以区分双击）
     window.onBgmClick=function(){
         if(window._bgmClickTimer)clearTimeout(window._bgmClickTimer);
         window._bgmClickTimer=setTimeout(()=>{
             const p=document.getElementById('bgmPlayer');
-            const ic=document.getElementById('bgmIcon');
             if(window._bgmOn){
                 p.pause(); window._bgmOn=false;
-                ic.style.color=''; ic.style.animation='';
+                syncBgmUi();
             }else{
                 p.play().then(()=>{
                     window._bgmOn=true;
-                    ic.style.color='#4a5a6e';
-                    ic.style.animation='bgmSpin 2.4s linear infinite';
+                    syncBgmUi();
                 }).catch(()=>showToast("请再次点击开始播放"));
             }
             window.saveBgmState();
         },260);
     };
+    window.syncBgmUi=syncBgmUi;
 
     // 双击：弹出小播放栏
     window.openBgmPanel=function(){
@@ -187,7 +199,7 @@
             '<div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">'+
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
-                '<div><h4 class="font-semibold text-textDark text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li></ul></div>'+
+                '<div><h4 class="font-semibold text-textDark text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li><li><a href="javascript:void(0)" id="bgmFooterBtn" onclick="onBgmClick()" class="hover:underline"><i class="fa fa-music mr-1"></i>背景音乐：关</a></li></ul></div>'+
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">官方邮箱：3686319507@qq.com<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
             '<div class="mb-8">'+
@@ -251,13 +263,20 @@
         updateCartBadge();
         renderMemberArea();
         restoreBgmState();
+        if(window.syncBgmUi)window.syncBgmUi();
     });
 })();
 
 // ---- 购物车 / 订单 / 工具（全局可用） ----
 function getCart(){try{const v=JSON.parse(localStorage.getItem("airCart")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveCart(c){localStorage.setItem("airCart",JSON.stringify(c));updateCartBadge();}
-function updateCartBadge(){const b=document.getElementById("cartBadge");if(b)b.textContent=getCart().length;}
+function updateCartBadge(){
+    const n=getCart().length;
+    ["cartBadge","cartBadgeMore","cartBadgeMobile"].forEach(function(id){
+        const el=document.getElementById(id);
+        if(el)el.textContent=n;
+    });
+}
 function loadOrders(){try{const v=JSON.parse(localStorage.getItem("airOrders")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
 function saveOrders(o){localStorage.setItem("airOrders",JSON.stringify(o));}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -404,14 +423,23 @@ function renderMemberArea(){
         el.innerHTML='<a href="login.html" class="hover:text-gold border border-gold/60 px-2 py-0.5 rounded-global text-xs">登录 / 注册</a>';
     }
 }
-// ---- 顶部"更多"下拉 ----
+// ---- 顶部"更多"/"会员中心"下拉 ----
 window.toggleMore=function(){
+    const mm=document.getElementById('memberMenu');
+    if(mm)mm.classList.remove('open');
     const m=document.getElementById('moreMenu');
     if(m)m.classList.toggle('open');
 };
-document.addEventListener('click',function(e){
+window.toggleMemberMenu=function(){
     const m=document.getElementById('moreMenu');
-    if(m&&m.classList.contains('open')&&!e.target.closest('#moreMenu')&&!e.target.closest('button'))m.classList.remove('open');
+    if(m)m.classList.remove('open');
+    const mm=document.getElementById('memberMenu');
+    if(mm)mm.classList.toggle('open');
+};
+document.addEventListener('click',function(e){
+    const m=document.getElementById('moreMenu'),mm=document.getElementById('memberMenu');
+    if(m&&m.classList.contains('open')&&!e.target.closest('#moreMenu')&&!e.target.closest('[onclick="toggleMore()"]'))m.classList.remove('open');
+    if(mm&&mm.classList.contains('open')&&!e.target.closest('#memberMenu')&&!e.target.closest('[onclick="toggleMemberMenu()"]'))mm.classList.remove('open');
 });
 
 // ---- 页脚更新公告折叠 ----

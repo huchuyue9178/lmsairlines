@@ -99,7 +99,7 @@
                 <div id="eliteBenefitGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
             <!-- 里程兑换中心 -->
-            <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+            <div id="exchange" class="bg-card card-gold p-6 rounded-global shadow-lg">
                 <div class="flex flex-wrap justify-between items-center mb-4">
                     <h3 class="text-xl font-bold text-gold"><i class="fa fa-exchange mr-2"></i>里程兑换中心</h3>
                     <span class="text-sm text-textGray">当前可用里程 <span id="exMiles" class="text-gold font-bold"></span></span>
@@ -112,7 +112,7 @@
                 <div id="couponList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
             <!-- 我的权益 -->
-            <div class="bg-card card-gold p-6 rounded-global shadow-lg">
+            <div id="benefits" class="bg-card card-gold p-6 rounded-global shadow-lg">
                 <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-cube mr-2"></i>我的权益</h3>
                 <div id="benefitList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
@@ -426,6 +426,22 @@
             d.innerHTML=orders.slice().reverse().map(o=>'<div class="flex justify-between items-center bg-black/40 rounded-global px-4 py-3"><div><p class="font-bold">'+esc(o.flightNo)+' '+esc(o.start)+'→'+esc(o.end)+'</p><p class="text-xs text-textGray">'+esc(o.date)+' '+esc(o.time)+' · 实付 ¥'+(o.payPrice!=null?o.payPrice:o.price)+'</p></div><span class="text-gold font-bold">+'+(o.milesEarned||0)+' 里程</span></div>').join('');
         }
         renderPage();
+        // 支持导航"会员中心"下拉菜单的锚点定位（#exchange / #benefits / #elite）
+        (function(){
+            const hash=location.hash.slice(1);
+            if(!hash)return;
+            const idMap={exchange:'exchange',benefits:'benefits',elite:'eliteArea'};
+            const id=idMap[hash];
+            if(!id)return;
+            setTimeout(function(){
+                const el=document.getElementById(id);
+                if(el&&el.offsetParent!==null){
+                    el.scrollIntoView({behavior:'smooth',block:'center'});
+                }else if(!getMember()){
+                    showToast("请先登录会员后查看该板块","warn");
+                }
+            },500);
+        })();
     </script>
 </body>
 </html>
