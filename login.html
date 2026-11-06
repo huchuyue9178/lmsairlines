@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账号登录 | 老牧师航空</title>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script src="assets/tailwind-config.js?v=20261006perf"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/style.css?v=20261006perf">
+</head>
+<body class="text-textDark">
+    <div id="siteHeader"></div>
+    <main class="pt-24 pb-16 container mx-auto px-4">
+        <div class="max-w-xl mx-auto">
+            <h2 class="text-[26px] font-bold text-gold mb-2">账号登录</h2>
+            <p class="text-textGray mb-8">手机号 + 密码登录。账号数据保存在本机，与会员账号互通，登录后即可查看里程与权益。</p>
+
+            <!-- 已登录状态 -->
+            <div id="loggedBox" class="hidden bg-card card-gold p-6 rounded-global shadow-lg">
+                <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-check-circle mr-2"></i>您已登录</h3>
+                <div class="space-y-2 text-sm mb-5">
+                    <p>账号：<span id="loggedPhone" class="font-semibold"></span></p>
+                    <p>会员姓名：<span id="loggedName" class="font-semibold"></span></p>
+                    <p>会员卡号：<span id="loggedCard" class="font-semibold"></span></p>
+                    <p>当前等级：<span id="loggedLevel" class="font-semibold text-gold"></span> · 可用里程 <span id="loggedMiles" class="font-semibold"></span></p>
+                </div>
+                <div class="flex gap-3">
+                    <a href="member.html" class="btn-hover flex-1 text-center bg-gold text-primary font-bold py-3 rounded-global">进入会员中心</a>
+                    <button type="button" onclick="doLogout()" class="btn-hover flex-1 border border-white/20 py-3 rounded-global">退出登录</button>
+                </div>
+            </div>
+
+            <!-- 未登录：登录 / 注册 -->
+            <div id="authBox" class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <div class="flex gap-2 p-1 rounded-full mb-6" style="background:rgba(0,0,0,0.18)">
+                    <button type="button" id="tabLogin" onclick="switchAuth('login')" class="flex-1 py-2.5 rounded-full text-sm font-bold bg-gold text-primary transition-all">登录</button>
+                    <button type="button" id="tabReg" onclick="switchAuth('reg')" class="flex-1 py-2.5 rounded-full text-sm font-bold text-textGray transition-all">注册</button>
+                </div>
+
+                <!-- 登录表单 -->
+                <div id="loginPane">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block mb-1">手机号码</label>
+                            <input id="loginPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="请输入注册时的 11 位手机号" autocomplete="username">
+                            <p id="loginPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p>
+                        </div>
+                        <div>
+                            <label class="block mb-1">登录密码</label>
+                            <div class="relative">
+                                <input id="loginPwd" type="password" class="w-full border px-4 py-3 pr-12 rounded-global" placeholder="请输入密码" autocomplete="current-password">
+                                <button type="button" onclick="togglePwd('loginPwd',this)" aria-label="显示或隐藏密码" class="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-textGray"><i class="fa fa-eye"></i></button>
+                            </div>
+                            <p id="loginPwdErr" class="field-error-msg hidden">请输入密码</p>
+                        </div>
+                        <button type="button" onclick="doLogin()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">登 录</button>
+                        <p class="text-xs text-textGray text-center">还没有账号？<a href="javascript:switchAuth('reg')" class="text-gold underline underline-offset-2">立即注册</a></p>
+                    </div>
+                </div>
+
+                <!-- 注册表单 -->
+                <div id="regPane" class="hidden">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block mb-1">姓名</label>
+                            <input id="regName" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入 2-20 位姓名" autocomplete="name">
+                            <p id="regNameErr" class="field-error-msg hidden">请输入 2-20 位姓名</p>
+                        </div>
+                        <div>
+                            <label class="block mb-1">手机号码</label>
+                            <input id="regPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="11 位手机号，将作为登录账号" autocomplete="tel">
+                            <p id="regPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p>
+                        </div>
+                        <div>
+                            <label class="block mb-1">设置密码</label>
+                            <div class="relative">
+                                <input id="regPwd" type="password" class="w-full border px-4 py-3 pr-12 rounded-global" placeholder="6-20 位密码" autocomplete="new-password">
+                                <button type="button" onclick="togglePwd('regPwd',this)" aria-label="显示或隐藏密码" class="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-textGray"><i class="fa fa-eye"></i></button>
+                            </div>
+                            <p id="regPwdErr" class="field-error-msg hidden">密码需为 6-20 位</p>
+                        </div>
+                        <div>
+                            <label class="block mb-1">确认密码</label>
+                            <input id="regPwd2" type="password" class="w-full border px-4 py-3 rounded-global" placeholder="请再次输入密码" autocomplete="new-password">
+                            <p id="regPwd2Err" class="field-error-msg hidden">两次输入的密码不一致</p>
+                        </div>
+                        <button type="button" onclick="doRegister()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">注册并登录</button>
+                        <p class="text-xs text-textGray text-center">注册即成为老牧师航空会员，账号与会员账号互通</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/common.js?v=20261006perf"></script>
+    <script>
+        // ---- Tab 切换 ----
+        function switchAuth(tab){
+            const loginPane=document.getElementById("loginPane"),regPane=document.getElementById("regPane");
+            const tabLogin=document.getElementById("tabLogin"),tabReg=document.getElementById("tabReg");
+            if(tab==="reg"){
+                loginPane.classList.add("hidden");regPane.classList.remove("hidden");
+                tabReg.classList.add("bg-gold","text-primary");tabReg.classList.remove("text-textGray");
+                tabLogin.classList.remove("bg-gold","text-primary");tabLogin.classList.add("text-textGray");
+            }else{
+                regPane.classList.add("hidden");loginPane.classList.remove("hidden");
+                tabLogin.classList.add("bg-gold","text-primary");tabLogin.classList.remove("text-textGray");
+                tabReg.classList.remove("bg-gold","text-primary");tabReg.classList.add("text-textGray");
+            }
+        }
+        // ---- 密码可见切换 ----
+        function togglePwd(id,btn){
+            const el=document.getElementById(id);
+            const show=el.type==="password";
+            el.type=show?"text":"password";
+            btn.innerHTML='<i class="fa fa-eye'+(show?'-slash':'')+'"></i>';
+            btn.setAttribute("aria-label",show?"隐藏密码":"显示密码");
+        }
+        // ---- 实时校验 ----
+        bindFieldValidation("loginPhone",validPhone);
+        bindFieldValidation("loginPwd",function(v){return v.length>0;});
+        bindFieldValidation("regName",validName);
+        bindFieldValidation("regPhone",validPhone);
+        bindFieldValidation("regPwd",function(v){return v.length>=6&&v.length<=20;});
+        bindFieldValidation("regPwd2",function(v){
+            return v.length>0&&v===document.getElementById("regPwd").value;
+        });
+        // 修改注册密码时联动校验确认密码
+        document.getElementById("regPwd").addEventListener("input",function(){
+            const p2=document.getElementById("regPwd2");
+            if(p2.value.length>0){
+                const ok=p2.value===this.value;
+                document.getElementById("regPwd2Err").classList.toggle("hidden",ok);
+                p2.classList.toggle("field-err",!ok);
+            }
+        });
+        // ---- 登录 ----
+        function doLogin(){
+            const phone=document.getElementById("loginPhone").value.trim();
+            const pwd=document.getElementById("loginPwd").value;
+            if(!validPhone(phone)){showToast("请输入 11 位有效手机号","warn");document.getElementById("loginPhone").focus();return;}
+            if(!pwd){showToast("请输入密码","warn");document.getElementById("loginPwd").focus();return;}
+            const r=loginAccount(phone,pwd);
+            if(!r.ok){showToast(r.msg,"error");return;}
+            showToast("登录成功！欢迎回来，"+r.member.name+"。","success");
+            setTimeout(function(){location.href="member.html";},900);
+        }
+        // ---- 注册 ----
+        function doRegister(){
+            const name=document.getElementById("regName").value.trim();
+            const phone=document.getElementById("regPhone").value.trim();
+            const pwd=document.getElementById("regPwd").value;
+            const pwd2=document.getElementById("regPwd2").value;
+            if(!validName(name)){showToast("请输入 2-20 位姓名","warn");document.getElementById("regName").focus();return;}
+            if(!validPhone(phone)){showToast("请输入 11 位有效手机号","warn");document.getElementById("regPhone").focus();return;}
+            if(pwd.length<6||pwd.length>20){showToast("密码需为 6-20 位","warn");document.getElementById("regPwd").focus();return;}
+            if(pwd!==pwd2){showToast("两次输入的密码不一致","warn");document.getElementById("regPwd2").focus();return;}
+            const r=registerAccount(name,phone,pwd);
+            if(!r.ok){showToast(r.msg,"error");return;}
+            showToast("注册成功！会员卡号 "+r.member.cardNo+"，已自动登录。","success");
+            setTimeout(function(){location.href="member.html";},1100);
+        }
+        // ---- 退出 ----
+        function doLogout(){
+            logoutMember();
+            showToast("已退出登录。","success");
+            renderAuthState();
+        }
+        // ---- 渲染登录态 ----
+        function renderAuthState(){
+            const m=getMember();
+            const loggedBox=document.getElementById("loggedBox"),authBox=document.getElementById("authBox");
+            if(m){
+                loggedBox.classList.remove("hidden");authBox.classList.add("hidden");
+                document.getElementById("loggedPhone").textContent=m.phone||"-";
+                document.getElementById("loggedName").textContent=m.name||"-";
+                document.getElementById("loggedCard").textContent=m.cardNo||"-";
+                document.getElementById("loggedLevel").textContent=m.level||"普卡";
+                document.getElementById("loggedMiles").textContent=(m.miles||0).toLocaleString();
+            }else{
+                loggedBox.classList.add("hidden");authBox.classList.remove("hidden");
+            }
+        }
+        renderAuthState();
+        // 回车快捷提交
+        document.getElementById("loginPwd").addEventListener("keydown",function(e){if(e.key==="Enter")doLogin();});
+        document.getElementById("regPwd2").addEventListener("keydown",function(e){if(e.key==="Enter")doRegister();});
+    </script>
+</body>
+</html>

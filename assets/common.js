@@ -64,7 +64,7 @@
         '</div>'+
         '<div id="mobileMenu" class="lg:hidden menu-closed bg-mistWhite/90 backdrop-blur-xl px-4 pb-5 pt-2 text-textDark">'+
             '<div class="flex flex-col gap-3 text-[15px]">'+
-                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
+                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors">购物车</a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="login.html" class="hover:text-gold transition-colors">登录 / 注册</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</div>'+
         '</div>'+
     '</header>';
@@ -336,6 +336,64 @@ function earnMiles(amount){
     saveMember(m);
     return earned;
 }
+// ================= 账号系统（手机号 + 密码，本地存储，与会员账号互通） =================
+function genCardNo(){
+    let seq=Number(localStorage.getItem("ffpSeq")||"0")+1;
+    localStorage.setItem("ffpSeq",String(seq));
+    return "LMSF"+String(seq).padStart(4,'0');
+}
+// 轻量散列：避免密码明文落盘（演示站点本地存储）
+function hashPwd(pwd){
+    let h=5381;
+    for(let i=0;i<pwd.length;i++){h=((h<<5)+h+pwd.charCodeAt(i))>>>0;}
+    return "h"+h.toString(36)+"."+pwd.length;
+}
+function getAccounts(){
+    try{const v=JSON.parse(localStorage.getItem("ffpAccounts")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}
+}
+function saveAccounts(list){localStorage.setItem("ffpAccounts",JSON.stringify(list));}
+function findAccountByPhone(phone){return getAccounts().find(a=>a.phone===phone)||null;}
+// 注册账号：同时创建/复用会员（账号与会员互通，同一手机号同一会员）
+function registerAccount(name,phone,pwd){
+    name=(name||"").trim();phone=(phone||"").trim();pwd=(pwd||"").trim();
+    if(!validName(name))return {ok:false,msg:"请输入 2-20 位姓名"};
+    if(!validPhone(phone))return {ok:false,msg:"请输入 11 位有效手机号"};
+    if(pwd.length<6||pwd.length>20)return {ok:false,msg:"密码需为 6-20 位"};
+    if(findAccountByPhone(phone))return {ok:false,msg:"该手机号已注册，请直接登录"};
+    if(getMember())return {ok:false,msg:"您已登录，请先退出后再注册新账号"};
+    // 与会员互通：若该手机号已有会员资料（旧数据），复用其卡号与里程
+    const members=getMembers();
+    let member=members.find(x=>x.phone===phone);
+    if(!member){
+        member={name:name,phone:phone,cardNo:genCardNo(),level:"普卡",miles:0,totalMiles:0,joinedAt:Date.now()};
+    }else{
+        member.name=name;
+        member.phone=phone;
+    }
+    const acc={phone:phone,pwd:hashPwd(pwd),name:name,cardNo:member.cardNo,createdAt:Date.now()};
+    const list=getAccounts();
+    list.push(acc);
+    saveAccounts(list);
+    saveMember(member);
+    return {ok:true,member:member};
+}
+// 登录账号：手机号 + 密码，登录即恢复对应会员数据
+function loginAccount(phone,pwd){
+    phone=(phone||"").trim();pwd=(pwd||"").trim();
+    if(!validPhone(phone))return {ok:false,msg:"请输入 11 位有效手机号"};
+    if(!pwd)return {ok:false,msg:"请输入密码"};
+    const acc=findAccountByPhone(phone);
+    if(!acc)return {ok:false,msg:"该手机号尚未注册，请先注册"};
+    if(acc.pwd!==hashPwd(pwd))return {ok:false,msg:"密码不正确，请重试"};
+    const members=getMembers();
+    let member=members.find(x=>x.cardNo===acc.cardNo)||members.find(x=>x.phone===phone);
+    if(!member){
+        member={name:acc.name,phone:phone,cardNo:acc.cardNo,level:"普卡",miles:0,totalMiles:0,joinedAt:acc.createdAt};
+    }
+    member.phone=phone;
+    saveMember(member);
+    return {ok:true,member:member};
+}
 function logoutMember(){localStorage.removeItem("ffpMember");renderMemberArea();}
 function renderMemberArea(){
     const el=document.getElementById("memberArea");if(!el)return;
@@ -343,7 +401,7 @@ function renderMemberArea(){
     if(m){
         el.innerHTML='<a href="member.html" class="hover:text-gold" title="会员中心"><i class="fa fa-diamond text-gold"></i> '+esc(m.level)+' · '+esc(m.name)+'</a>';
     }else{
-        el.innerHTML='<a href="member.html" class="hover:text-gold border border-gold/60 px-2 py-0.5 rounded-global text-xs">登录 / 注册</a>';
+        el.innerHTML='<a href="login.html" class="hover:text-gold border border-gold/60 px-2 py-0.5 rounded-global text-xs">登录 / 注册</a>';
     }
 }
 // ---- 顶部"更多"下拉 ----

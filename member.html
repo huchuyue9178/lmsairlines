@@ -37,15 +37,18 @@
                     <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-user-plus mr-2"></i>注册会员</h3>
                     <div class="space-y-4">
                         <div><label class="block mb-1">会员姓名</label><input id="regName" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入姓名" autocomplete="name"><p id="regNameErr" class="field-error-msg hidden">请输入 2-20 位姓名</p></div>
-                        <div><label class="block mb-1">手机号码</label><input id="regPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="11位手机号" autocomplete="tel"><p id="regPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p></div>
+                        <div><label class="block mb-1">手机号码</label><input id="regPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="11位手机号，将作为登录账号" autocomplete="tel"><p id="regPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p></div>
+                        <div><label class="block mb-1">设置密码</label><input id="regPwd" type="password" class="w-full border px-4 py-3 rounded-global" placeholder="6-20 位密码" autocomplete="new-password"><p id="regPwdErr" class="field-error-msg hidden">密码需为 6-20 位</p></div>
+                        <div><label class="block mb-1">确认密码</label><input id="regPwd2" type="password" class="w-full border px-4 py-3 rounded-global" placeholder="请再次输入密码" autocomplete="new-password"><p id="regPwd2Err" class="field-error-msg hidden">两次输入的密码不一致</p></div>
                         <button onclick="regMember()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">注册并开通会员</button>
                     </div>
                     <hr class="my-6 border-white/10">
-                    <h3 class="text-lg font-bold text-gold mb-4"><i class="fa fa-sign-in mr-2"></i>已有会员？登录</h3>
+                    <h3 class="text-lg font-bold text-gold mb-4"><i class="fa fa-sign-in mr-2"></i>已有账号？登录</h3>
                     <div class="space-y-4">
-                        <div><label class="block mb-1">会员卡号</label><input id="loginCard" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="如 LMSF0001" autocomplete="off"><p id="loginCardErr" class="field-error-msg hidden">请输入会员卡号</p></div>
-                        <div><label class="block mb-1">手机号码</label><input id="loginPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="注册时手机号" autocomplete="tel"><p id="loginPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p></div>
+                        <div><label class="block mb-1">手机号码</label><input id="loginPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="注册时手机号" autocomplete="username"><p id="loginPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p></div>
+                        <div><label class="block mb-1">登录密码</label><input id="loginPwd" type="password" class="w-full border px-4 py-3 rounded-global" placeholder="请输入密码" autocomplete="current-password"><p id="loginPwdErr" class="field-error-msg hidden">请输入密码</p></div>
                         <button onclick="loginMember()" class="btn-hover w-full border border-gold text-gold font-bold py-3 rounded-global">登录</button>
+                        <p class="text-xs text-textGray text-center">账号与会员账号互通，也可前往 <a href="login.html" class="text-gold underline underline-offset-2">账号登录页</a></p>
                     </div>
                 </div>
             </div>
@@ -144,41 +147,45 @@
         // 表单实时校验
         bindFieldValidation("regName",validName);
         bindFieldValidation("regPhone",validPhone);
-        bindFieldValidation("loginCard",function(v){return v.trim().length>0;});
+        bindFieldValidation("regPwd",function(v){return v.length>=6&&v.length<=20;});
+        bindFieldValidation("regPwd2",function(v){return v.length>0&&v===document.getElementById("regPwd").value;});
         bindFieldValidation("loginPhone",validPhone);
+        bindFieldValidation("loginPwd",function(v){return v.length>0;});
         bindFieldValidation("shipName",validName);
         bindFieldValidation("shipPhone",validPhone);
-        function genCardNo(){
-            let seq=Number(localStorage.getItem("ffpSeq")||"0")+1;
-            localStorage.setItem("ffpSeq",String(seq));
-            return "LMSF"+String(seq).padStart(4,'0');
-        }
+        document.getElementById("regPwd").addEventListener("input",function(){
+            const p2=document.getElementById("regPwd2");
+            if(p2.value.length>0){
+                const ok=p2.value===this.value;
+                document.getElementById("regPwd2Err").classList.toggle("hidden",ok);
+                p2.classList.toggle("field-err",!ok);
+            }
+        });
+        // 注册并开通会员（与账号系统互通：同一手机号即同一账号/会员）
         function regMember(){
             const name=document.getElementById("regName").value.trim();
             const phone=document.getElementById("regPhone").value.trim();
+            const pwd=document.getElementById("regPwd").value;
+            const pwd2=document.getElementById("regPwd2").value;
             if(!validName(name)){showToast("请填写正确的会员姓名（2-20 位）","warn");document.getElementById("regName").focus();return;}
             if(!validPhone(phone)){showToast("请输入 11 位有效手机号","warn");document.getElementById("regPhone").focus();return;}
-            if(getMember()){showToast("您已登录会员，请先退出再注册新会员。","warn");return;}
-            const m={name:name,phone:phone,cardNo:genCardNo(),level:"普卡",miles:0,totalMiles:0,joinedAt:Date.now()};
-            saveMember(m);
-            showToast("注册成功！您的会员卡号为 "+m.cardNo+"，已自动登录。","success");
+            if(pwd.length<6||pwd.length>20){showToast("密码需为 6-20 位","warn");document.getElementById("regPwd").focus();return;}
+            if(pwd!==pwd2){showToast("两次输入的密码不一致","warn");document.getElementById("regPwd2").focus();return;}
+            const r=registerAccount(name,phone,pwd);
+            if(!r.ok){showToast(r.msg,"error");return;}
+            showToast("注册成功！会员卡号 "+r.member.cardNo+"，已自动登录。","success");
             renderPage();
         }
+        // 手机号 + 密码登录（与账号系统互通）
         function loginMember(){
-            const card=document.getElementById("loginCard").value.trim().toUpperCase();
             const phone=document.getElementById("loginPhone").value.trim();
-            if(!card){showToast("请输入会员卡号","warn");document.getElementById("loginCard").focus();return;}
+            const pwd=document.getElementById("loginPwd").value;
             if(!validPhone(phone)){showToast("请输入 11 位有效手机号","warn");document.getElementById("loginPhone").focus();return;}
-            // 从会员注册表查找（支持退出后重新登录）
-            const list=getMembers();
-            const found=list.find(x=>x.cardNo===card&&x.phone===phone);
-            if(found){
-                saveMember(found);
-                renderPage();
-                showToast("登录成功！欢迎回来，"+found.name+"。","success");
-                return;
-            }
-            showToast("未找到匹配的会员卡号与手机号。演示环境支持通过注册流程创建会员。");
+            if(!pwd){showToast("请输入密码","warn");document.getElementById("loginPwd").focus();return;}
+            const r=loginAccount(phone,pwd);
+            if(!r.ok){showToast(r.msg,"error");return;}
+            renderPage();
+            showToast("登录成功！欢迎回来，"+r.member.name+"。","success");
         }
         function doLogout(){logoutMember();renderPage();showToast("已退出登录。");}
         // 等级尊贵度配置：等级越高越尊贵
