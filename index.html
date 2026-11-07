@@ -133,57 +133,47 @@
             outline:2px solid rgba(74,90,110,0.8);outline-offset:3px;border-radius:999px;
         }
         /* 深色模式适配（新增元素） */
-        @media (prefers-color-scheme: dark){
-            .stat-num{color:#e8edf2;}
-            .stat-num span{color:rgba(232,237,242,0.55);}
-            .stat-label{color:rgba(232,237,242,0.62);}
-            .stat-cell:not(:last-child):after{background:rgba(255,255,255,0.14);}
-            .svc-item{
+        html[data-theme="dark"] .stat-num{color:#e8edf2;}
+html[data-theme="dark"] .stat-num span{color:rgba(232,237,242,0.55);}
+html[data-theme="dark"] .stat-label{color:rgba(232,237,242,0.62);}
+html[data-theme="dark"] .stat-cell:not(:last-child):after{background:rgba(255,255,255,0.14);}
+html[data-theme="dark"] .svc-item{
                 background:rgba(255,255,255,0.07);
-                border-color:rgba(255,255,255,0.12);
-            }
-            .svc-item:hover{
+                border-color:rgba(255,255,255,0.12);}
+html[data-theme="dark"] .svc-item:hover{
                 background:rgba(255,255,255,0.11);
                 border-color:rgba(255,255,255,0.2);
-                box-shadow:0 18px 40px rgba(0,0,0,0.35);
-            }
-            .svc-icon{
+                box-shadow:0 18px 40px rgba(0,0,0,0.35);}
+html[data-theme="dark"] .svc-icon{
                 background:linear-gradient(145deg,rgba(255,255,255,0.16),rgba(255,255,255,0.06));
                 border-color:rgba(255,255,255,0.18);color:#dbe6f0;
-                box-shadow:0 8px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);
-            }
-            .svc-title{color:#e8edf2;}
-            .svc-desc{color:rgba(232,237,242,0.6);}
-            .svc-arrow{color:rgba(232,237,242,0.55);}
-            .svc-item:hover .svc-arrow{color:#e8edf2;}
-            .sec-eyebrow{color:rgba(232,237,242,0.45);}
-            .sec-note{color:rgba(232,237,242,0.5);}
-            .sec-link{color:#b9cfe2;}
-            .hero-btn-ghost{
+                box-shadow:0 8px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);}
+html[data-theme="dark"] .svc-title{color:#e8edf2;}
+html[data-theme="dark"] .svc-desc{color:rgba(232,237,242,0.6);}
+html[data-theme="dark"] .svc-arrow{color:rgba(232,237,242,0.55);}
+html[data-theme="dark"] .svc-item:hover .svc-arrow{color:#e8edf2;}
+html[data-theme="dark"] .sec-eyebrow{color:rgba(232,237,242,0.45);}
+html[data-theme="dark"] .sec-note{color:rgba(232,237,242,0.5);}
+html[data-theme="dark"] .sec-link{color:#b9cfe2;}
+html[data-theme="dark"] .hero-btn-ghost{
                 color:#e8edf2;background:rgba(255,255,255,0.09);
-                border-color:rgba(255,255,255,0.18);
-            }
-            .hero-btn-ghost:hover{background:rgba(255,255,255,0.14);box-shadow:0 12px 30px rgba(0,0,0,0.3);}
-            .notice-tag{
+                border-color:rgba(255,255,255,0.18);}
+html[data-theme="dark"] .hero-btn-ghost:hover{background:rgba(255,255,255,0.14);box-shadow:0 12px 30px rgba(0,0,0,0.3);}
+html[data-theme="dark"] .notice-tag{
                 color:#f0a58f;background:rgba(240,165,143,0.1);
-                border-color:rgba(240,165,143,0.28);
-            }
-            .shop-card{
+                border-color:rgba(240,165,143,0.28);}
+html[data-theme="dark"] .shop-card{
                 background:rgba(255,255,255,0.07) !important;
-                border-color:rgba(255,255,255,0.12) !important;
-            }
-            .shop-card:hover{box-shadow:0 18px 40px rgba(0,0,0,0.35);}
-            .hero-btn-primary,.btn-solid-sm{
+                border-color:rgba(255,255,255,0.12) !important;}
+html[data-theme="dark"] .shop-card:hover{box-shadow:0 18px 40px rgba(0,0,0,0.35);}
+html[data-theme="dark"] .hero-btn-primary, html[data-theme="dark"] .btn-solid-sm{
                 background:linear-gradient(135deg,#5f7488,#7d93a8) !important;
-                box-shadow:0 10px 28px rgba(0,0,0,0.35) !important;
-            }
-            .deal-more:focus-visible,.svc-item:focus-visible,.deal-tab:focus-visible,
-            .hero-btn-primary:focus-visible,.hero-btn-ghost:focus-visible,.btn-solid-sm:focus-visible{
-                outline-color:rgba(232,237,242,0.8);
-            }
-        }
+                box-shadow:0 10px 28px rgba(0,0,0,0.35) !important;}
+html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-item:focus-visible, html[data-theme="dark"] .deal-tab:focus-visible, html[data-theme="dark"] .hero-btn-primary:focus-visible, html[data-theme="dark"] .hero-btn-ghost:focus-visible, html[data-theme="dark"] .btn-solid-sm:focus-visible{
+                outline-color:rgba(232,237,242,0.8);}
     </style>
     <link rel="stylesheet" href="assets/refresh.css?v=20261107ui">
+    <script src="assets/theme.js?v=20261107theme"></script>
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -543,5 +533,6 @@
         }
         document.querySelectorAll('.airpods-tabs').forEach(setupAirpodTabs);
     </script>
+<script src="assets/i18n.js?v=20261107i18n"></script>
 </body>
 </html>

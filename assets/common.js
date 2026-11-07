@@ -65,11 +65,20 @@
                 '</div>'+
                 '<span id="memberArea"></span>'+
             '</div>'+
+            '<div class="flex items-center gap-1.5 sm:gap-2 ml-2 sm:ml-3 shrink-0">'+
+                '<button id="themeToggle" type="button" aria-label="主题：跟随系统" title="主题：跟随系统">'+
+                '<i class="fa fa-adjust" aria-hidden="true"></i>'+
+                '</button>'+
+                '<button id="langToggle" type="button" title="Switch to English" aria-label="Switch to English">EN</button>'+
+            '</div>'+
             '<button id="menuBtn" class="lg:hidden text-textDark text-2xl"><i class="fa fa-bars"></i></button>'+
         '</div>'+
         '<div id="mobileMenu" class="lg:hidden menu-closed bg-mistWhite/90 backdrop-blur-xl px-4 pb-5 pt-2 text-textDark">'+
             '<div class="flex flex-col gap-3 text-[15px]">'+
-                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors flex items-center gap-2">购物车<span id="cartBadgeMobile" class="bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="login.html" class="hover:text-gold transition-colors">登录 / 注册</a><a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
+                '<a href="index.html" class="hover:text-gold transition-colors">首页</a><a href="booking.html" class="hover:text-gold transition-colors">机票预订</a><a href="flight.html" class="hover:text-gold transition-colors">航班动态</a><a href="checkin.html" class="hover:text-gold transition-colors">在线值机</a><a href="special.html" class="hover:text-gold transition-colors">特殊服务</a><a href="cart.html" class="hover:text-gold transition-colors flex items-center gap-2">购物车<span id="cartBadgeMobile" class="bg-gold text-primary text-xs px-2 py-0.5 rounded-full">0</span></a><a href="order.html" class="hover:text-gold transition-colors">我的订单</a><a href="member.html" class="hover:text-gold transition-colors">会员中心</a><a href="login.html" class="hover:text-gold transition-colors">登录 / 注册</a>'+
+                '<button id="themeToggleMobile" type="button" class="text-left hover:text-gold transition-colors">主题：跟随系统</button>'+
+                '<button id="langToggleMobile" type="button" class="text-left hover:text-gold transition-colors">Language: English</button>'+
+                '<a href="policy.html" class="hover:text-gold transition-colors">服务指南</a><a href="about.html" class="hover:text-gold transition-colors">关于我们</a><a href="customer.html" class="hover:text-gold transition-colors">在线客服</a>'+
             '</div>'+
         '</div>'+
     '</header>';
@@ -990,7 +999,7 @@ function showActivityNotice(){
     if(agreed)return;
 
     var dark=false;
-    try{dark=!!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);}catch(e){dark=false;}
+    try{dark=(document.documentElement.getAttribute('data-theme')==='dark');}catch(e){dark=false;}
 
     var C={
         card: dark?'rgba(30,38,48,0.97)':'rgba(255,255,255,0.97)',

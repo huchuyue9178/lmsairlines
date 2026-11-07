@@ -594,17 +594,16 @@ body.touch-mode .reveal-up.in{
 }
 
 /* ===== 深色模式（跟随系统） ===== */
-@media (prefers-color-scheme: dark){
-    .pay-mini{border-color:rgba(232,237,242,.35) !important;color:#e8edf2 !important;}
-    .pay-mini:hover{border-color:rgba(228,212,143,.7) !important;color:#e4d48f !important;}
-    body{
+/* 深色模式：data-theme="dark" 触发 */
+html[data-theme="dark"] .pay-mini{border-color:rgba(232,237,242,.35) !important;color:#e8edf2 !important;}
+html[data-theme="dark"] .pay-mini:hover{border-color:rgba(228,212,143,.7) !important;color:#e4d48f !important;}
+html[data-theme="dark"] body{
         background:
             radial-gradient(1000px 600px at 85% -10%, rgba(74,90,110,.3), transparent 60%),
             radial-gradient(900px 700px at 5% 110%, rgba(60,75,95,.3), transparent 60%),
             linear-gradient(180deg,#1a2028 0%,#222b36 40%,#1a2028 100%) !important;
-        color:#e8edf2 !important;
-    }
-    .bg-card, .card-gold{
+        color:#e8edf2 !important;}
+html[data-theme="dark"] .bg-card, html[data-theme="dark"] .card-gold{
         background:
             radial-gradient(120% 120% at 18% 0%, rgba(255,255,255,.08) 0%, rgba(255,255,255,0) 46%),
             linear-gradient(135deg, rgba(255,255,255,.1), rgba(255,255,255,.05)) !important;
@@ -612,69 +611,57 @@ body.touch-mode .reveal-up.in{
         box-shadow:
             0 12px 40px rgba(0,0,0,0.3),
             inset 0 1px 0 rgba(255,255,255,0.15),
-            inset 0 -1px 0 rgba(0,0,0,0.2);
-    }
-    .text-textDark, h1,h2,h3,h4{ color:#e8edf2 !important; }
-    .text-textGray, .text-textDark\/70, .text-textDark\/65, .text-textDark\/60{ color:#9aa8b8 !important; }
-    input, select, textarea{
+            inset 0 -1px 0 rgba(0,0,0,0.2);}
+html[data-theme="dark"] .text-textDark, html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3, html[data-theme="dark"] h4{ color:#e8edf2 !important;}
+html[data-theme="dark"] .text-textGray, html[data-theme="dark"] .text-textDark\/70, html[data-theme="dark"] .text-textDark\/65, html[data-theme="dark"] .text-textDark\/60{ color:#9aa8b8 !important;}
+html[data-theme="dark"] input, html[data-theme="dark"] select, html[data-theme="dark"] textarea{
         background:rgba(255,255,255,0.08) !important;
         border:1px solid rgba(255,255,255,0.15) !important;
-        color:#e8edf2 !important;
-    }
-    input::placeholder{ color:#6b7a8a; }
-    .nav-glass{
+        color:#e8edf2 !important;}
+html[data-theme="dark"] input::placeholder{ color:#6b7a8a;}
+html[data-theme="dark"] .nav-glass{
         background:rgba(26,32,40,0.7) !important;
-        border-bottom:1px solid rgba(255,255,255,0.08);
-    }
-    .airpods-tabs{
+        border-bottom:1px solid rgba(255,255,255,0.08);}
+html[data-theme="dark"] .airpods-tabs{
         background:rgba(255,255,255,0.08) !important;
-        border:1px solid rgba(255,255,255,0.12);
-    }
-    .airpods-pill{
-        background:linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;
-    }
-    .deal-tab{ color:#9aa8b8 !important; }
-    .deal-tab-on{ color:#fff !important; }
-    #moreMenu{
+        border:1px solid rgba(255,255,255,0.12);}
+html[data-theme="dark"] .airpods-pill{
+        background:linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)) !important;}
+html[data-theme="dark"] .deal-tab{ color:#9aa8b8 !important;}
+html[data-theme="dark"] .deal-tab-on{ color:#fff !important;}
+html[data-theme="dark"] #moreMenu{
         background:rgba(30,38,48,0.9) !important;
-        border:1px solid rgba(255,255,255,0.12);
-    }
-    #moreMenu a{ color:#e8edf2 !important; }
-    #moreMenu a:hover{ background:rgba(255,255,255,0.08) !important; }
-    #memberMenu{
+        border:1px solid rgba(255,255,255,0.12);}
+html[data-theme="dark"] #moreMenu a{ color:#e8edf2 !important;}
+html[data-theme="dark"] #moreMenu a:hover{ background:rgba(255,255,255,0.08) !important;}
+html[data-theme="dark"] #memberMenu{
         background:rgba(30,38,48,0.9) !important;
-        border:1px solid rgba(255,255,255,0.12);
-    }
-    #memberMenu a{ color:#e8edf2 !important; }
-    #memberMenu a:hover{ background:rgba(255,255,255,0.08) !important; }
-    .chat-mask{ background:rgba(0,0,0,0.5); }
-    .chat-modal{
+        border:1px solid rgba(255,255,255,0.12);}
+html[data-theme="dark"] #memberMenu a{ color:#e8edf2 !important;}
+html[data-theme="dark"] #memberMenu a:hover{ background:rgba(255,255,255,0.08) !important;}
+html[data-theme="dark"] .chat-mask{ background:rgba(0,0,0,0.5);}
+html[data-theme="dark"] .chat-modal{
         background:rgba(30,38,48,0.85) !important;
-        border:1px solid rgba(255,255,255,0.12);
-    }
-    .msg-bot{ background:rgba(255,255,255,0.08) !important; color:#e8edf2; }
-    /* 背景装饰层压暗（否则文字变白而背景仍为浅色，白字浅底不可读） */
+        border:1px solid rgba(255,255,255,0.12);}
+html[data-theme="dark"] .msg-bot{ background:rgba(255,255,255,0.08) !important; color:#e8edf2;}
+html[data-theme="dark"] /* 背景装饰层压暗（否则文字变白而背景仍为浅色，白字浅底不可读） */
     .bg-layer{
         background:
             linear-gradient(180deg,rgba(24,30,38,0.94) 0%,rgba(30,38,48,0.88) 35%,rgba(36,46,58,0.84) 65%,rgba(24,30,38,0.92) 100%),
             url('hero_bg.webp') center/cover no-repeat;
-        background-color:#1a2028 !important;
-    }
-    /* 玻璃按钮与描边按钮的深色版本 */
+        background-color:#1a2028 !important;}
+html[data-theme="dark"] /* 玻璃按钮与描边按钮的深色版本 */
     .deal-more{
         background:rgba(255,255,255,0.1) !important;
         border-color:rgba(255,255,255,0.2) !important;
-        color:#e8edf2 !important;
-    }
-    .deal-more:hover{
+        color:#e8edf2 !important;}
+html[data-theme="dark"] .deal-more:hover{
         background:rgba(255,255,255,0.2) !important;
         color:#fff !important;
-        box-shadow:0 10px 24px rgba(0,0,0,0.35);
-    }
-    .card-gold, .bg-card{ color:#e8edf2; }
-    /* 价格/强调色在深底上提亮，否则深灰蓝几乎不可读 */
-    .text-gold{ color:#b9cfe2 !important; }
-}
+        box-shadow:0 10px 24px rgba(0,0,0,0.35);}
+html[data-theme="dark"] .card-gold, html[data-theme="dark"] .bg-card{ color:#e8edf2;}
+html[data-theme="dark"] /* 价格/强调色在深底上提亮，否则深灰蓝几乎不可读 */
+    .text-gold{ color:#b9cfe2 !important;}
 
 /* ===== 节省性能版模式：减动画，保留液态玻璃 ===== */
 body.lite-mode .reveal-up{
