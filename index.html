@@ -13,47 +13,178 @@
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="preload" as="image" href="assets/hero_bg.webp">
     <link rel="stylesheet" href="assets/style.css?v=20261006perf">
+    <style>
+        /* ===== 首页专属布局样式（仅本页生效） ===== */
+        /* Hero 按钮 */
+        .hero-btn-primary{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:14px 32px;border-radius:999px;
+            font-weight:600;font-size:16px;color:#fff;
+            background:linear-gradient(135deg,#4a5a6e,#5d7085);
+            box-shadow:0 10px 28px rgba(74,90,110,0.26);
+            transition:transform .3s ease,box-shadow .3s ease;
+        }
+        .hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 38px rgba(74,90,110,0.32);}
+        .hero-btn-ghost{
+            display:inline-flex;align-items:center;gap:8px;
+            padding:13px 30px;border-radius:999px;
+            font-weight:600;font-size:16px;color:#4a5a6e;
+            background:rgba(255,255,255,0.5);
+            border:1px solid rgba(255,255,255,0.8);
+            backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+            transition:transform .3s ease,background .3s ease,box-shadow .3s ease;
+        }
+        .hero-btn-ghost:hover{transform:translateY(-2px);background:rgba(255,255,255,0.7);box-shadow:0 12px 30px rgba(74,90,110,0.16);}
+        /* 数据统计条 */
+        .stat-num{
+            font-size:clamp(28px,3.2vw,42px);font-weight:700;
+            letter-spacing:-0.03em;line-height:1.1;color:#1d1d1f;
+            font-variant-numeric:tabular-nums;
+        }
+        .stat-num span{font-size:0.55em;font-weight:600;letter-spacing:0;margin-left:2px;color:rgba(58,74,92,0.6);}
+        .stat-label{font-size:13px;margin-top:8px;letter-spacing:0.06em;color:rgba(58,74,92,0.62);}
+        .stat-cell{position:relative;padding:8px 4px;}
+        @media (min-width:768px){
+            .stat-cell:not(:last-child):after{
+                content:'';position:absolute;right:0;top:14%;height:72%;width:1px;
+                background:rgba(150,175,200,0.35);
+            }
+        }
+        /* 服务入口 */
+        .svc-item{
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+            text-align:center;gap:11px;
+            padding:26px 12px 24px;border-radius:24px;
+            background:rgba(255,255,255,0.44);
+            border:1px solid rgba(255,255,255,0.66);
+            backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+            transition:transform .35s ease,box-shadow .35s ease,background .35s ease,border-color .35s ease;
+        }
+        .svc-item:hover{
+            transform:translateY(-5px);
+            background:rgba(255,255,255,0.62);
+            border-color:rgba(255,255,255,0.9);
+            box-shadow:0 18px 40px rgba(74,90,110,0.14);
+        }
+        .svc-icon{
+            width:52px;height:52px;border-radius:18px;flex:none;
+            display:inline-flex;align-items:center;justify-content:center;
+            background:linear-gradient(145deg,rgba(255,255,255,0.82),rgba(255,255,255,0.42));
+            border:1px solid rgba(255,255,255,0.82);
+            box-shadow:0 8px 20px rgba(74,90,110,0.08),inset 0 1px 0 rgba(255,255,255,0.9);
+            color:#4a5a6e;font-size:21px;
+        }
+        .svc-title{font-weight:700;font-size:15px;color:#1d1d1f;letter-spacing:-0.01em;}
+        .svc-desc{font-size:12px;line-height:1.55;color:rgba(58,74,92,0.62);}
+        .svc-arrow{margin-top:2px;font-size:11px;color:rgba(74,90,110,0.55);transition:transform .3s ease,color .3s ease;}
+        .svc-item:hover .svc-arrow{transform:translateX(3px);color:#4a5a6e;}
+        /* 板块标题（编辑式层级） */
+        .sec-eyebrow{
+            font-size:11px;font-weight:600;letter-spacing:0.26em;text-transform:uppercase;
+            color:rgba(58,74,92,0.42);margin-bottom:9px;
+        }
+        .sec-title{
+            font-size:clamp(24px,2.5vw,32px);font-weight:700;color:#1d1d1f;
+            letter-spacing:-0.025em;line-height:1.15;
+        }
+        /* Hero 区块节奏 */
+        .hero-sec{padding:92px 20px 54px;}
+        /* 活动窄条 */
+        .notice-tag{
+            display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.1em;
+            color:#c0392b;background:rgba(192,57,43,0.08);
+            border:1px solid rgba(192,57,43,0.18);border-radius:999px;
+            padding:3px 10px;
+        }
+        /* 小屏节奏压缩 */
+        @media (max-width:767px){
+            .hero-sec{padding:56px 20px 38px;}
+            .svc-item{padding:20px 10px 18px;gap:8px;}
+            .svc-desc{font-size:11.5px;}
+            .stat-label{font-size:12px;margin-top:5px;}
+        }
+    </style>
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
     <div id="siteHeader"></div>
     <main class="pt-24 pb-12">
-        <!-- Hero：Apple 式大标题 + 留白 -->
-        <section class="text-center" style="padding:80px 20px 70px">
-            <p class="text-textDark/60 font-medium mb-4 tracking-wide anim-down" style="font-size:15px;letter-spacing:0.22em">LAOMUSI AIRLINES</p>
+        <!-- Hero：品牌主张 + 行动按钮 -->
+        <section class="text-center hero-sec">
+            <p class="text-textDark/60 font-medium mb-4 anim-down" style="font-size:15px;letter-spacing:0.22em">LAOMUSI AIRLINES</p>
             <h1 class="font-bold text-textDark hero-slide" style="font-size:clamp(48px,7vw,88px);letter-spacing:-0.03em;line-height:1.03">
                 Hello, Welcome to Laomusi Airlines.
             </h1>
-            <p class="mt-5 text-textDark/70 anim-up d2" style="font-size:clamp(18px,1.5vw,22px)">虔诚 · 严谨 · 安心，像牧师般守护每一段飞行</p>
-            <div class="mt-8 flex flex-wrap justify-center gap-4 anim-up d3">
-                <a href="booking.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:19px">查询航班 <i class="fa fa-angle-right ml-1"></i></a>
-                <a href="about.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:19px">了解更多 <i class="fa fa-angle-right ml-1"></i></a>
+            <p class="mt-6 text-textDark/70 anim-up d2" style="font-size:clamp(18px,1.5vw,22px)">虔诚 · 严谨 · 安心，像牧师般守护每一段飞行</p>
+            <div class="mt-9 flex flex-wrap justify-center gap-3 anim-up d3">
+                <a href="booking.html" class="hero-btn-primary">查询航班 <i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                <a href="about.html" class="hero-btn-ghost">了解更多</a>
             </div>
         </section>
 
-        <!-- 航空活动 -->
+        <!-- 运行数据条 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:30px 18px 22px">
+                <div class="grid grid-cols-2 md:grid-cols-4">
+                    <div class="stat-cell text-center"><p class="stat-num">120<span>+</span></p><p class="stat-label">全球通航城市</p></div>
+                    <div class="stat-cell text-center"><p class="stat-num">68<span>架</span></p><p class="stat-label">在役机队</p></div>
+                    <div class="stat-cell text-center"><p class="stat-num">98.6<span>%</span></p><p class="stat-label">航班准点率</p></div>
+                    <div class="stat-cell text-center"><p class="stat-num">1,200<span>万+</span></p><p class="stat-label">年承运旅客</p></div>
+                </div>
+                <p class="text-center mt-4" style="font-size:11px;letter-spacing:0.06em;color:rgba(58,74,92,0.4)">* 以上为演示数据</p>
+            </div>
+        </section>
+
+        <!-- 一站式服务入口 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal" aria-label="主要服务入口">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                <a href="booking.html" class="svc-item">
+                    <span class="svc-icon"><i class="fa fa-plane" aria-hidden="true"></i></span>
+                    <span class="svc-title">机票预订</span>
+                    <span class="svc-desc">全球航线，一次锁定</span>
+                    <span class="svc-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+                <a href="booking.html?mode=railair" class="svc-item">
+                    <span class="svc-icon"><i class="fa fa-train" aria-hidden="true"></i></span>
+                    <span class="svc-title">空铁联运</span>
+                    <span class="svc-desc">飞机 + 高铁，一票直达</span>
+                    <span class="svc-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+                <a href="checkin.html" class="svc-item">
+                    <span class="svc-icon"><i class="fa fa-ticket" aria-hidden="true"></i></span>
+                    <span class="svc-title">在线值机</span>
+                    <span class="svc-desc">选好座位，轻装出行</span>
+                    <span class="svc-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+                <a href="flight.html" class="svc-item">
+                    <span class="svc-icon"><i class="fa fa-paper-plane" aria-hidden="true"></i></span>
+                    <span class="svc-title">航班动态</span>
+                    <span class="svc-desc">实时掌握每一次起落</span>
+                    <span class="svc-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+                <a href="member.html" class="svc-item">
+                    <span class="svc-icon"><i class="fa fa-diamond" aria-hidden="true"></i></span>
+                    <span class="svc-title">会员中心</span>
+                    <span class="svc-desc">常旅客礼遇与里程</span>
+                    <span class="svc-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+                <a href="cart.html" class="svc-item">
+                    <span class="svc-icon"><i class="fa fa-shopping-bag" aria-hidden="true"></i></span>
+                    <span class="svc-title">购物车</span>
+                    <span class="svc-desc">确认行程，安心支付</span>
+                    <span class="svc-arrow"><i class="fa fa-angle-right" aria-hidden="true"></i></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 特价活动 -->
         <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
             <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
-                <div class="flex items-baseline justify-between mb-5">
-                    <h3 class="font-bold text-textDark flex items-center gap-3" style="font-size:clamp(24px,2.5vw,32px)"><span class="inline-flex items-center justify-center w-11 h-11 rounded-full" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 8px 20px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85)"><i class="fa fa-plane" style="font-size:17px;color:#4a5a6e;transform:rotate(-15deg)"></i></span>航空活动</h3>
-                    <a href="updates.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">更多活动 <i class="fa fa-angle-right ml-1"></i></a>
-                </div>
-                <div id="activityList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div class="block rounded-big p-5" style="background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.6)">
-                        <p class="text-xs font-semibold mb-2" style="color:#c0392b">视频征集 · 已结束</p>
-                        <h4 class="font-bold text-lg text-textDark mb-1">逐梦云天 · 定格航影</h4>
-                        <p class="text-sm text-textGray mt-2">活动已结束，后续获奖名单等待官方公布。</p>
-                        <p class="text-xs text-textGray mt-3">2026.09.19 — 10.19</p>
+                <div class="flex flex-col md:flex-row md:flex-wrap items-start md:items-end justify-between gap-4 mb-7">
+                    <div>
+                        <p class="sec-eyebrow">Special Fares</p>
+                        <h3 class="sec-title">特价活动</h3>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 特价活动：东航风格 -->
-        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
-            <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
-                <div class="flex flex-col md:flex-row md:flex-wrap items-start md:items-center justify-between gap-4 mb-6">
-                    <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">特价活动</h3>
                     <div class="airpods-tabs flex items-center gap-1 p-1 rounded-full w-full md:w-auto overflow-x-auto" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
                         <button id="dealTabCn" onclick="switchDeal('cn')" class="deal-tab deal-tab-on px-5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国内</button>
                         <button id="dealTabIntl" onclick="switchDeal('intl')" class="deal-tab px-5 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国际及港澳台</button>
@@ -66,94 +197,14 @@
             </div>
         </section>
 
-        <!-- 机票预订 + 空铁联运：并排一行 -->
-        <section class="px-3 md:px-5 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
-            <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:34px 24px 26px;min-height:310px;display:flex;flex-direction:column;justify-content:space-between">
-                <div>
-                    <h2 class="font-bold text-textDark" style="font-size:clamp(26px,2.6vw,36px);letter-spacing:-0.02em">机票预订</h2>
-                    <p class="mt-2 text-textDark/70" style="font-size:15px">从这里开始旅程。全球航线，一次锁定。</p>
-                    <div class="mt-4 flex flex-wrap justify-center gap-4">
-                        <a href="booking.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">查询 <i class="fa fa-angle-right ml-1"></i></a>
-                        <a href="member.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">会员专享 <i class="fa fa-angle-right ml-1"></i></a>
-                    </div>
-                </div>
-                <div class="mt-4 flex justify-center">
-                    <span class="anim-float inline-flex items-center justify-center w-20 h-20 rounded-[26px]" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 10px 30px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85)"><i class="fa fa-plane" style="font-size:30px;color:#4a5a6e"></i></span>
-                </div>
-            </div>
-            <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:34px 24px 26px;min-height:310px;display:flex;flex-direction:column;justify-content:space-between">
-                <div>
-                    <h2 class="font-bold text-textDark" style="font-size:clamp(26px,2.6vw,36px);letter-spacing:-0.02em">空铁联运</h2>
-                    <p class="mt-2 text-textDark/70" style="font-size:15px">飞机 + 高铁，一票直达目的地。</p>
-                    <div class="mt-4 flex flex-wrap justify-center gap-4">
-                        <a href="booking.html?mode=railair" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">预订 <i class="fa fa-angle-right ml-1"></i></a>
-                    </div>
-                </div>
-                <div class="mt-4 flex justify-center items-end">
-                    <span class="anim-float inline-flex items-center justify-center w-20 h-20 rounded-[26px]" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 10px 30px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85)"><i class="fa fa-train" style="font-size:30px;color:#4a5a6e"></i></span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 双列小卡片：Apple 式 grid -->
-        <section class="px-3 md:px-5 grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
-            <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
-                <div>
-                    <h3 class="font-bold text-textDark" style="font-size:clamp(28px,3vw,40px)">在线值机</h3>
-                    <p class="mt-2 text-textDark/70" style="font-size:17px">选好座位，轻装出行。</p>
-                    <div class="mt-4">
-                        <a href="checkin.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:16px">立即值机 <i class="fa fa-angle-right ml-1"></i></a>
-                    </div>
-                </div>
-                <div class="mt-6 flex justify-center">
-                    <span class="anim-float inline-flex items-center justify-center w-20 h-20 rounded-[26px]" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 10px 30px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85)"><i class="fa fa-ticket" style="font-size:30px;color:#4a5a6e"></i></span>
-                </div>
-            </div>
-            <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
-                <div>
-                    <h3 class="font-bold text-textDark" style="font-size:clamp(28px,3vw,40px)">航班动态</h3>
-                    <p class="mt-2 text-textDark/70" style="font-size:17px">实时掌握每一次起落。</p>
-                    <div class="mt-4">
-                        <a href="flight.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:16px">查询 <i class="fa fa-angle-right ml-1"></i></a>
-                    </div>
-                </div>
-                <div class="mt-6 flex justify-center">
-                    <span class="anim-float inline-flex items-center justify-center w-20 h-20 rounded-[26px]" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 10px 30px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85);animation-delay:.2s"><i class="fa fa-paper-plane" style="font-size:30px;color:#4a5a6e"></i></span>
-                </div>
-            </div>
-            <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
-                <div>
-                    <h3 class="font-bold text-textDark" style="font-size:clamp(28px,3vw,40px)">会员中心</h3>
-                    <p class="mt-2 text-textDark/70" style="font-size:17px">常旅客礼遇，从这里开始。</p>
-                    <div class="mt-4">
-                        <a href="member.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:16px">了解会员 <i class="fa fa-angle-right ml-1"></i></a>
-                    </div>
-                </div>
-                <div class="mt-6 flex justify-center">
-                    <span class="anim-float inline-flex items-center justify-center w-20 h-20 rounded-[26px]" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 10px 30px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85);animation-delay:.4s"><i class="fa fa-diamond" style="font-size:30px;color:#4a5a6e"></i></span>
-                </div>
-            </div>
-            <div class="reveal bg-card card-gold rounded-big shadow-xl text-center" style="padding:50px 20px;min-height:420px;display:flex;flex-direction:column;justify-content:space-between">
-                <div>
-                    <h3 class="font-bold text-textDark" style="font-size:clamp(28px,3vw,40px)">购物车</h3>
-                    <p class="mt-2 text-textDark/70" style="font-size:17px">确认行程，安心支付。</p>
-                    <div class="mt-4">
-                        <a href="cart.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:16px">查看购物袋 <i class="fa fa-angle-right ml-1"></i></a>
-                    </div>
-                </div>
-                <div class="mt-6 flex justify-center">
-                    <span class="anim-float inline-flex items-center justify-center w-20 h-20 rounded-[26px]" style="background:linear-gradient(145deg,rgba(255,255,255,0.72),rgba(255,255,255,0.32));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 10px 30px rgba(74,90,110,0.10),inset 0 1px 0 rgba(255,255,255,0.85);animation-delay:.6s"><i class="fa fa-shopping-bag" style="font-size:30px;color:#4a5a6e"></i></span>
-                </div>
-            </div>
-        </section>
-
-        <!-- 热门航线：Apple 式窄卡片 -->
-        <section class="px-3 md:px-5 reveal">
-            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:50px 30px">
-                <div class="flex flex-col md:flex-row md:flex-wrap items-start md:items-center justify-between gap-4 mb-6">
+        <!-- 热门航线 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
+                <div class="flex flex-col md:flex-row md:flex-wrap items-start md:items-end justify-between gap-4 mb-7">
                     <div>
-                        <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">热门航线</h3>
-                        <p class="text-textDark/60 text-sm mt-1">精选全球目的地，含地标风景大片</p>
+                        <p class="sec-eyebrow">Explore The World</p>
+                        <h3 class="sec-title">热门航线</h3>
+                        <p class="text-textDark/55 text-sm mt-1.5">精选全球目的地，含地标风景大片</p>
                     </div>
                     <div class="airpods-tabs flex items-center gap-1 p-1 rounded-full w-full md:w-auto overflow-x-auto" style="background:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.7)">
                         <button id="rtTabCn" onclick="switchRt('cn')" class="deal-tab deal-tab-on px-4 py-1.5 rounded-full text-sm font-semibold whitespace-nowrap">国内热门干线</button>
@@ -168,14 +219,35 @@
             </div>
         </section>
 
-        <!-- 牧师商城：推荐商品 -->
-        <section class="px-3 md:px-5 mt-3 md:mt-4 reveal">
-            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:50px 30px">
-                <div class="flex flex-wrap items-baseline justify-between gap-3 mb-2">
-                    <h3 class="font-bold text-textDark" style="font-size:clamp(24px,2.5vw,32px)">牧师商城</h3>
+        <!-- 航空活动：窄条公告 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:28px 26px">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div id="activityList" class="flex items-start gap-4">
+                        <span class="svc-icon" style="width:46px;height:46px;border-radius:16px;font-size:18px"><i class="fa fa-film" aria-hidden="true"></i></span>
+                        <div>
+                            <span class="notice-tag">视频征集 · 已结束</span>
+                            <h4 class="font-bold text-textDark mt-2" style="font-size:19px;letter-spacing:-0.02em">逐梦云天 · 定格航影</h4>
+                            <p class="text-sm text-textGray mt-1.5">活动已结束，后续获奖名单等待官方公布。</p>
+                            <p class="mt-2" style="font-size:12px;letter-spacing:0.06em;color:rgba(58,74,92,0.5)">2026.09.19 — 10.19</p>
+                        </div>
+                    </div>
+                    <a href="updates.html" class="font-semibold anim-link shrink-0 md:ml-6" style="color:#4a5a6e;font-size:15px">更多活动 <i class="fa fa-angle-right ml-1"></i></a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 牧师商城 -->
+        <section class="px-3 md:px-5 mb-3 md:mb-4 reveal">
+            <div class="bg-card card-gold rounded-big shadow-xl p-6 md:p-8">
+                <div class="flex flex-wrap items-end justify-between gap-3 mb-1">
+                    <div>
+                        <p class="sec-eyebrow">Boutique</p>
+                        <h3 class="sec-title">牧师商城</h3>
+                    </div>
                     <a href="shop.html" class="font-semibold anim-link" style="color:#4a5a6e;font-size:15px">更多商品 <i class="fa fa-angle-right ml-1"></i></a>
                 </div>
-                <p class="text-textDark/60 text-sm mb-6">老牧师航空官方周边 · 下单→支付→发货→收货全程模拟</p>
+                <p class="text-textDark/55 text-sm mt-1.5 mb-7">老牧师航空官方周边 · 下单→支付→发货→收货全程模拟</p>
                 <div id="shopPreview" class="grid grid-cols-1 sm:grid-cols-3 gap-4"></div>
                 <div class="flex flex-wrap justify-center gap-4 mt-8">
                     <a href="shop.html" class="deal-more px-10 py-3 rounded-full text-sm font-semibold">进入商城 <i class="fa fa-angle-right ml-1"></i></a>
