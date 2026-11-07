@@ -335,6 +335,9 @@
             + '<div class="dev-acts" style="margin-top:8px;">'
             + '<button type="button" class="dev-mini" id="devBalZero">余额清零</button>'
             + '<button type="button" class="dev-mini" id="devBalTen">充 10,000 元</button></div>'
+            + '<div class="dev-acts" style="margin-top:8px;">'
+            + '<button type="button" class="dev-mini" id="devPayBindAll">绑定全部支付方式</button>'
+            + '<button type="button" class="dev-mini" id="devPayUnbindAll">解绑全部支付方式</button></div>'
             + '<p style="font-size:11px;margin-top:8px;opacity:.65;">里程改变会同步匹配等级；黑钻需单独开通资格。</p>';
         var box = document.getElementById('devLvBox');
         box.innerHTML = LV_NAME.map(function (n, i) {
@@ -346,6 +349,8 @@
         document.getElementById('devMileApply').addEventListener('click', applyMiles);
         document.getElementById('devBalApply').addEventListener('click', applyBalance);
         document.getElementById('devBalZero').addEventListener('click', function () { setBalance(0); });
+        document.getElementById('devPayBindAll').addEventListener('click', devBindAllPay);
+        document.getElementById('devPayUnbindAll').addEventListener('click', devUnbindAllPay);
         document.getElementById('devBalTen').addEventListener('click', function () { setBalance((Number(currentTestMember().balance) || 0) + 10000); });
     }
 
@@ -830,6 +835,26 @@
         var v = parseInt(inp.value, 10);
         if (isNaN(v) || v < 0) { toast('请输入有效的余额（≥ 0）', 'error'); return; }
         setBalance(v);
+    }
+    function devBindAllPay() {
+        var m = currentTestMember();
+        m.payBindings = {
+            alipay: { account: '138****00', holder: m.name, boundAt: Date.now() },
+            wechat: { account: '138****00', holder: m.name, boundAt: Date.now() },
+            bank: { bank: '招商银行', tail: '8888', holder: m.name, boundAt: Date.now() }
+        };
+        m.defaultPay = 'alipay';
+        writeMember(m);
+        refreshPanel();
+        toast('已绑定 3 种模拟支付方式', 'success');
+    }
+    function devUnbindAllPay() {
+        var m = currentTestMember();
+        m.payBindings = {};
+        m.defaultPay = '';
+        writeMember(m);
+        refreshPanel();
+        toast('已解绑全部支付方式', 'success');
     }
     function setBalance(v) {
         var m = currentTestMember();

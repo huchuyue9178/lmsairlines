@@ -595,6 +595,8 @@ body.touch-mode .reveal-up.in{
 
 /* ===== 深色模式（跟随系统） ===== */
 @media (prefers-color-scheme: dark){
+    .pay-mini{border-color:rgba(232,237,242,.35) !important;color:#e8edf2 !important;}
+    .pay-mini:hover{border-color:rgba(228,212,143,.7) !important;color:#e4d48f !important;}
     body{
         background:
             radial-gradient(1000px 600px at 85% -10%, rgba(74,90,110,.3), transparent 60%),
@@ -863,3 +865,6 @@ body.lite-mode .airpods-tabs{
     transition:transform .4s cubic-bezier(0.22,1,0.36,1),opacity .3s ease;
     display:inline-block;
 }
+/* 支付方式小按钮（会员中心）：浅色/深色双模式描边 */
+.pay-mini{border:1px solid rgba(74,90,110,.28);color:#4a5a6e;background:transparent;line-height:1.4;}
+.pay-mini:hover{border-color:rgba(201,168,106,.65);color:#a8843f;}

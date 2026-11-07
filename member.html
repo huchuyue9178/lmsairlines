@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="assets/tailwind-config.js?v=20261006perf"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20261006perf">
+    <link rel="stylesheet" href="assets/style.css?v=20261107paybind">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -107,6 +107,15 @@
                     <div id="walletTxList"></div>
                 </div>
             </div>
+            <!-- 支付方式管理 -->
+            <div id="payMethodsCard" class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-1">
+                    <h3 class="text-xl font-bold text-gold"><i class="fa fa-credit-card mr-2"></i>支付方式</h3>
+                    <span id="payBindSummary" class="text-xs text-textGray"></span>
+                </div>
+                <p class="text-xs text-textGray mb-4">充值余额前需绑定至少一种支付方式，可绑定多个并设置默认。仅保存掩码信息，不涉及真实账户与真实扣款。</p>
+                <div id="payMethodList" class="space-y-3"></div>
+            </div>
             <!-- 黑钻至尊专属权益（仅黑钻卡） -->
             <div id="eliteBenefits" class="bg-card card-gold p-6 rounded-global shadow-lg hidden">
                 <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-diamond mr-2"></i>黑钻至尊专属权益</h3>
@@ -143,6 +152,9 @@
         <div class="bg-card card-gold rounded-global shadow-2xl w-full max-w-md p-6">
             <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-wallet mr-2"></i>账户充值</h3>
             <p class="text-xs text-textGray mb-4">模拟充值，确认后立即到账，不产生真实扣款。</p>
+            <label class="block mb-2 text-sm">支付方式</label>
+            <div id="rechargeChannels" class="space-y-2 mb-3"></div>
+            <div id="rechargeBindTip" class="hidden text-sm text-danger leading-relaxed mb-3"></div>
             <label class="block mb-2 text-sm">快捷金额</label>
             <div class="flex flex-wrap gap-2 mb-4">
                 <button onclick="pickRecharge(100)" class="px-4 py-2 border rounded-global text-sm btn-hover">¥100</button>
@@ -156,7 +168,20 @@
             <div id="rechargeErr" class="text-danger text-sm mt-2 hidden"></div>
             <div class="flex gap-4 mt-6">
                 <button onclick="closeRecharge()" class="flex-1 border py-3 rounded-global">取消</button>
-                <button onclick="confirmRecharge()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认充值</button>
+                <button id="rechargeConfirmBtn" onclick="confirmRecharge()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认充值</button>
+            </div>
+        </div>
+    </div>
+    <!-- 绑定支付方式 -->
+    <div id="payBindModal" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4">
+        <div class="bg-card card-gold rounded-global shadow-2xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-credit-card mr-2"></i>绑定<span id="payBindName"></span></h3>
+            <p class="text-xs text-textGray mb-4" id="payBindDesc"></p>
+            <div id="payBindFields" class="space-y-3"></div>
+            <div id="payBindErr" class="text-danger text-sm mt-2 hidden"></div>
+            <div class="flex gap-4 mt-6">
+                <button onclick="closePayBind()" class="flex-1 border py-3 rounded-global">取消</button>
+                <button onclick="confirmPayBind()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认绑定</button>
             </div>
         </div>
     </div>
@@ -177,8 +202,8 @@
         </div>
     </div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261107wallet"></script>
-    <script src="assets/dev.js?v=20261107dev5"></script>
+    <script src="assets/common.js?v=20261107paybind"></script>
+    <script src="assets/dev.js?v=20261107dev6"></script>
     <script>
         const LV_COLORS={普卡:'text-white',银卡:'text-gray-300',金卡:'text-gold',铂金卡:'text-amber-300',钻石卡:'text-cyan-300'};
         const LV_DESC={普卡:'注册即享 · 里程累积、会员专属客服、会员价购票',银卡:'1万里程 · 优先值机、额外10%里程加成、生日礼遇',金卡:'3万里程 · 免费选座、贵宾安检通道、额外25%里程、优先登机',铂金卡:'6万里程 · 贵宾休息室、升舱券×1/年、额外50%里程',钻石卡:'10万里程 · 专属管家、无限休息室、额外100%里程'};
@@ -248,6 +273,180 @@
             {icon:'fa-wifi',name:'全程高速 Wi-Fi',desc:'机上网络+顶级餐饮'},
             {icon:'fa-birthday-cake',name:'生日至尊礼遇',desc:'头等舱香槟与蛋糕'}
         ];
+        // ---------- 支付方式（支付宝 / 微信 / 银行卡）----------
+        var payBindTarget="", pendingRechargeAmount=null, rechargeChannel="";
+
+        function bindPayListEvents(){
+            const box=document.getElementById("payMethodList");
+            if(box&&!box.dataset.bound){
+                box.dataset.bound="1";
+                box.addEventListener("click",function(e){
+                    const b=e.target.closest?e.target.closest("[data-act]"):null;
+                    if(!b)return;
+                    const act=b.getAttribute("data-act"),key=b.getAttribute("data-pay");
+                    if(act==="bind")openPayBind(key,false);
+                    else if(act==="unbind")unbindPay(key);
+                    else if(act==="default")setDefaultPay(key);
+                });
+            }
+            const ch=document.getElementById("rechargeChannels");
+            if(ch&&!ch.dataset.bound){
+                ch.dataset.bound="1";
+                ch.addEventListener("click",function(e){
+                    const b=e.target.closest?e.target.closest("[data-pay]"):null;
+                    if(!b)return;
+                    pickPayChannel(b.getAttribute("data-pay"));
+                });
+            }
+        }
+
+        function renderPayMethods(){
+            const m=getMember();if(!m)return;
+            bindPayListEvents();
+            const bind=getPayBindings();
+            const box=document.getElementById("payMethodList");if(!box)return;
+            box.innerHTML=payChannelList().map(function(c){
+                const info=bind[c.key], isDefault=bind.defaultPay===c.key;
+                return '<div class="flex flex-wrap items-center gap-3 px-4 py-3 rounded-global" style="background:'+(info?'rgba(201,168,106,0.10)':'transparent')+';border:'+(info?'1px solid rgba(201,168,106,0.45)':'1px dashed rgba(74,90,110,0.22)')+'">'
+                    +'<i class="fa '+c.icon+' text-xl '+(info?'text-gold':'text-textGray')+'"></i>'
+                    +'<div class="flex-1 min-w-0">'
+                    +'<p class="font-bold text-sm">'+c.name+(isDefault?' <span class="text-xs text-gold">默认</span>':'')+'</p>'
+                    +'<p class="text-xs text-textGray">'+(info?payBindingLabel(c.key):'未绑定 · '+c.desc)+'</p></div>'
+                    +'<div class="flex items-center gap-2">'
+                    +(info
+                        ? ((isDefault?'':'<button data-act="default" data-pay="'+c.key+'" class="pay-mini text-xs px-3 py-2.5 rounded-global btn-hover">设为默认</button>')
+                          +'<button data-act="unbind" data-pay="'+c.key+'" class="pay-mini text-xs px-3 py-2.5 rounded-global btn-hover">解绑</button>')
+                        : ('<button data-act="bind" data-pay="'+c.key+'" class="text-xs px-3 py-2.5 bg-gold text-primary font-bold rounded-global btn-hover">绑定</button>'))
+                    +'</div></div>';
+            }).join('');
+            const sum=document.getElementById("payBindSummary");
+            if(sum){
+                const n=[bind.alipay,bind.wechat,bind.bank].filter(Boolean).length;
+                sum.textContent=n?('已绑定 '+n+' 种 · 默认 '+(payChannelMeta(bind.defaultPay)||{}).name):'尚未绑定任何支付方式';
+            }
+        }
+
+        function renderRechargeChannels(){
+            bindPayListEvents();
+            const bind=getPayBindings();
+            const box=document.getElementById("rechargeChannels");if(!box)return;
+            const has=hasAnyPayBinding();
+            if(!rechargeChannel||!bind[rechargeChannel])rechargeChannel=bind.defaultPay||"";
+            box.innerHTML=payChannelList().map(function(c){
+                const info=bind[c.key], on=rechargeChannel===c.key;
+                return '<button type="button" data-pay="'+c.key+'" class="w-full flex items-center gap-3 px-4 py-3 rounded-global text-left btn-hover" style="'
+                    +(info?'border:1px solid '+(on?'#c9a86a':'rgba(0,0,0,0.18)')+';background:'+(on?'rgba(201,168,106,0.12)':'transparent')+';'
+                          :'border:1px dashed rgba(0,0,0,0.15);')
+                    +'">'
+                    +'<i class="fa '+c.icon+' text-lg '+(info?'text-gold':'text-textGray')+'"></i>'
+                    +'<span class="flex-1 text-sm font-semibold">'+c.name+'</span>'
+                    +'<span class="text-xs '+(info?'text-gold':'text-textGray')+'">'+(info?(on?'已选':'已绑定'):'未绑定 · 去绑定')+'</span></button>';
+            }).join('');
+            const tip=document.getElementById("rechargeBindTip");
+            if(tip){
+                if(has){tip.textContent="";tip.classList.add("hidden");}
+                else{tip.textContent="需要绑定支付方式后才可以充值余额。";tip.classList.remove("hidden");}
+            }
+            const btn=document.getElementById("rechargeConfirmBtn");
+            if(btn){
+                btn.textContent=has?"确认充值":"去绑定支付方式";
+                if(has)btn.classList.remove("opacity-60");else btn.classList.add("opacity-60");
+            }
+        }
+
+        function pickPayChannel(key){
+            const bind=getPayBindings();
+            if(!bind[key]){openPayBind(key,true);return;}
+            rechargeChannel=key;renderRechargeChannels();
+        }
+
+        function openPayBind(key,fromRecharge){
+            const m=getMember();
+            if(!m){showToast("请先登录会员账户","warn");return;}
+            const bind=getPayBindings();
+            let target=key||"";
+            if(!target){
+                const list=payChannelList();
+                for(var i=0;i<list.length;i++){if(!bind[list[i].key]){target=list[i].key;break;}}
+            }
+            if(!target||bind[target]){showToast("该支付方式已绑定，可直接使用","warn");return;}
+            const meta=payChannelMeta(target);if(!meta)return;
+            payBindTarget=target;
+            pendingRechargeAmount=fromRecharge?((document.getElementById("rechargeAmount")||{}).value||null):null;
+            document.getElementById("payBindName").textContent=meta.name;
+            document.getElementById("payBindDesc").textContent="绑定后可用于充值余额，仅保存掩码信息（"+meta.desc+"），不涉及真实账户。";
+            const fields=document.getElementById("payBindFields");
+            if(target==="bank"){
+                fields.innerHTML=
+                    '<div><label class="block mb-1 text-sm">开卡银行</label><select id="payBindBank" class="w-full border px-4 py-3 rounded-global">'
+                    +['工商银行','建设银行','招商银行','中国银行','交通银行','农业银行','其他银行'].map(function(b){return '<option value="'+b+'">'+b+'</option>';}).join('')
+                    +'</select></div>'
+                    +'<div><label class="block mb-1 text-sm">银行卡号</label><input id="payBindCard" type="text" maxlength="23" class="w-full border px-4 py-3 rounded-global" placeholder="16-19 位卡号，仅保存尾号 4 位"></div>'
+                    +'<div><label class="block mb-1 text-sm">持卡人姓名</label><input id="payBindHolder" type="text" maxlength="20" class="w-full border px-4 py-3 rounded-global" value="'+esc(m.name||"")+'"></div>';
+            }else{
+                const ph=target==="alipay"?"手机号或邮箱":"11 位手机号";
+                const label=target==="alipay"?"支付宝账号":"微信支付手机号";
+                fields.innerHTML=
+                    '<div><label class="block mb-1 text-sm">'+label+'</label><input id="payBindAccount" type="text" maxlength="40" class="w-full border px-4 py-3 rounded-global" placeholder="'+ph+'"></div>'
+                    +'<div><label class="block mb-1 text-sm">姓名</label><input id="payBindHolder" type="text" maxlength="20" class="w-full border px-4 py-3 rounded-global" value="'+esc(m.name||"")+'"></div>';
+            }
+            const err=document.getElementById("payBindErr");
+            if(err)err.classList.add("hidden");
+            document.getElementById("payBindModal").classList.remove("hidden");
+        }
+
+        function closePayBind(){
+            const el=document.getElementById("payBindModal");
+            if(el)el.classList.add("hidden");
+            payBindTarget="";pendingRechargeAmount=null;
+        }
+
+        function confirmPayBind(){
+            const err=document.getElementById("payBindErr");
+            const target=payBindTarget;
+            if(!target)return;
+            const d={};
+            if(target==="bank"){
+                d.bank=(document.getElementById("payBindBank")||{}).value||"";
+                d.cardNo=(document.getElementById("payBindCard")||{}).value||"";
+                d.holder=(document.getElementById("payBindHolder")||{}).value||"";
+            }else{
+                d.account=(document.getElementById("payBindAccount")||{}).value||"";
+                d.holder=(document.getElementById("payBindHolder")||{}).value||"";
+            }
+            const r=bindPayChannel(target,d);
+            if(!r.ok){
+                if(err){err.textContent=r.msg||"绑定失败，请检查填写信息";err.classList.remove("hidden");}
+                return;
+            }
+            const meta=payChannelMeta(target);
+            const backAmount=pendingRechargeAmount;
+            showToast(meta.name+"已绑定，可用于充值余额","success");
+            closePayBind();
+            renderPayMethods();
+            renderRechargeChannels();
+            if(backAmount!==null&&backAmount!==undefined){
+                const num=Number(backAmount);
+                setTimeout(function(){openRecharge(num>0?num:undefined);},250);
+            }
+        }
+
+        function unbindPay(key){
+            const meta=payChannelMeta(key)||{name:"该支付方式"};
+            showConfirm("确认解绑"+meta.name+"？解绑后需重新绑定才能用它充值。",function(){
+                unbindPayChannel(key);
+                renderPayMethods();renderRechargeChannels();
+                showToast("已解绑"+meta.name,"success");
+            });
+        }
+
+        function setDefaultPay(key){
+            const meta=payChannelMeta(key)||{name:""};
+            setDefaultPayChannel(key);
+            renderPayMethods();renderRechargeChannels();
+            showToast("已将"+meta.name+"设为默认支付方式","success");
+        }
+
         // 余额与流水渲染
         function renderWallet(){
             const balEl=document.getElementById("mBalance");
@@ -272,21 +471,33 @@
             if(!getMember()){showToast("请先登录会员账户再充值","warn");return;}
             const err=document.getElementById("rechargeErr");
             if(err)err.classList.add("hidden");
+            rechargeChannel="";
+            renderRechargeChannels();
             if(amount)document.getElementById("rechargeAmount").value=amount;
             modal.classList.remove("hidden");
         }
         function closeRecharge(){const m=document.getElementById("rechargeModal");if(m)m.classList.add("hidden");}
         function pickRecharge(v){const i=document.getElementById("rechargeAmount");if(i)i.value=v;}
         function confirmRecharge(){
+            const m=getMember();
+            if(!m){showToast("请先登录会员账户再充值","warn");return;}
+            if(!hasAnyPayBinding()){
+                showToast("需要绑定支付方式后才可以充值余额","warn");
+                openPayBind("",true);
+                return;
+            }
             const inp=document.getElementById("rechargeAmount");
             const err=document.getElementById("rechargeErr");
             const v=Number(inp?inp.value:0);
             if(!(v>0)){if(err){err.textContent="请输入大于 0 的充值金额";err.classList.remove("hidden");}return;}
-            const r=rechargeWallet(v);
+            const r=rechargeWallet(v,rechargeChannel);
             if(r.ok){
                 if(err)err.classList.add("hidden");
                 closeRecharge();
                 renderPage();
+            }else if(r.reason==="nobind"){
+                if(err){err.textContent="需要绑定支付方式后才可以充值余额";err.classList.remove("hidden");}
+                renderRechargeChannels();
             }else if(err&&r.reason!=="limit"){
                 err.textContent="充值未完成，请检查金额后重试";
                 err.classList.remove("hidden");
@@ -319,6 +530,7 @@
             document.getElementById("mMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mMiles2").textContent=(m.miles||0).toLocaleString();
             renderWallet();
+            renderPayMethods();
             document.getElementById("exMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mLevelHint").textContent=LV_DESC[lv.cur.name];
             // 进度条等级化

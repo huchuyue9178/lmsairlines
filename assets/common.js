@@ -372,18 +372,111 @@ function walletTxAdd(tx){
     list.push(Object.assign({id:"TX"+Date.now()+Math.floor(Math.random()*1000),time:Date.now()},tx));
     saveWalletTx(list);
 }
-// 模拟充值：金额校验 + 到账 + 记流水
-function rechargeWallet(amount){
+// ---- 支付方式绑定（支付宝 / 微信支付 / 银行卡）----
+var PAY_CHANNELS=[
+    {key:"alipay",name:"支付宝",icon:"fa-alipay",desc:"手机号或邮箱账户"},
+    {key:"wechat",name:"微信支付",icon:"fa-wechat",desc:"绑定手机号"},
+    {key:"bank",name:"银行卡",icon:"fa-credit-card",desc:"储蓄卡或信用卡"}
+];
+function payChannelList(){return PAY_CHANNELS.slice();}
+function payChannelMeta(key){for(var i=0;i<PAY_CHANNELS.length;i++){if(PAY_CHANNELS[i].key===key)return PAY_CHANNELS[i];}return null;}
+// 读取绑定状态，非法默认渠道自动回落
+function getPayBindings(){
+    var m=getMember(),b=(m&&m.payBindings)||{};
+    var out={alipay:b.alipay||null,wechat:b.wechat||null,bank:b.bank||null,defaultPay:""};
+    var d=m&&m.defaultPay;
+    if(d&&out[d])out.defaultPay=d;
+    else if(out.alipay)out.defaultPay="alipay";
+    else if(out.wechat)out.defaultPay="wechat";
+    else if(out.bank)out.defaultPay="bank";
+    return out;
+}
+function hasAnyPayBinding(){
+    var b=getPayBindings();
+    return !!(b.alipay||b.wechat||b.bank);
+}
+function maskAccount(v){
+    var s=String(v||"").replace(/\s+/g,"");
+    if(!s)return "";
+    if(s.indexOf("@")>-1){
+        var p=s.split("@"),n=p[0];
+        return (n.length<=2?n:n.slice(0,2)+"***")+"@"+p[1];
+    }
+    if(s.length<=4)return s;
+    return s.slice(0,3)+"****"+s.slice(-2);
+}
+// 绑定：仅保存掩码信息，不落明文账号
+function bindPayChannel(key,data){
+    var m=getMember();
+    if(!m)return {ok:false,reason:"nologin",msg:"请先登录会员账户"};
+    var meta=payChannelMeta(key);
+    if(!meta)return {ok:false,reason:"channel",msg:"不支持的支付方式"};
+    var d=data||{},info=null;
+    if(key==="alipay"){
+        var acct=String(d.account||"").trim();
+        if(!/^1\d{10}$/.test(acct)&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(acct))return {ok:false,reason:"account",msg:"请输入正确的支付宝账号（手机号或邮箱）"};
+        info={account:maskAccount(acct),holder:String(d.holder||m.name||"").trim(),boundAt:Date.now()};
+    }else if(key==="wechat"){
+        var acct2=String(d.account||"").trim();
+        if(!/^1\d{10}$/.test(acct2))return {ok:false,reason:"account",msg:"请输入 11 位手机号作为微信支付账号"};
+        info={account:maskAccount(acct2),holder:String(d.holder||m.name||"").trim(),boundAt:Date.now()};
+    }else{
+        var no=String(d.cardNo||"").replace(/\s+/g,"");
+        if(!/^\d{16,19}$/.test(no))return {ok:false,reason:"account",msg:"请输入 16-19 位银行卡号"};
+        var bank=String(d.bank||"").trim();
+        if(!bank)return {ok:false,reason:"account",msg:"请选择开卡银行"};
+        var holder=String(d.holder||"").trim();
+        if(holder.length<2)return {ok:false,reason:"account",msg:"请填写持卡人姓名"};
+        info={bank:bank,tail:no.slice(-4),holder:holder,boundAt:Date.now()};
+    }
+    m.payBindings=m.payBindings||{};
+    m.payBindings[key]=info;
+    if(!m.defaultPay||!m.payBindings[m.defaultPay])m.defaultPay=key;
+    saveMember(m);
+    return {ok:true,key:key,info:info};
+}
+function unbindPayChannel(key){
+    var m=getMember();
+    if(!m||!m.payBindings||!m.payBindings[key])return {ok:false};
+    delete m.payBindings[key];
+    if(m.defaultPay===key){
+        var b=getPayBindings();
+        m.defaultPay=b.defaultPay||"";
+    }
+    saveMember(m);
+    return {ok:true};
+}
+function setDefaultPayChannel(key){
+    var m=getMember();
+    if(!m||!m.payBindings||!m.payBindings[key])return {ok:false};
+    m.defaultPay=key;
+    saveMember(m);
+    return {ok:true};
+}
+function payBindingLabel(key){
+    var b=getPayBindings(),info=b[key];
+    if(!info)return "未绑定";
+    if(key==="bank")return info.bank+" · 尾号 "+info.tail;
+    return info.account;
+}
+
+// 模拟充值：支付方式校验 + 金额校验 + 到账 + 记流水
+function rechargeWallet(amount,channel){
     const m=getMember();
     if(!m){showToast("请先登录会员账户再充值","warn");return {ok:false,reason:"nologin"};}
     const amt=Math.round(Number(amount)||0);
     if(!(amt>0)){showToast("请输入有效的充值金额","warn");return {ok:false,reason:"invalid"};}
     if(amt>100000){showToast("单次充值上限 ¥100,000","warn");return {ok:false,reason:"limit"};}
+    const bind=getPayBindings();
+    if(!(bind.alipay||bind.wechat||bind.bank))return {ok:false,reason:"nobind"};
+    const ch=(channel&&bind[channel])?channel:bind.defaultPay;
+    if(!ch)return {ok:false,reason:"nobind"};
+    const chName=(payChannelMeta(ch)||{name:"模拟渠道"}).name;
     m.balance=Math.round((Number(m.balance)||0)+amt);
     saveMember(m);
-    walletTxAdd({type:"recharge",amount:amt,title:"账户充值（模拟）",balanceAfter:m.balance});
-    showToast("充值成功，当前余额 ¥"+m.balance.toLocaleString(),"success");
-    return {ok:true,balance:m.balance,amount:amt};
+    walletTxAdd({type:"recharge",amount:amt,title:"账户充值（"+chName+"）",channel:ch,balanceAfter:m.balance});
+    showToast("充值成功，已通过"+chName+"到账，当前余额 ¥"+m.balance.toLocaleString(),"success");
+    return {ok:true,balance:m.balance,amount:amt,channel:ch,channelName:chName};
 }
 // 余额支付：先校验后扣款，成功返回 ok，失败返回原因与差额
 function payWithBalance(amount,title){
