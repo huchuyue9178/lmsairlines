@@ -47,6 +47,7 @@
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
     <script src="assets/common.js?v=20261107terms2"></script>
+    <script src="assets/owner.js?v=20261107owner"></script>
     <script src="assets/dev.js?v=20261107dev6"></script>
     <script>
         const TRAIN_SEAT_KEYS=['second','first','business'];
@@ -83,7 +84,7 @@
             if(coupons.length===0){cr.classList.add("hidden");sel.innerHTML="";}
             else{
                 cr.classList.remove("hidden");
-                sel.innerHTML='<option value="0">不使用优惠券</option>'+coupons.map(x=>'<option value="'+esc(x.code)+'">¥'+x.value+' 代金券（'+esc(x.code)+'）</option>').join('');
+                sel.innerHTML='<option value="0">不使用优惠券</option>'+coupons.map(x=>'<option value="'+esc(x.code)+'">¥'+Number(x.value||0).toLocaleString()+' '+(x.owner?'站长专属礼券':'代金券')+'（'+esc(x.code)+'）</option>').join('');
             }
             document.getElementById("paymentModal").classList.remove("hidden");
             renderPayRailSeats();

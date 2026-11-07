@@ -203,6 +203,7 @@
     </div>
     <script src="assets/data.js?v=20261006perf"></script>
     <script src="assets/common.js?v=20261107terms2"></script>
+    <script src="assets/owner.js?v=20261107owner"></script>
     <script src="assets/dev.js?v=20261107dev6"></script>
     <script>
         const LV_COLORS={普卡:'text-white',银卡:'text-gray-300',金卡:'text-gold',铂金卡:'text-amber-300',钻石卡:'text-cyan-300'};
@@ -455,7 +456,7 @@
             if(!box)return;
             const list=getWalletTx().slice().reverse().slice(0,8);
             if(!list.length){box.innerHTML='<p class="text-textGray text-sm">暂无余额流水，充值后可在这里查看。</p>';return;}
-            const TYPE={recharge:{icon:'fa-plus',cls:'text-success'},payment:{icon:'fa-ticket',cls:'text-danger'},refund:{icon:'fa-rotate-left',cls:'text-success'}};
+            const TYPE={recharge:{icon:'fa-plus',cls:'text-success'},payment:{icon:'fa-ticket',cls:'text-danger'},refund:{icon:'fa-rotate-left',cls:'text-success'},gift:{icon:'fa-gift',cls:'text-success'}};
             box.innerHTML=list.map(t=>{
                 const meta=TYPE[t.type]||{icon:'fa-wallet',cls:'text-textGray'};
                 const amt=Math.round(Number(t.amount)||0);
@@ -596,7 +597,16 @@
         function renderCoupons(){
             const c=getCoupons(),d=document.getElementById("couponList");
             if(c.length===0){d.innerHTML='<p class="text-textGray">暂无优惠券。用里程兑换后，支付机票时可选券抵扣。</p>';return;}
-            d.innerHTML=c.map(x=>'<div class="bg-black/50 border border-gold/30 rounded-global p-4 flex justify-between items-center"><div><p class="font-bold text-gold">¥'+x.value+' 代金券</p><p class="text-xs text-textGray">券号 '+esc(x.code)+'</p></div><span class="text-sm '+(x.status==='可用'?'text-success':'text-textGray')+'">'+x.status+'</span></div>').join('');
+            d.innerHTML=c.map((x,i)=>{
+                const isOwner=!!x.owner;
+                const val=Number(x.value||0).toLocaleString();
+                const transferable=isOwner&&x.status==='可用';
+                return '<div class="bg-black/50 border border-gold/30 rounded-global p-4 flex justify-between items-start gap-3">'
+                    +'<div class="min-w-0"><p class="font-bold text-gold">¥'+val+' '+(isOwner?'站长专属礼券':'代金券')+'</p>'
+                    +'<p class="text-xs text-textGray">券号 '+esc(x.code)+'</p>'
+                    +(transferable?'<button onclick="ownerCouponToBalance('+i+')" class="mt-2 px-3 py-1.5 rounded-global text-xs font-bold border border-gold text-gold btn-hover">转存余额</button>':'')
+                    +'</div><span class="text-sm flex-none '+(x.status==='可用'?'text-success':'text-textGray')+'">'+x.status+'</span></div>';
+            }).join('');
         }
         function renderBenefits(){
             const b=getBenefits(),d=document.getElementById("benefitList");
