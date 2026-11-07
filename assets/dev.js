@@ -159,6 +159,22 @@
             + '.dev-danger{box-sizing:border-box;width:100%;padding:10px 0;border-radius:12px;font-size:13px;font-weight:600;'
             + 'cursor:pointer;border:1px solid rgba(192,57,43,0.4);background:rgba(192,57,43,0.08);color:#c0392b;margin-top:8px;}'
             + '.dev-danger:hover{background:rgba(192,57,43,0.14);}'
+            + '.dev-danger-card{max-width:420px;}'
+            + '.dev-danger-title{color:#b03a2c !important;}'
+            + '.dev-danger-msg{font-size:13px;line-height:1.7;margin-top:4px;}'
+            + '.dev-warn{font-size:12px;line-height:1.7;margin:12px 0 4px;padding:10px 12px;border-radius:10px;'
+            + 'background:rgba(192,57,43,0.08);color:#8f3126;}'
+            + '.dev-field-label{display:block;font-size:11px;margin:12px 0 4px;color:rgba(58,74,92,0.72);}'
+            + '.dev-check{display:flex;gap:8px;align-items:flex-start;margin-top:12px;font-size:12px;'
+            + 'line-height:1.65;cursor:pointer;color:#3a4a5c;}'
+            + '.dev-check input{flex:none;width:15px !important;height:15px !important;min-height:0 !important;'
+            + 'max-height:15px !important;padding:0 !important;margin:3px 0 0 !important;border-radius:4px;'
+            + 'accent-color:#b03a2c;cursor:pointer;}'
+            + '.dev-danger-exec{background:#b03a2c;border-color:transparent;color:#fff;'
+            + 'box-shadow:0 10px 24px rgba(176,58,44,0.24);}'
+            + '.dev-danger-exec:hover{transform:translateY(-1px);box-shadow:0 14px 30px rgba(176,58,44,0.3);}'
+            + '.dev-danger-exec:disabled{opacity:0.42;cursor:not-allowed;box-shadow:none;transform:none;}'
+            + '.dev-danger-exec:disabled:hover{transform:none;box-shadow:none;}'
             + '.dev-score{display:flex;align-items:center;justify-content:space-between;gap:10px;'
             + 'padding:12px 14px;border-radius:14px;margin-bottom:10px;background:rgba(216,223,230,0.45);}'
             + '.dev-score .s-lv{display:flex;flex-direction:column;gap:2px;}'
@@ -207,6 +223,12 @@
             + '.dev-kv-row .v{color:rgba(232,237,242,0.55);}'
             + '.dev-links a{color:#b9cfe2;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18);}'
             + '.dev-danger{background:rgba(192,57,43,0.18);border-color:rgba(220,110,100,0.4);color:#f0a99e;}'
+            + '.dev-danger-title{color:#f0a99e !important;}'
+            + '.dev-warn{background:rgba(192,57,43,0.2);color:#f4b8ac;}'
+            + '.dev-field-label{color:rgba(232,237,242,0.72);}'
+            + '.dev-check{color:#dbe6f0;}'
+            + '.dev-check input{accent-color:#e0867c;}'
+            + '.dev-danger-exec{background:#b8412f;color:#fff;box-shadow:0 10px 24px rgba(0,0,0,0.35);}'
             + '.dev-score{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.1);}'
             + '.dev-score .s-name,.dev-score .s-num{color:#e8edf2;}'
             + '.dev-score .s-hint,.dev-score .s-num small{color:rgba(232,237,242,0.72);}'
@@ -393,12 +415,88 @@
             + '<a href="shop.html">商城</a><a href="flight.html">航班动态</a><a href="login.html">登录</a></div>';
     }
 
+    /* --------- 危险操作强确认 --------- */
+    var DANGER_PHRASE = '我确认执行此操作';
+    var dangerOkCb = null;
+
+    function ensureDangerModal() {
+        if (document.getElementById('devDangerMask')) return;
+        var d = document.createElement('div');
+        d.id = 'devDangerMask'; d.className = 'dev-mask';
+        d.innerHTML = '<div class="dev-card dev-danger-card" role="dialog" aria-modal="true" aria-labelledby="devDangerTitle">'
+            + '<h3 id="devDangerTitle" class="dev-danger-title">危险操作确认</h3>'
+            + '<p class="dev-danger-msg" id="devDangerMsg"></p>'
+            + '<div class="dev-warn">此操作不可撤销，删除后无法恢复。需完成下面两步才能执行。</div>'
+            + '<label class="dev-field-label" for="devDangerInput">第 1 步 · 手动输入「' + DANGER_PHRASE + '」</label>'
+            + '<input id="devDangerInput" type="text" autocomplete="off" spellcheck="false" placeholder="' + DANGER_PHRASE + '">'
+            + '<label class="dev-check" for="devDangerCheck"><input type="checkbox" id="devDangerCheck">'
+            + '<span>我接受删除数据后无法恢复，后果本人可自行承担</span></label>'
+            + '<div class="dev-err" id="devDangerErr"></div>'
+            + '<div class="dev-row"><button type="button" class="dev-btn" id="devDangerCancel">取消</button>'
+            + '<button type="button" class="dev-btn dev-danger-exec" id="devDangerExec" disabled>确认执行</button></div>'
+            + '</div>';
+        document.body.appendChild(d);
+        var inp = document.getElementById('devDangerInput');
+        var chk = document.getElementById('devDangerCheck');
+        inp.addEventListener('input', function () { dangerReady(); });
+        chk.addEventListener('change', function () { dangerReady(); });
+        document.getElementById('devDangerCancel').addEventListener('click', closeDanger);
+        document.getElementById('devDangerExec').addEventListener('click', runDanger);
+        d.addEventListener('click', function (e) { if (e.target === d) closeDanger(); });
+    }
+    function dangerReady() {
+        var inp = document.getElementById('devDangerInput');
+        var chk = document.getElementById('devDangerCheck');
+        var btn = document.getElementById('devDangerExec');
+        var ok = !!(inp && chk && inp.value.trim() === DANGER_PHRASE && chk.checked);
+        if (btn) btn.disabled = !ok;
+        var err = document.getElementById('devDangerErr');
+        if (err && ok) err.textContent = '';
+        return ok;
+    }
+    function openDanger(msg, onOk) {
+        injectStyle(); ensureMasks(); ensureDangerModal();
+        dangerOkCb = onOk;
+        document.getElementById('devDangerMsg').textContent = msg;
+        document.getElementById('devDangerInput').value = '';
+        document.getElementById('devDangerCheck').checked = false;
+        document.getElementById('devDangerErr').textContent = '';
+        document.getElementById('devDangerExec').disabled = true;
+        document.getElementById('devDangerMask').classList.add('dev-open');
+        setTimeout(function () { var i = document.getElementById('devDangerInput'); if (i) i.focus(); }, 80);
+    }
+    function closeDanger() {
+        var d = document.getElementById('devDangerMask');
+        if (d) d.classList.remove('dev-open');
+        dangerOkCb = null;
+    }
+    function runDanger() {
+        var inp = document.getElementById('devDangerInput');
+        var chk = document.getElementById('devDangerCheck');
+        var err = document.getElementById('devDangerErr');
+        if (!inp || !chk) return;
+        if (inp.value.trim() !== DANGER_PHRASE) {
+            err.textContent = '确认短语不正确，请输入「' + DANGER_PHRASE + '」';
+            return;
+        }
+        if (!chk.checked) {
+            err.textContent = '请先勾选承诺，确认能够自行承担后果';
+            return;
+        }
+        var cb = dangerOkCb;
+        closeDanger();
+        if (cb) cb();
+    }
+
     function buildDangerBody() {
         document.getElementById('devBody_danger').innerHTML =
             '<button type="button" class="dev-danger" id="devWipeOrders">清空全部订单</button>'
             + '<button type="button" class="dev-danger" id="devWipe">清空全部本地数据</button>';
         document.getElementById('devWipeOrders').addEventListener('click', function () {
-            confirmThen('清空全部订单？', function () { localStorage.removeItem('airOrders'); refreshPanel(); toast('订单已清空', 'success'); });
+            var n = loadOrders().length;
+            openDanger('即将清空全部订单（当前 ' + n + ' 条），含已退票与支付处理中的测试订单。', function () {
+                localStorage.removeItem('airOrders'); refreshPanel(); toast('订单已清空', 'success');
+            });
         });
         document.getElementById('devWipe').addEventListener('click', wipeData);
     }
@@ -884,7 +982,7 @@
         else if (window.confirm(msg)) onOk();
     }
     function wipeData() {
-        confirmThen('将清空本站全部本地数据（会员、订单、购物车、优惠券等），此操作不可恢复。确认继续？', function () {
+        openDanger('即将清空本站全部本地数据：会员账号、会员注册表、订单、购物车、优惠券与开发者标记。', function () {
             var keep = isDev();
             try { localStorage.clear(); } catch (e) {}
             if (keep) localStorage.setItem(K_ON, '1');
