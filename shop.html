@@ -12,6 +12,7 @@
     <script src="assets/tailwind-config.js?v=20261006perf"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css?v=20261107paybind">
+    <link rel="stylesheet" href="assets/refresh.css?v=20261107ui">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -108,7 +109,7 @@
             return '<div class="shop-card overflow-hidden rounded-big bg-card card-gold" style="background:rgba(255,255,255,0.42);border:1px solid rgba(255,255,255,0.65)">'+
                 '<div class="relative overflow-hidden" style="aspect-ratio:1/1">'+
                     '<img src="'+it.img+'" alt="'+esc(it.name)+'" class="shop-img w-full h-full object-cover" loading="lazy">'+
-                    (it.tag?'<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#c0392b,#e67e22)">'+it.tag+'</span>':'')+
+                    (it.tag?'<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold text-white" style="background:#2b333d">'+it.tag+'</span>':'')+
                 '</div>'+
                 '<div class="p-4">'+
                     '<h4 class="font-bold text-textDark text-[15px] leading-snug">'+esc(it.name)+'</h4>'+

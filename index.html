@@ -183,6 +183,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="assets/refresh.css?v=20261107ui">
 </head>
 <body class="text-textDark">
     <div class="bg-layer" aria-hidden="true"></div>
@@ -190,12 +191,12 @@
     <main class="pt-24 pb-12">
         <!-- Hero：品牌主张 + 行动按钮 -->
         <section class="text-center hero-sec">
-            <p class="text-textDark/60 font-medium mb-4 anim-down" style="font-size:15px;letter-spacing:0.22em">LAOMUSI AIRLINES</p>
-            <h1 class="font-bold text-textDark hero-slide" style="font-size:clamp(48px,7vw,88px);letter-spacing:-0.03em;line-height:1.03">
-                Hello, Welcome to Laomusi Airlines.
+            <p class="text-textDark/60 font-medium mb-5 anim-down" style="font-size:11.5px;letter-spacing:0.3em;color:#9aa0a9">LAOMUSI AIRLINES</p>
+            <h1 class="font-bold text-textDark hero-slide" style="font-size:clamp(30px,3.9vw,50px);font-weight:600;letter-spacing:-0.03em;line-height:1.14">
+                Hello, Welcome to<br>Laomusi Airlines.
             </h1>
             <p class="mt-6 text-textDark/70 anim-up d2 hero-sub">虔诚 · 严谨 · 安心，像牧师般守护每一段飞行</p>
-            <div class="mt-9 flex flex-wrap justify-center gap-3 anim-up d3">
+            <div class="mt-10 flex flex-wrap justify-center gap-3 anim-up d3">
                 <a href="booking.html" class="hero-btn-primary">查询航班 <i class="fa fa-angle-right" aria-hidden="true"></i></a>
                 <a href="about.html" class="hero-btn-ghost">了解更多</a>
             </div>
@@ -203,7 +204,7 @@
 
         <!-- 运行数据条 -->
         <section class="px-3 md:px-5 mb-4 md:mb-5 reveal">
-            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:30px 18px 22px">
+            <div class="stats-bare">
                 <div class="grid grid-cols-2 md:grid-cols-4">
                     <div class="stat-cell text-center"><p class="stat-num">120<span>+</span></p><p class="stat-label">全球通航城市</p></div>
                     <div class="stat-cell text-center"><p class="stat-num">68<span>架</span></p><p class="stat-label">在役机队</p></div>
@@ -216,7 +217,7 @@
 
         <!-- 一站式服务入口 -->
         <section class="px-3 md:px-5 mb-4 md:mb-5 reveal" aria-label="主要服务入口">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <a href="booking.html" class="svc-item">
                     <span class="svc-icon"><i class="fa fa-plane" aria-hidden="true"></i></span>
                     <span class="svc-title">机票预订</span>
@@ -473,7 +474,7 @@
             '<button type="button" onclick="location.href=\'shop.html?buy='+it.id+'\'" class="shop-card text-left overflow-hidden rounded-big cursor-pointer">'+
                 '<div class="relative overflow-hidden" style="aspect-ratio:4/3">'+
                     '<img src="'+it.img+'" alt="'+esc(it.name)+'" class="shop-img w-full h-full object-cover" loading="lazy">'+
-                    '<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(135deg,#c0392b,#e67e22)">'+it.tag+'</span>'+
+                    '<span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold text-white" style="background:#2b333d">'+it.tag+'</span>'+
                 '</div>'+
                 '<div class="p-4">'+
                     '<h4 class="font-bold text-textDark text-[15px] leading-snug">'+esc(it.name)+'</h4>'+

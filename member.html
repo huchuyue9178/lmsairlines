@@ -12,6 +12,7 @@
     <script src="assets/tailwind-config.js?v=20261006perf"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/style.css?v=20261107paybind">
+    <link rel="stylesheet" href="assets/refresh.css?v=20261107ui">
 </head>
 <body class="text-textDark">
     <div id="siteHeader"></div>
@@ -20,7 +21,7 @@
         <p class="text-textGray mb-8">老牧师航空常旅客计划 · 消费即累积里程，里程可兑换代金券与出行权益</p>
         <!-- 未登录：介绍 + 注册/登录 -->
         <div id="guestArea">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 items-start">
                 <div class="bg-card card-gold p-6 rounded-global shadow-lg">
                     <h3 class="text-xl font-bold text-gold mb-4"><i class="fa fa-diamond mr-2"></i>常旅客等级权益</h3>
                     <div class="space-y-3 text-sm">
@@ -47,7 +48,7 @@
                     <div class="space-y-4">
                         <div><label class="block mb-1">手机号码</label><input id="loginPhone" type="tel" class="w-full border px-4 py-3 rounded-global" placeholder="注册时手机号" autocomplete="username"><p id="loginPhoneErr" class="field-error-msg hidden">请输入 11 位有效手机号</p></div>
                         <div><label class="block mb-1">登录密码</label><input id="loginPwd" type="password" class="w-full border px-4 py-3 rounded-global" placeholder="请输入密码" autocomplete="current-password"><p id="loginPwdErr" class="field-error-msg hidden">请输入密码</p></div>
-                        <button onclick="loginMember()" class="btn-hover w-full border border-gold text-gold font-bold py-3 rounded-global">登录</button>
+                        <button onclick="loginMember()" class="btn-hover w-full bg-gold text-primary font-bold py-3 rounded-global">登录</button>
                         <p class="text-xs text-textGray text-center">账号与会员账号互通，也可前往 <a href="login.html" class="text-gold underline underline-offset-2">账号登录页</a></p>
                     </div>
                 </div>
