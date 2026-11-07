@@ -867,8 +867,16 @@ function resolveStatus(item){
             setTimeout(function(){ box.remove(); showActivityNotice(); },350);
         });
     }
-    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',show);
-    else show();
+    function ready(fn){
+        if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn);
+        else fn();
+    }
+    window.__lmsShowSetup=function(){ready(show);};
+    // 仅当本会话已同意《用户使用须知》时才自动弹出，否则等须知确认后再调用
+    try{
+        var termsOk=(document.cookie.indexOf('lms_terms=1')>-1)||!!sessionStorage.getItem('lms_terms_agreed');
+        if(termsOk) window.__lmsShowSetup();
+    }catch(e){ window.__lmsShowSetup(); }
 })();
 
 // 活动结束公告弹窗（设置弹窗关闭后弹出）
@@ -973,4 +981,142 @@ function showActivityNotice(){
     }
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
     else start();
+})();
+
+// ================= 用户使用须知（进入站点强制阅读并同意，同会话只弹一次） =================
+(function(){
+    var agreed=false;
+    try{agreed=(document.cookie.indexOf('lms_terms=1')>-1)||!!sessionStorage.getItem('lms_terms_agreed');}catch(e){agreed=false;}
+    if(agreed)return;
+
+    var dark=false;
+    try{dark=!!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);}catch(e){dark=false;}
+
+    var C={
+        card: dark?'rgba(30,38,48,0.97)':'rgba(255,255,255,0.97)',
+        text: dark?'#e8edf2':'#33404f',
+        sub:  dark?'rgba(232,237,242,0.7)':'#6b7280',
+        line: dark?'rgba(232,237,242,0.14)':'rgba(74,90,110,0.12)',
+        body: dark?'rgba(232,237,242,0.86)':'#47535f',
+        mask: dark?'rgba(10,14,20,0.8)':'rgba(28,36,46,0.45)'
+    };
+
+    var SECTIONS=[
+        ['一、站点性质',
+         '本站为个人独立开发的前端演示项目（模拟航空公司官网），并非真实航空公司，不提供真实航班查询、机票销售、值机、退改签或任何实际运输服务。站内的航班、时刻、价格、机队、航线、活动与新闻均为演示数据，不具有实际效力，也不构成任何要约。'],
+        ['二、账号与会员',
+         '注册与登录使用手机号 + 密码；账号、会员等级、里程、优惠券与订单均保存在你本机的浏览器中，不上传服务器。请勿使用他人真实信息注册，建议使用虚构信息或你本人的信息进行测试。'],
+        ['三、支付与余额（全部为模拟）',
+         '1. 充值与购票不接入任何真实支付网关，不会产生真实扣款，也不会真实出票。<br/>2. 绑定支付宝、微信支付或银行卡仅用于流程演示：系统只保存掩码信息（手机号或邮箱打码、银行卡仅保留尾号 4 位），不保存完整卡号。<br/>3. 请勿在绑定或充值表单中输入真实银行卡号、支付密码、短信验证码等任何真实支付凭证。'],
+        ['四、隐私与数据',
+         '本站不设后端数据库，不收集、不上传你输入的内容，全部数据存于本机浏览器。清除浏览器缓存或站点数据后，账号、余额、订单等将无法恢复。不建议在站内填写真实身份证号、真实住址等敏感信息。'],
+        ['五、禁止行为',
+         '不得将本站用于冒充真实航空公司售票、欺诈、收费代购、虚假宣传、批量爬取数据或任何违法违规用途；不得移除本站的演示与免责声明后对外提供，或用于商业用途。'],
+        ['六、免责声明',
+         '因使用本站演示功能、输入真实个人信息、误认为本站为真实服务，或依赖站内模拟数据作出决策而产生的任何损失，本站及开发者不承担任何责任。本站可能随时调整、暂停或下线，恕不另行通知。'],
+        ['七、条款变更',
+         '本须知可能随功能迭代更新并在本页展示；更新后继续使用本站，即视为接受更新后的内容。']
+    ];
+
+    function renderSections(){
+        return SECTIONS.map(function(sec){
+            return '<div style="margin-bottom:16px">'
+                +'<p style="margin:0 0 5px;font-size:14.5px;font-weight:700;color:'+C.text+'">'+sec[0]+'</p>'
+                +'<p style="margin:0">'+sec[1]+'</p></div>';
+        }).join('');
+    }
+
+    function ready(fn){
+        if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fn);
+        else fn();
+    }
+
+    ready(function(){
+        var prevOverflow=document.body.style.overflow;
+        document.body.style.overflow='hidden';
+
+        var mask=document.createElement('div');
+        mask.id='termsGate';
+        mask.setAttribute('role','dialog');
+        mask.setAttribute('aria-modal','true');
+        mask.setAttribute('aria-labelledby','termsTitle');
+        mask.style.cssText='position:fixed;left:0;top:0;right:0;bottom:0;z-index:10000;display:flex;align-items:center;justify-content:center;'+
+            'padding:16px;box-sizing:border-box;background:'+C.mask+';backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);'+
+            'font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;opacity:0;transition:opacity .3s ease;';
+
+        var card=document.createElement('div');
+        card.style.cssText='width:min(780px, calc(100vw - 28px));max-height:min(88vh, 900px);display:flex;flex-direction:column;box-sizing:border-box;'+
+            'background:'+C.card+';color:'+C.text+';border:1px solid '+C.line+';border-radius:24px;overflow:hidden;'+
+            'box-shadow:0 30px 80px rgba(10,16,24,0.35);transform:translateY(14px) scale(0.98);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);';
+
+        card.innerHTML=
+            '<div style="padding:22px 26px 14px;border-bottom:1px solid '+C.line+'">'+
+                '<div style="display:flex;align-items:center;gap:10px;margin-bottom:7px">'+
+                    '<i class="fa fa-shield" style="font-size:19px;color:#b8860b"></i>'+
+                    '<strong id="termsTitle" style="font-size:22px;font-weight:800">用户使用须知</strong>'+
+                '</div>'+
+                '<p style="margin:0;font-size:12.5px;color:'+C.sub+'">老牧师航空 LMS Airlines · 演示站点　生效日期 2026 年 11 月 7 日　版本 v1.0</p>'+
+            '</div>'+
+            '<div id="termsBody" style="flex:1 1 auto;min-height:0;overflow-y:auto;padding:18px 26px 14px;scrollbar-width:thin;font-size:13.5px;line-height:1.85;color:'+C.body+'">'+
+                '<p style="margin:0 0 16px;padding:10px 12px;background:'+(dark?'rgba(232,237,242,0.06)':'rgba(74,90,110,0.05)')+';border-radius:12px;font-size:13px">'+
+                '使用本站前，请完整阅读以下内容。向下滑动至底部后，点击「我同意，遵守此规」即可开始使用。'+
+                '</p>'+
+                renderSections()+
+            '</div>'+
+            '<div style="padding:14px 26px 20px;border-top:1px solid '+C.line+'">'+
+                '<p id="termsHint" style="margin:0 0 9px;font-size:12.5px;color:'+C.sub+'">请向下滑动阅读至底部</p>'+
+                '<button id="termsAgree" type="button" disabled style="width:100%;padding:14px;border:none;border-radius:999px;'+
+                    'font-size:15px;font-weight:800;letter-spacing:0.02em;background:'+(dark?'rgba(232,237,242,0.16)':'#4a5a6e')+';'+
+                    'color:'+(dark?'rgba(232,237,242,0.72)':'#fff')+';opacity:.85;cursor:not-allowed;transition:all .25s ease">请阅读至底部</button>'+
+                '<p style="margin:9px 0 0;font-size:12px;color:'+C.sub+';text-align:center">若不同意，请直接关闭页面，不要继续使用本站。</p>'+
+            '</div>';
+
+        document.body.appendChild(mask);
+        mask.appendChild(card);
+
+        var bodyEl=document.getElementById('termsBody');
+        var btn=document.getElementById('termsAgree');
+        var hint=document.getElementById('termsHint');
+        var unlocked=false;
+
+        function unlock(){
+            if(unlocked)return;
+            unlocked=true;
+            btn.disabled=false;
+            btn.style.opacity='1';
+            btn.style.cursor='pointer';
+            btn.style.background='#4a5a6e';
+            btn.style.color='#fff';
+            btn.style.boxShadow='0 10px 26px rgba(74,90,110,0.3)';
+            btn.textContent='我同意，遵守此规';
+            hint.textContent='已阅读完毕，同意后即可开始使用本站全部功能。';
+        }
+        function check(){
+            if(!bodyEl||!btn)return;
+            var atBottom=(bodyEl.scrollTop+bodyEl.clientHeight>=bodyEl.scrollHeight-12);
+            var noScroll=(bodyEl.scrollHeight<=bodyEl.clientHeight+4);
+            if(atBottom||noScroll)unlock();
+        }
+        bodyEl.addEventListener('scroll',check);
+
+        requestAnimationFrame(function(){
+            mask.style.opacity='1';
+            card.style.transform='translateY(0) scale(1)';
+            check();
+            setTimeout(check,240);
+        });
+
+        btn.addEventListener('click',function(){
+            if(btn.disabled)return;
+            try{document.cookie='lms_terms=1;path=/;SameSite=Lax';}catch(e){}
+            try{sessionStorage.setItem('lms_terms_agreed','1');}catch(e){}
+            document.body.style.overflow=prevOverflow||'';
+            mask.style.opacity='0';
+            card.style.transform='translateY(10px) scale(0.98)';
+            setTimeout(function(){
+                if(mask.parentNode)mask.parentNode.removeChild(mask);
+                if(typeof window.__lmsShowSetup==='function')window.__lmsShowSetup();
+            },280);
+        });
+    });
 })();
