@@ -138,7 +138,7 @@
                         <span class="fb-ic"><i class="fa fa-github"></i></span>
                         <span class="fb-txt">
                             <span class="block text-sm font-semibold text-textDark">通过 GitHub 留言</span>
-                            <span class="block text-xs text-textGray fb-sub">进入仓库留言页，标题与正文自动填好</span>
+                            <span class="block text-xs text-textGray fb-sub">进入仓库留言页，标题与正文自动填好（手机号打码）</span>
                         </span>
                         <i class="fa fa-angle-right fb-arrow"></i>
                     </button>
@@ -224,7 +224,8 @@
         });
 
         // 投诉与反馈：短信 / 邮件 / GitHub 三种发送方式
-        var FB_PHONE='18775380130';
+        // 号码分片存放：避免完整号码以明文出现在页面源码中，被正则批量抓取
+        var FB_PHONE=["18775","38013","0"].join("");
         var FB_MAIL='3686319507@qq.com';
         var FB_REPO='https://github.com/huchuyue9178/lmsairlines/issues/new';
 
@@ -251,10 +252,14 @@
             }
             return {name:n.value.trim(),phone:p.value.trim(),msg:m.value.trim(),stamp:fbStamp()};
         }
-        function fbText(d){
+        function fbMaskPhone(p){
+            return String(p||"").replace(/^(\d{3})\d{4}(\d{4})$/, "$1****$2");
+        }
+        function fbText(d,maskPhone){
+            var phone=maskPhone?fbMaskPhone(d.phone):d.phone;
             return "【老牧师航空 · 投诉与反馈】\n"
                 +"姓名："+d.name+"\n"
-                +"联系电话："+d.phone+"\n"
+                +"联系电话："+phone+"\n"
                 +"内容："+d.msg+"\n"
                 +"时间："+d.stamp+"\n"
                 +"来源：官网客服中心";
@@ -268,7 +273,7 @@
         }
         function fbGhUrl(d){
             var title="【投诉与反馈】"+d.name+" · 官网客服中心";
-            var body=fbText(d)+"\n\n---\n通过官网客服中心提交";
+            var body=fbText(d,true)+"\n\n---\n通过官网客服中心提交\nGitHub 留言页公开可见，手机号已打码；如需电话回复，烦请在留言中另附联系方式";
             if(body.length>3000)body=body.slice(0,3000)+"\n…（内容较长，如需补充请直接在留言中继续填写）";
             return FB_REPO+"?title="+encodeURIComponent(title)+"&body="+encodeURIComponent(body);
         }
