@@ -355,6 +355,61 @@ function earnMiles(amount){
     saveMember(m);
     return earned;
 }
+// ================= 会员账户余额（模拟充值 / 余额支付） =================
+// 余额单位为元，存于 ffpMember.balance；交易流水存于 ffpWalletTx
+function getBalance(){
+    const m=getMember();
+    return m?Math.max(0,Math.round(Number(m.balance)||0)):0;
+}
+function getWalletTx(){
+    try{const v=JSON.parse(localStorage.getItem("ffpWalletTx")||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}
+}
+function saveWalletTx(list){
+    try{localStorage.setItem("ffpWalletTx",JSON.stringify((list||[]).slice(-60)));}catch(e){}
+}
+function walletTxAdd(tx){
+    const list=getWalletTx();
+    list.push(Object.assign({id:"TX"+Date.now()+Math.floor(Math.random()*1000),time:Date.now()},tx));
+    saveWalletTx(list);
+}
+// 模拟充值：金额校验 + 到账 + 记流水
+function rechargeWallet(amount){
+    const m=getMember();
+    if(!m){showToast("请先登录会员账户再充值","warn");return {ok:false,reason:"nologin"};}
+    const amt=Math.round(Number(amount)||0);
+    if(!(amt>0)){showToast("请输入有效的充值金额","warn");return {ok:false,reason:"invalid"};}
+    if(amt>100000){showToast("单次充值上限 ¥100,000","warn");return {ok:false,reason:"limit"};}
+    m.balance=Math.round((Number(m.balance)||0)+amt);
+    saveMember(m);
+    walletTxAdd({type:"recharge",amount:amt,title:"账户充值（模拟）",balanceAfter:m.balance});
+    showToast("充值成功，当前余额 ¥"+m.balance.toLocaleString(),"success");
+    return {ok:true,balance:m.balance,amount:amt};
+}
+// 余额支付：先校验后扣款，成功返回 ok，失败返回原因与差额
+function payWithBalance(amount,title){
+    const m=getMember();
+    const amt=Math.max(0,Math.round(Number(amount)||0));
+    if(!m)return {ok:false,reason:"nologin",amount:amt,balance:0,need:amt};
+    const bal=Math.round(Number(m.balance)||0);
+    if(amt>bal)return {ok:false,reason:"insufficient",amount:amt,balance:bal,need:amt-bal};
+    if(amt>0){
+        m.balance=bal-amt;
+        saveMember(m);
+        walletTxAdd({type:"payment",amount:-amt,title:title||"支付",balanceAfter:m.balance});
+    }
+    return {ok:true,amount:amt,balance:m.balance};
+}
+// 退回余额（降舱、退票等场景）
+function refundToBalance(amount,title){
+    const m=getMember();
+    const amt=Math.max(0,Math.round(Number(amount)||0));
+    if(!m||!(amt>0))return {ok:false};
+    m.balance=Math.round((Number(m.balance)||0)+amt);
+    saveMember(m);
+    walletTxAdd({type:"refund",amount:amt,title:title||"退回差额",balanceAfter:m.balance});
+    return {ok:true,balance:m.balance};
+}
+
 // ================= 账号系统（手机号 + 密码，本地存储，与会员账号互通） =================
 function genCardNo(){
     let seq=Number(localStorage.getItem("ffpSeq")||"0")+1;

@@ -17,7 +17,7 @@
 
     var TEST_MEMBER = {
         cardNo: 'LMSF9999', name: '测试账号', phone: '18888888888',
-        level: '普卡', totalMiles: 0, miles: 0, elite: false, devTest: true
+        level: '普卡', totalMiles: 0, miles: 0, elite: false, balance: 0, devTest: true
     };
     var LV_NAME = ['普卡', '银卡', '金卡', '铂金卡', '钻石卡', '黑钻卡'];
     var LV_MIN = [0, 10000, 30000, 60000, 100000, 1000000];
@@ -330,6 +330,11 @@
             '<div class="dev-lvs" id="devLvBox"></div>'
             + '<div class="dev-mile" style="margin-top:10px;"><input id="devMileInput" type="number" min="0" step="1" placeholder="输入里程值">'
             + '<button type="button" class="dev-mini" id="devMileApply">应用</button></div>'
+            + '<div class="dev-mile" style="margin-top:8px;"><input id="devBalInput" type="number" min="0" step="1" placeholder="账户余额（元）">'
+            + '<button type="button" class="dev-mini" id="devBalApply">应用</button></div>'
+            + '<div class="dev-acts" style="margin-top:8px;">'
+            + '<button type="button" class="dev-mini" id="devBalZero">余额清零</button>'
+            + '<button type="button" class="dev-mini" id="devBalTen">充 10,000 元</button></div>'
             + '<p style="font-size:11px;margin-top:8px;opacity:.65;">里程改变会同步匹配等级；黑钻需单独开通资格。</p>';
         var box = document.getElementById('devLvBox');
         box.innerHTML = LV_NAME.map(function (n, i) {
@@ -339,6 +344,9 @@
             b.addEventListener('click', function () { applyLevel(Number(b.getAttribute('data-i'))); });
         });
         document.getElementById('devMileApply').addEventListener('click', applyMiles);
+        document.getElementById('devBalApply').addEventListener('click', applyBalance);
+        document.getElementById('devBalZero').addEventListener('click', function () { setBalance(0); });
+        document.getElementById('devBalTen').addEventListener('click', function () { setBalance((Number(currentTestMember().balance) || 0) + 10000); });
     }
 
     function buildOrderBody() {
@@ -794,6 +802,8 @@
         if (tag) tag.textContent = cur;
         var mi = document.getElementById('devMileInput');
         if (mi && document.activeElement !== mi) mi.value = m.totalMiles || 0;
+        var bi = document.getElementById('devBalInput');
+        if (bi && document.activeElement !== bi) bi.value = Math.round(Number(m.balance) || 0);
         var cart = 0, orders = 0, members = 0;
         try { cart = (JSON.parse(localStorage.getItem('airCart') || '[]') || []).length; } catch (e) {}
         try { orders = (JSON.parse(localStorage.getItem('airOrders') || '[]') || []).length; } catch (e) {}
@@ -813,6 +823,20 @@
         writeMember(m);
         refreshPanel();
         toast('测试账号等级已设为「' + LV_NAME[i] + '」', 'success');
+    }
+    function applyBalance() {
+        var inp = document.getElementById('devBalInput');
+        if (!inp) return;
+        var v = parseInt(inp.value, 10);
+        if (isNaN(v) || v < 0) { toast('请输入有效的余额（≥ 0）', 'error'); return; }
+        setBalance(v);
+    }
+    function setBalance(v) {
+        var m = currentTestMember();
+        m.balance = Math.max(0, Math.round(Number(v) || 0));
+        writeMember(m);
+        refreshPanel();
+        toast('测试账号余额已设为 ¥' + m.balance.toLocaleString(), 'success');
     }
     function applyMiles() {
         var inp = document.getElementById('devMileInput');
@@ -994,7 +1018,9 @@
     function activate() {
         try { localStorage.setItem(K_BK, localStorage.getItem(K_MB) || 'null'); } catch (e) {}
         try { localStorage.setItem(K_ON, '1'); } catch (e) {}
-        writeMember(Object.assign({}, TEST_MEMBER));
+        var prev = readMember();
+        var keepBal = (prev && prev.devTest) ? (Math.round(Number(prev.balance) || 0)) : 0;
+        writeMember(Object.assign({}, TEST_MEMBER, { balance: keepBal }));
         mountDevUi();
         syncFooterLabel();
         toast('开发者模式已开启，会员已切换为测试账号', 'info');
@@ -1069,7 +1095,10 @@
         if (isDev()) {
             mountDevUi();
             var m = readMember();
-            if (!m || !m.devTest) writeMember(Object.assign({}, TEST_MEMBER));
+            if (!m || !m.devTest) {
+                var kb = (m && m.devTest) ? (Math.round(Number(m.balance) || 0)) : 0;
+                writeMember(Object.assign({}, TEST_MEMBER, { balance: kb }));
+            }
         }
     }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

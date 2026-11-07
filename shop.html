@@ -71,20 +71,23 @@
                 <p class="text-2xl font-bold text-gold mt-2" id="payAmount">¥0</p>
                 <p class="text-xs text-textGray mt-1" id="payGoodsName"></p>
             </div>
-            <div class="space-y-2 mb-5">
-                <button onclick="setPay('wechat')" class="pay-way w-full flex items-center gap-3 p-3 rounded-global border" data-way="wechat"><i class="fa fa-wechat text-xl" style="color:#07c160"></i><span class="text-sm font-semibold">微信支付</span><i class="fa fa-check-circle ml-auto text-gold hidden"></i></button>
-                <button onclick="setPay('alipay')" class="pay-way w-full flex items-center gap-3 p-3 rounded-global border" data-way="alipay"><i class="fa fa-credit-card text-xl" style="color:#1677ff"></i><span class="text-sm font-semibold">支付宝</span><i class="fa fa-check-circle ml-auto text-gold hidden"></i></button>
-                <button onclick="setPay('bank')" class="pay-way w-full flex items-center gap-3 p-3 rounded-global border" data-way="bank"><i class="fa fa-university text-xl" style="color:#8a5a2b"></i><span class="text-sm font-semibold">银行卡支付</span><i class="fa fa-check-circle ml-auto text-gold hidden"></i></button>
+            <div class="space-y-2 mb-4">
+                <div class="w-full flex items-center gap-3 p-3 rounded-global border" style="border-color:#4a5a6e">
+                    <i class="fa fa-wallet text-xl text-gold"></i><span class="text-sm font-semibold">会员账户余额（模拟支付）</span>
+                    <span id="shopBalance" class="ml-auto text-xs text-textGray">余额 ¥0</span>
+                </div>
+                <p id="shopPayWarn" class="hidden text-xs text-danger leading-relaxed"></p>
+                <button type="button" id="shopRechargeBtn" onclick="goRechargeShop()" class="hidden w-full border border-gold text-gold font-bold py-2.5 rounded-global btn-hover">去充值</button>
             </div>
             <button id="payBtn" onclick="confirmPay()" class="w-full bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认支付</button>
-            <p class="text-center text-xs text-textGray mt-3"><i class="fa fa-lock mr-1"></i>模拟支付环境，不会产生真实扣款</p>
+            <p class="text-center text-xs text-textGray mt-3"><i class="fa fa-lock mr-1"></i>模拟支付环境：从会员账户余额扣款，不产生真实支付</p>
         </div>
     </div>
 
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261006perf"></script>
-    <script src="assets/dev.js?v=20261107dev4"></script>
+    <script src="assets/common.js?v=20261107wallet"></script>
+    <script src="assets/dev.js?v=20261107dev5"></script>
     <script>
         const SHOP_ITEMS=[
             {id:"plane",name:"波音787 飞机模型（1:400）",img:"assets/shop/plane.webp",price:299,desc:"银色涂装 · 老牧师航空定制",tag:"热卖"},
@@ -145,31 +148,64 @@
             payOrderId=order.id;payWay="wechat";
             document.getElementById("payAmount").textContent="¥"+total;
             document.getElementById("payGoodsName").textContent=buyItem.name+" × "+buyQty;
-            document.querySelectorAll('.pay-way').forEach(b=>{b.style.borderColor="rgba(74,90,110,0.3)";b.querySelector('.fa-check-circle').classList.add("hidden");});
-            document.querySelector('.pay-way[data-way="wechat"]').style.borderColor="#4a5a6e";
-            document.querySelector('.pay-way[data-way="wechat"] .fa-check-circle').classList.remove("hidden");
+            refreshShopPay(total);
             document.getElementById("buyModal").classList.add("hidden");
             document.getElementById("payModal").classList.remove("hidden");
         }
-        function setPay(w){
-            payWay=w;
-            document.querySelectorAll('.pay-way').forEach(b=>{b.style.borderColor="rgba(74,90,110,0.3)";b.querySelector('.fa-check-circle').classList.add("hidden");});
-            const b=document.querySelector('.pay-way[data-way="'+w+'"]');
-            b.style.borderColor="#4a5a6e";b.querySelector('.fa-check-circle').classList.remove("hidden");
-        }
         function closePay(){document.getElementById("payModal").classList.add("hidden");}
+        function refreshShopPay(total){
+            const m=getMember(),bal=getBalance();
+            const amt=Math.round(Number(total)||0);
+            const el=document.getElementById("shopBalance");
+            if(el)el.textContent="余额 ¥"+bal;
+            const warn=document.getElementById("shopPayWarn");
+            const rb=document.getElementById("shopRechargeBtn");
+            let msg="";
+            if(!m)msg="未检测到登录会员，余额支付需要先登录会员账户。";
+            else if(amt>bal)msg="余额不足，还需充值 ¥"+(amt-bal)+"（当前余额 ¥"+bal+"）。";
+            if(msg){
+                if(warn){warn.textContent=msg;warn.classList.remove("hidden");}
+                if(rb)rb.classList.remove("hidden");
+            }else{
+                if(warn)warn.classList.add("hidden");
+                if(rb)rb.classList.add("hidden");
+            }
+        }
+        function goRechargeShop(){
+            const o=shopOrders().find(x=>x.id===payOrderId);
+            const amt=Math.round(Number(o&&o.total)||0);
+            const need=Math.max(0,amt-getBalance());
+            location.href="member.html?recharge=1&amount="+(need>0?need:500);
+        }
         function confirmPay(){
+            const m=getMember();
+            if(!m){showToast("请先登录会员账户后再支付","warn");refreshShopPay(0);return;}
+            const list=shopOrders(),o=list.find(x=>x.id===payOrderId);
+            if(!o){showToast("订单不存在，请刷新后重试","warn");return;}
+            const amt=Math.round(Number(o.total)||0);
+            const bal=getBalance();
+            if(amt>bal){
+                showToast("余额不足，还需充值 ¥"+(amt-bal)+"（当前余额 ¥"+bal+"）","warn");
+                refreshShopPay(amt);
+                return;
+            }
             const btn=document.getElementById("payBtn");
             btn.disabled=true;btn.textContent="支付中…";
             setTimeout(()=>{
-                const list=shopOrders(),o=list.find(x=>x.id===payOrderId);
-                if(o){o.status="待发货";o.paidAt=Date.now();o.payWay=payWay;saveShopOrders(list);}
+                const res=payWithBalance(amt,"商城订单 · "+o.name);
+                if(!res.ok){
+                    btn.disabled=false;btn.textContent="确认支付";
+                    showToast("余额不足，支付未完成","warn");
+                    refreshShopPay(amt);
+                    return;
+                }
+                const l2=shopOrders(),o2=l2.find(x=>x.id===payOrderId);
+                if(o2){o2.status="待发货";o2.paidAt=Date.now();o2.payWay="balance";saveShopOrders(l2);}
                 closePay();renderOrders();
-                showToast("支付成功！商家正在备货，即将发货…");
-                // 5秒后自动发货
+                showToast("支付成功！已扣款 ¥"+amt+"，余额 ¥"+getBalance()+"，商家正在备货…");
                 setTimeout(()=>{
-                    const l2=shopOrders(),o2=l2.find(x=>x.id===payOrderId);
-                    if(o2&&o2.status==="待发货"){o2.status="已发货";o2.shipAt=Date.now();saveShopOrders(l2);renderOrders();showToast("您的商品已发货，请注意查收！");}
+                    const l3=shopOrders(),o3=l3.find(x=>x.id===payOrderId);
+                    if(o3&&o3.status==="待发货"){o3.status="已发货";o3.shipAt=Date.now();saveShopOrders(l3);renderOrders();showToast("您的商品已发货，请注意查收！");}
                 },5000);
                 btn.disabled=false;btn.textContent="确认支付";
             },1200);
@@ -220,9 +256,7 @@
             payOrderId=o.id;payWay="wechat";
             document.getElementById("payAmount").textContent="¥"+o.total;
             document.getElementById("payGoodsName").textContent=o.name+" × "+o.qty;
-            document.querySelectorAll('.pay-way').forEach(b=>{b.style.borderColor="rgba(74,90,110,0.3)";b.querySelector('.fa-check-circle').classList.add("hidden");});
-            document.querySelector('.pay-way[data-way="wechat"]').style.borderColor="#4a5a6e";
-            document.querySelector('.pay-way[data-way="wechat"] .fa-check-circle').classList.remove("hidden");
+            refreshShopPay(o.total);
             document.getElementById("payModal").classList.remove("hidden");
         }
         function scrollToOrders(){document.getElementById("shopOrders").scrollIntoView({behavior:"smooth",block:"start"});}

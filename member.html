@@ -92,6 +92,21 @@
                     <button onclick="doLogout()" class="btn-hover border border-danger text-danger font-bold px-6 py-2 rounded-global ml-auto">退出登录</button>
                 </div>
             </div>
+            <!-- 账户余额（模拟充值 + 余额支付） -->
+            <div id="walletCard" class="bg-card card-gold p-6 rounded-global shadow-lg">
+                <div class="flex flex-wrap justify-between items-center gap-4">
+                    <div>
+                        <p class="text-textGray text-sm mb-1"><i class="fa fa-wallet mr-1 text-gold"></i>账户余额（模拟）</p>
+                        <p class="text-3xl font-bold text-gold">¥<span id="mBalance">0</span></p>
+                    </div>
+                    <button onclick="openRecharge()" class="btn-hover bg-gold text-primary font-bold px-7 py-2.5 rounded-global"><i class="fa fa-plus mr-1"></i>充值</button>
+                </div>
+                <p class="text-xs text-textGray mt-3">机票、商城与升舱补差价均从余额扣款；充值即时到账，全程模拟，不产生真实扣款。</p>
+                <div class="mt-4">
+                    <p class="text-sm font-bold mb-2">余额流水</p>
+                    <div id="walletTxList"></div>
+                </div>
+            </div>
             <!-- 黑钻至尊专属权益（仅黑钻卡） -->
             <div id="eliteBenefits" class="bg-card card-gold p-6 rounded-global shadow-lg hidden">
                 <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-diamond mr-2"></i>黑钻至尊专属权益</h3>
@@ -123,6 +138,28 @@
         </div>
     </main>
     <div id="siteFooter"></div>
+    <!-- 账户充值（模拟） -->
+    <div id="rechargeModal" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4">
+        <div class="bg-card card-gold rounded-global shadow-2xl w-full max-w-md p-6">
+            <h3 class="text-xl font-bold text-gold mb-1"><i class="fa fa-wallet mr-2"></i>账户充值</h3>
+            <p class="text-xs text-textGray mb-4">模拟充值，确认后立即到账，不产生真实扣款。</p>
+            <label class="block mb-2 text-sm">快捷金额</label>
+            <div class="flex flex-wrap gap-2 mb-4">
+                <button onclick="pickRecharge(100)" class="px-4 py-2 border rounded-global text-sm btn-hover">¥100</button>
+                <button onclick="pickRecharge(500)" class="px-4 py-2 border rounded-global text-sm btn-hover">¥500</button>
+                <button onclick="pickRecharge(1000)" class="px-4 py-2 border rounded-global text-sm btn-hover">¥1000</button>
+                <button onclick="pickRecharge(2000)" class="px-4 py-2 border rounded-global text-sm btn-hover">¥2000</button>
+                <button onclick="pickRecharge(5000)" class="px-4 py-2 border rounded-global text-sm btn-hover">¥5000</button>
+            </div>
+            <label class="block mb-1 text-sm">自定义金额（元，单次上限 ¥100,000）</label>
+            <input id="rechargeAmount" type="number" min="1" max="100000" step="1" value="500" class="w-full border px-4 py-3 rounded-global" placeholder="请输入充值金额">
+            <div id="rechargeErr" class="text-danger text-sm mt-2 hidden"></div>
+            <div class="flex gap-4 mt-6">
+                <button onclick="closeRecharge()" class="flex-1 border py-3 rounded-global">取消</button>
+                <button onclick="confirmRecharge()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认充值</button>
+            </div>
+        </div>
+    </div>
     <!-- 实物兑换收货信息表单 -->
     <div id="shippingModal" class="hidden fixed inset-0 bg-black/70 z-[100] flex items-center justify-center p-4">
         <div class="bg-card card-gold rounded-global shadow-2xl w-full max-w-md p-6">
@@ -140,8 +177,8 @@
         </div>
     </div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261006perf"></script>
-    <script src="assets/dev.js?v=20261107dev4"></script>
+    <script src="assets/common.js?v=20261107wallet"></script>
+    <script src="assets/dev.js?v=20261107dev5"></script>
     <script>
         const LV_COLORS={普卡:'text-white',银卡:'text-gray-300',金卡:'text-gold',铂金卡:'text-amber-300',钻石卡:'text-cyan-300'};
         const LV_DESC={普卡:'注册即享 · 里程累积、会员专属客服、会员价购票',银卡:'1万里程 · 优先值机、额外10%里程加成、生日礼遇',金卡:'3万里程 · 免费选座、贵宾安检通道、额外25%里程、优先登机',铂金卡:'6万里程 · 贵宾休息室、升舱券×1/年、额外50%里程',钻石卡:'10万里程 · 专属管家、无限休息室、额外100%里程'};
@@ -211,6 +248,50 @@
             {icon:'fa-wifi',name:'全程高速 Wi-Fi',desc:'机上网络+顶级餐饮'},
             {icon:'fa-birthday-cake',name:'生日至尊礼遇',desc:'头等舱香槟与蛋糕'}
         ];
+        // 余额与流水渲染
+        function renderWallet(){
+            const balEl=document.getElementById("mBalance");
+            if(balEl)balEl.textContent=getBalance().toLocaleString();
+            const box=document.getElementById("walletTxList");
+            if(!box)return;
+            const list=getWalletTx().slice().reverse().slice(0,8);
+            if(!list.length){box.innerHTML='<p class="text-textGray text-sm">暂无余额流水，充值后可在这里查看。</p>';return;}
+            const TYPE={recharge:{icon:'fa-plus',cls:'text-success'},payment:{icon:'fa-ticket',cls:'text-danger'},refund:{icon:'fa-rotate-left',cls:'text-success'}};
+            box.innerHTML=list.map(t=>{
+                const meta=TYPE[t.type]||{icon:'fa-wallet',cls:'text-textGray'};
+                const amt=Math.round(Number(t.amount)||0);
+                return '<div class="flex items-start justify-between gap-3 py-2 text-sm" style="border-bottom:1px solid rgba(0,0,0,0.06)">'
+                    +'<div class="flex-1 min-w-0"><i class="fa '+meta.icon+' mr-2 '+meta.cls+'"></i>'+esc(t.title||'余额变动')+'</div>'
+                    +'<div class="text-right flex-none"><span class="font-bold '+(amt>=0?'text-success':'text-danger')+'">'+(amt>=0?'+':'-')+'¥'+Math.abs(amt).toLocaleString()+'</span>'
+                    +'<div class="text-xs text-textGray">'+new Date(t.time).toLocaleString('zh-CN')+' · 余 ¥'+(Math.round(Number(t.balanceAfter)||0)).toLocaleString()+'</div></div></div>';
+            }).join('');
+        }
+        function openRecharge(amount){
+            const modal=document.getElementById("rechargeModal");
+            if(!modal)return;
+            if(!getMember()){showToast("请先登录会员账户再充值","warn");return;}
+            const err=document.getElementById("rechargeErr");
+            if(err)err.classList.add("hidden");
+            if(amount)document.getElementById("rechargeAmount").value=amount;
+            modal.classList.remove("hidden");
+        }
+        function closeRecharge(){const m=document.getElementById("rechargeModal");if(m)m.classList.add("hidden");}
+        function pickRecharge(v){const i=document.getElementById("rechargeAmount");if(i)i.value=v;}
+        function confirmRecharge(){
+            const inp=document.getElementById("rechargeAmount");
+            const err=document.getElementById("rechargeErr");
+            const v=Number(inp?inp.value:0);
+            if(!(v>0)){if(err){err.textContent="请输入大于 0 的充值金额";err.classList.remove("hidden");}return;}
+            const r=rechargeWallet(v);
+            if(r.ok){
+                if(err)err.classList.add("hidden");
+                closeRecharge();
+                renderPage();
+            }else if(err&&r.reason!=="limit"){
+                err.textContent="充值未完成，请检查金额后重试";
+                err.classList.remove("hidden");
+            }
+        }
         function renderPage(){
             const m=getMember();
             document.getElementById("guestArea").classList.toggle("hidden",!!m);
@@ -237,6 +318,7 @@
             document.getElementById("mTotal").textContent=m.totalMiles.toLocaleString();
             document.getElementById("mMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mMiles2").textContent=(m.miles||0).toLocaleString();
+            renderWallet();
             document.getElementById("exMiles").textContent=(m.miles||0).toLocaleString();
             document.getElementById("mLevelHint").textContent=LV_DESC[lv.cur.name];
             // 进度条等级化
@@ -427,6 +509,16 @@
             d.innerHTML=orders.slice().reverse().map(o=>'<div class="flex justify-between items-center bg-black/40 rounded-global px-4 py-3"><div><p class="font-bold">'+esc(o.flightNo)+' '+esc(o.start)+'→'+esc(o.end)+'</p><p class="text-xs text-textGray">'+esc(o.date)+' '+esc(o.time)+' · 实付 ¥'+(o.payPrice!=null?o.payPrice:o.price)+'</p></div><span class="text-gold font-bold">+'+(o.milesEarned||0)+' 里程</span></div>').join('');
         }
         renderPage();
+        // 从支付页"去充值"跳转：自动弹出充值窗
+        (function(){
+            try{
+                const q=new URLSearchParams(location.search);
+                if(q.get("recharge")==="1"&&getMember()){
+                    const amt=Number(q.get("amount")||0);
+                    setTimeout(function(){openRecharge(amt>0?amt:undefined);},300);
+                }
+            }catch(e){}
+        })();
         // 支持导航"会员中心"下拉菜单的锚点定位（#exchange / #benefits / #elite）
         (function(){
             const hash=location.hash.slice(1);

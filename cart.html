@@ -31,17 +31,23 @@
                 <label class="block mb-1">铁路坐席（空铁联运）</label>
                 <div id="railSeatList" class="space-y-2"></div>
             </div>
-            <div class="space-y-4">
-                <div><label class="block mb-1">支付方式</label><select id="payMethod" class="w-full border px-4 py-3 rounded-global"><option>微信支付</option><option>支付宝</option><option>银行卡</option></select></div>
-                <div><label class="block mb-1">支付卡号/手机号</label><input id="payAccount" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="请输入支付账号"></div>
+            <div class="space-y-3">
+                <div><label class="block mb-1">支付方式</label>
+                    <div class="w-full border px-4 py-3 rounded-global flex items-center justify-between gap-3">
+                        <span class="font-semibold"><i class="fa fa-wallet mr-2 text-gold"></i>会员账户余额（模拟支付）</span>
+                        <span id="payBalance" class="text-sm text-textGray flex-none">余额 ¥0</span>
+                    </div>
+                </div>
+                <div id="payWarn" class="hidden text-sm text-danger leading-relaxed"></div>
+                <p id="payHint" class="text-xs text-textGray">余额不足时无法支付，可先到会员中心充值（模拟充值，即时到账）。</p>
             </div>
             <div class="flex gap-4 mt-6"><button onclick="closePaymentModal()" class="flex-1 border py-3 rounded-global">返回</button><button id="paySubmitBtn" onclick="confirmPayment()" class="flex-1 bg-gold text-primary font-bold py-3 rounded-global btn-hover">确认支付</button></div>
         </div>
     </div>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261006perf"></script>
-    <script src="assets/dev.js?v=20261107dev4"></script>
+    <script src="assets/common.js?v=20261107wallet"></script>
+    <script src="assets/dev.js?v=20261107dev5"></script>
     <script>
         const TRAIN_SEAT_KEYS=['second','first','business'];
         const TRAIN_SEAT_NAME={second:'二等座',first:'一等座',business:'商务座'};
@@ -116,33 +122,82 @@
             renderPayRailSeats();
             updatePayInfo();
         }
-        function updatePayInfo(){
-            let c=getCart(),total=c.reduce((s,i)=>s+i.price,0);
+        function payContext(){
+            const c=getCart();
+            const total=c.reduce((s,i)=>s+i.price,0);
             const sel=document.getElementById("couponSelect");
             const code=sel&&sel.value?sel.value:"0";
             const coupon=code==="0"?null:getCoupons().find(x=>x.code===code);
-            const pay=coupon?Math.max(0,total-coupon.value):total;
-            document.getElementById("paymentInfo").innerHTML='<p>待支付机票：'+c.length+' 张</p>'+(coupon?'<p class="text-success">优惠券抵扣：-¥'+coupon.value+'</p>':'')+'<p class="text-danger font-bold text-lg mt-2">实付金额：¥'+pay+'</p>';
+            const couponValue=coupon?coupon.value:0;
+            return {cart:c,total:total,coupon:coupon,couponValue:couponValue,payTotal:Math.max(0,total-couponValue)};
         }
-        function closePaymentModal(){document.getElementById("paymentModal").classList.add("hidden");document.getElementById("payAccount").value="";}
+        function updatePayInfo(){
+            const ctx=payContext();
+            const m=getMember(),bal=getBalance();
+            const after=Math.max(0,bal-ctx.payTotal);
+            document.getElementById("paymentInfo").innerHTML='<p>待支付机票：'+ctx.cart.length+' 张</p>'
+                +(ctx.coupon?'<p class="text-success">优惠券抵扣：-¥'+ctx.couponValue+'</p>':'')
+                +'<p class="text-danger font-bold text-lg mt-2">实付金额：¥'+ctx.payTotal+'</p>'
+                +'<p class="mt-1 text-sm '+((!m||ctx.payTotal>bal)?'text-danger':'text-textGray')+'">账户余额：¥'+bal
+                +(m?'（支付后 ¥'+after+'）':'· 未登录会员')+'</p>';
+            const pb=document.getElementById("payBalance");
+            if(pb)pb.textContent='余额 ¥'+bal;
+            const warn=document.getElementById("payWarn");
+            const btn=document.getElementById("paySubmitBtn");
+            let msg='';
+            if(!m)msg='未检测到登录会员，余额支付需要先登录会员账户。';
+            else if(ctx.payTotal>bal)msg='余额不足，还需充值 ¥'+(ctx.payTotal-bal)+'（当前余额 ¥'+bal+'）。';
+            const hint=document.getElementById("payHint");
+            if(msg){
+                if(warn){warn.textContent=msg;warn.classList.remove("hidden");}
+                if(btn)btn.textContent='余额不足 · 去充值';
+                if(hint)hint.textContent='余额不足时无法支付，可先到会员中心充值（模拟充值，即时到账）。';
+            }else{
+                if(warn)warn.classList.add("hidden");
+                if(btn)btn.textContent='确认支付';
+                if(hint)hint.textContent='本次支付将从账户余额扣款 ¥'+ctx.payTotal+'，支付后余额 ¥'+(bal-ctx.payTotal)+'。';
+            }
+        }
+        function goRecharge(){
+            const need=Math.max(0,payContext().payTotal-getBalance());
+            location.href="member.html?recharge=1&amount="+(need>0?need:500);
+        }
+        function closePaymentModal(){document.getElementById("paymentModal").classList.add("hidden");}
         async function confirmPayment(){
-            let c=getCart(),acc=document.getElementById("payAccount").value.trim(),btn=document.getElementById("paySubmitBtn");
+            let c=getCart(),btn=document.getElementById("paySubmitBtn");
             let total=c.reduce((s,i)=>s+i.price,0);
             const sel=document.getElementById("couponSelect");
             const code=sel&&sel.value?sel.value:"0";
             const coupon=code==="0"?null:getCoupons().find(x=>x.code===code);
             const couponValue=coupon?coupon.value:0;
             const payTotal=Math.max(0,total-couponValue);
-            if(!acc){showToast("请输入支付账号/手机号","warn");document.getElementById("payAccount").focus();return;}
+            const m0=getMember(),bal0=getBalance();
+            if(!m0){
+                showToast("请先登录会员账户后再支付","warn");
+                return;
+            }
+            if(payTotal>bal0){
+                showToast("余额不足，还需充值 ¥"+(payTotal-bal0)+"，正在前往充值…","warn");
+                setTimeout(function(){goRecharge();},900);
+                return;
+            }
             const doPay=async function(){
                 btn.disabled=true;btn.innerText="支付加载中，请稍候...";
                 await new Promise(r=>setTimeout(r,3000));
+                const payRes=payWithBalance(payTotal,"机票支付 · "+c.length+" 张");
+                if(!payRes.ok){
+                    btn.disabled=false;btn.innerText="确认支付";
+                updatePayInfo();
+                    showToast(payRes.reason==='insufficient'?("余额不足，还需充值 ¥"+(payRes.need||0)):"支付失败，请重新登录后再试","warn");
+                    updatePayInfo();
+                    return;
+                }
                 let orders=loadOrders();const ts=Date.now();
                 const m=getMember();
                 c.forEach(item=>{
                     const payPrice=coupon?Math.max(0,Math.round(item.price-item.price*couponValue/total)):item.price;
                     const {cartId,...rest}=item;
-                    orders.push(Object.assign({},rest,{orderId:"ORD"+ts+Math.floor(Math.random()*1000),status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0,payPrice:payPrice,couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0,
+                    orders.push(Object.assign({},rest,{orderId:"ORD"+ts+Math.floor(Math.random()*1000),status:"支付处理中",createTime:ts,memberCardNo:m?m.cardNo:null,milesEarned:m?Math.round(payPrice):0,payPrice:payPrice,payMethod:"余额支付",couponCode:coupon?coupon.code:null,couponValue:coupon?couponValue:0,
                         weatherRisk:item.weatherRisk?true:false,
                         weatherReason:item.weatherReason||'',
                         riskEvalAt:item.weatherRisk?ts+30000:null}));
@@ -152,7 +207,7 @@
                 saveOrders(orders);
                 localStorage.removeItem("airCart");
                 updateCartBadge();
-                showToast("支付成功！"+(m?"已累积 "+Math.round(payTotal)+" 里程。":"（登录会员可累积里程）")+"订单已生成，稍后可在【我的订单】查看。","success");
+                showToast("支付成功！已从账户余额扣款 ¥"+payTotal+"，剩余余额 ¥"+getBalance()+"。"+(m?"已累积 "+Math.round(payTotal)+" 里程。":"")+"订单已生成，稍后可在【我的订单】查看。","success");
                 btn.disabled=false;btn.innerText="确认支付";
                 setTimeout(function(){location.href="order.html";},1600);
             };

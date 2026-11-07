@@ -79,8 +79,8 @@
     </div>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261006perf"></script>
-    <script src="assets/dev.js?v=20261107dev4"></script>
+    <script src="assets/common.js?v=20261107wallet"></script>
+    <script src="assets/dev.js?v=20261107dev5"></script>
     <script>
         let changeIdx=null,changeFree=false;
         let cabinIdx=null,cabinTargetKey=null;
@@ -186,6 +186,7 @@
                     '<p>票价：¥'+item.price+(item.payPrice!=null&&item.payPrice!==item.price?'（实付 ¥'+item.payPrice+(item.couponValue?'，券抵扣 ¥'+item.couponValue:'')+'）':'')+(isRA?'（含高铁'+esc(item.trainSeat||'二等座')+'）':'')+'</p>'+
                     (item.cabinChange?'<p class="text-sm '+(item.cabinChange.type==='upgrade'?'text-danger':'text-success')+'"><i class="fa '+(item.cabinChange.type==='upgrade'?'fa-level-up':'fa-level-down')+'"></i> '+esc(item.cabinChange.fromCabin)+' → '+esc(item.cabinChange.toCabin)+'：'+(item.cabinChange.type==='upgrade'?'补差价 ¥'+item.cabinChange.diff:'退回差价 ¥'+item.cabinChange.diff)+'</p>':'')+
                     (item.memberCardNo?'<p class="text-gold">会员 '+esc(item.memberCardNo)+' · 获得里程 +'+(item.milesEarned||0)+'</p>':'')+
+                    (item.payMethod?'<p class="text-sm text-textGray">支付方式：'+esc(item.payMethod)+'</p>':'')+
                     riskNote+
                     actions+
                     '</div>';
@@ -212,8 +213,9 @@
                     m.level=ffpLevel(m.totalMiles,m).cur.name;
                     saveMember(m);
                 }
+                const refundRes=refundToBalance(refund,"机票退票退款 · "+item.flightNo);
                 renderOrderList();
-                showToast("退票成功"+(milesBack?"，已回退 "+milesBack+" 里程。":"。"),"success");
+                showToast("退票成功"+(refundRes.ok?"，退款 ¥"+refund+" 已退回账户余额（当前余额 ¥"+refundRes.balance+"）":"")+(milesBack?"，已回退 "+milesBack+" 里程。":"。"),"success");
             });
         }
         function openChange(idx,free){
@@ -398,7 +400,16 @@
             const fromCabin=item.cabin;
             const toCabin=CABIN_NAME[cabinTargetKey];
             const diffAmt=Math.abs(diff);
+            if(diff>0){
+                if(!getMember()){showToast("请先登录会员账户后再补差价","warn");return;}
+                const bal=getBalance();
+                if(diff>bal){showToast("余额不足，本次升舱需补差价 ¥"+diff+"，当前余额 ¥"+bal+"，请先到会员中心充值","warn");return;}
+            }
             showConfirm('确认将舱位由【'+fromCabin+'】调整至【'+toCabin+'】？<br>'+(diff>0?'需补差价 ¥'+diffAmt:'退回差价 ¥'+diffAmt)+'（多退少补），调整后原座位将释放，需重新值机。',function(){
+                if(diff>0){
+                    const pr=payWithBalance(diff,"升舱补差价 · "+fromCabin+"→"+toCabin);
+                    if(!pr.ok){showToast("余额不足，升舱未完成，请先充值","warn");return;}
+                }
                 item.cabin=toCabin;
                 item.price=price[cabinTargetKey];
                 item.payPrice=newPay;
@@ -414,9 +425,11 @@
                     m.level=ffpLevel(m.totalMiles,m).cur.name;
                     saveMember(m);
                 }
+                if(diff<0)refundToBalance(diffAmt,"降舱退差价 · "+fromCabin+"→"+toCabin);
                 document.getElementById("cabinModal").classList.add("hidden");
                 renderOrderList();
-                showToast("舱位调整成功！"+(diff>0?'已补差价 ¥'+diffAmt+'，':'已退回差价 ¥'+diffAmt+'，')+"请重新选择座位办理值机。","success");
+                const balNow=getBalance();
+                showToast("舱位调整成功！"+(diff>0?'已从余额补差价 ¥'+diffAmt+'，':'已退回差价 ¥'+diffAmt+'到余额，')+"当前余额 ¥"+balNow+"，请重新选择座位办理值机。","success");
             });
         }
         function closeCabinChange(){document.getElementById("cabinModal").classList.add("hidden");cabinTargetKey=null;}
