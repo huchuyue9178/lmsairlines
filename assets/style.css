@@ -651,6 +651,27 @@ body.touch-mode .reveal-up.in{
         border:1px solid rgba(255,255,255,0.12);
     }
     .msg-bot{ background:rgba(255,255,255,0.08) !important; color:#e8edf2; }
+    /* 背景装饰层压暗（否则文字变白而背景仍为浅色，白字浅底不可读） */
+    .bg-layer{
+        background:
+            linear-gradient(180deg,rgba(24,30,38,0.94) 0%,rgba(30,38,48,0.88) 35%,rgba(36,46,58,0.84) 65%,rgba(24,30,38,0.92) 100%),
+            url('hero_bg.webp') center/cover no-repeat;
+        background-color:#1a2028 !important;
+    }
+    /* 玻璃按钮与描边按钮的深色版本 */
+    .deal-more{
+        background:rgba(255,255,255,0.1) !important;
+        border-color:rgba(255,255,255,0.2) !important;
+        color:#e8edf2 !important;
+    }
+    .deal-more:hover{
+        background:rgba(255,255,255,0.2) !important;
+        color:#fff !important;
+        box-shadow:0 10px 24px rgba(0,0,0,0.35);
+    }
+    .card-gold, .bg-card{ color:#e8edf2; }
+    /* 价格/强调色在深底上提亮，否则深灰蓝几乎不可读 */
+    .text-gold{ color:#b9cfe2 !important; }
 }
 
 /* ===== 节省性能版模式：减动画，保留液态玻璃 ===== */
