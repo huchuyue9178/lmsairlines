@@ -46,66 +46,67 @@
         try { return sessionStorage.getItem(K_SHOWN) === '1'; } catch (e) { return false; }
     }
 
-    /* 站长首次登录时自动建档：黑钻卡 + 专属标记 */
-    function ensureOwner(pw) {
+    /* 会员记录里只留掩码号码，浏览器存储中不出现完整号码 */
+    function maskPhone(p) {
+        return p.slice(0, 3) + '****' + p.slice(7);
+    }
+
+    /* 站长首次登录时自动建档：黑钻卡 + 专属标记
+       不在账号注册表里留档，只靠摘要比对；历史遗留的明文记录一并清理 */
+    function ensureOwner() {
         var phone = ownerPhone();
+        var phoneMask = maskPhone(phone);
         var members = getMembers();
-        var mem = null, i;
+        var i;
+
+        try {
+            var accs = getAccounts();
+            var kept = accs.filter(function (a) { return a.phone !== phone; });
+            if (kept.length !== accs.length) saveAccounts(kept);
+        } catch (e) {}
+
+        // 清掉早期版本用完整号码建档的会员记录（owner 那条会改写成掩码）
+        members = members.filter(function (m) { return m && m.phone !== phone; });
+
+        var mem = null;
         for (i = 0; i < members.length; i++) {
-            if (members[i].phone === phone) { mem = members[i]; break; }
+            if (members[i].owner === true) { mem = members[i]; break; }
         }
         if (!mem) {
             mem = {
-                name: '站长', phone: phone, cardNo: genCardNo(),
-                level: '黑钻卡', miles: 0, totalMiles: 1200000,
+                name: '站长', phone: phoneMask, cardNo: genCardNo(),
+                level: '黑钻卡', miles: 1200000, totalMiles: 1200000,
                 elite: true, balance: 0, joinedAt: Date.now(), owner: true
             };
             members.push(mem);
-            saveMembers(members);
         } else {
+            mem.phone = phoneMask;
             mem.owner = true;
             mem.elite = true;
             mem.level = '黑钻卡';
             if ((mem.totalMiles || 0) < 1200000) mem.totalMiles = 1200000;
-            saveMembers(members);
+            // 旧版建档时可用里程为 0，一次性与累计里程对齐（之后兑换消耗不再补回）
+            if (!mem.mileSeeded && (mem.miles || 0) === 0 && (mem.totalMiles || 0) >= 1200000) {
+                mem.miles = mem.totalMiles;
+                mem.mileSeeded = 1;
+            }
         }
-
-        var accs = getAccounts();
-        var acc = null;
-        for (i = 0; i < accs.length; i++) {
-            if (accs[i].phone === phone) { acc = accs[i]; break; }
-        }
-        var digest = hashPwd(pw);
-        if (!acc) {
-            accs.push({ phone: phone, pwd: digest, name: '站长', cardNo: mem.cardNo, createdAt: Date.now(), owner: true });
-            saveAccounts(accs);
-        } else if (acc.pwd !== digest) {
-            acc.pwd = digest;
-            acc.owner = true;
-            saveAccounts(accs);
-        }
+        saveMembers(members);
         return mem;
     }
 
-    /* 接管登录入口：命中站长凭证时建档并打标记，其余完全沿用原逻辑 */
+    /* 接管登录入口：命中站长凭证时直接合成会员身份，其余完全沿用原逻辑 */
     var baseLogin = window.loginAccount;
     window.loginAccount = function (phone, pwd) {
         var p = (phone || '').trim();
         var w = (pwd || '').trim();
 
-        if (p === ownerPhone()) {
-            if (!pwdOk(w)) {
-                // 口令不符时按普通账号流程提示，不暴露站长身份
-                return baseLogin(p, w);
-            }
-            ensureOwner(w);
-            var r = baseLogin(p, w);
-            if (r && r.ok) {
-                try { sessionStorage.setItem(K_SESS, '1'); } catch (e) {}
-                if (r.member) { r.member.owner = true; r.member.elite = true; saveMember(r.member); }
-                // 登录页会在 0.9 秒后跳转，欢迎层由目标页面加载时弹出
-            }
-            return r;
+        if (p === ownerPhone() && pwdOk(w)) {
+            var mem = ensureOwner();
+            if (typeof saveMember === 'function') saveMember(mem);
+            try { sessionStorage.setItem(K_SESS, '1'); } catch (e) {}
+            // 登录页会在 0.9 秒后跳转，欢迎层由目标页面加载时弹出
+            return { ok: true, member: mem };
         }
 
         try { sessionStorage.removeItem(K_SESS); } catch (e) {}
@@ -234,10 +235,19 @@
         });
     }
 
-    /* 会员中心：单张站长券转存余额 */
-    window.ownerCouponToBalance = function (idx) {
+    /* 会员中心：单张站长券转存余额（按券号定位，避免列表变动后错位） */
+    window.ownerCouponToBalance = function (idxOrCode) {
         var list = getCoupons();
-        var c = list[idx];
+        var c = null;
+        if (typeof idxOrCode === 'number') {
+            c = list[idxOrCode] || null;
+            if (c && !c.owner) c = null;
+        }
+        if (!c) {
+            for (var i = 0; i < list.length; i++) {
+                if (list[i] && list[i].code === idxOrCode) { c = list[i]; break; }
+            }
+        }
         if (!c || !c.owner || c.status !== '可用') return;
         var amt = Math.round(Number(c.value) || 0);
         showConfirm('将「¥' + amt.toLocaleString() + ' 站长专属礼券」转为账户余额？', function () {

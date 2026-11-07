@@ -604,7 +604,7 @@
                 return '<div class="bg-black/50 border border-gold/30 rounded-global p-4 flex justify-between items-start gap-3">'
                     +'<div class="min-w-0"><p class="font-bold text-gold">¥'+val+' '+(isOwner?'站长专属礼券':'代金券')+'</p>'
                     +'<p class="text-xs text-textGray">券号 '+esc(x.code)+'</p>'
-                    +(transferable?'<button onclick="ownerCouponToBalance('+i+')" class="mt-2 px-3 py-1.5 rounded-global text-xs font-bold border border-gold text-gold btn-hover">转存余额</button>':'')
+                    +(transferable?'<button onclick="ownerCouponToBalance(\''+x.code+'\')" class="mt-2 px-3 py-1.5 rounded-global text-xs font-bold border border-gold text-gold btn-hover">转存余额</button>':'')
                     +'</div><span class="text-sm flex-none '+(x.status==='可用'?'text-success':'text-textGray')+'">'+x.status+'</span></div>';
             }).join('');
         }
