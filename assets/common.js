@@ -802,13 +802,24 @@ function resolveStatus(item){
     function show(){
         var dev=detectDevice();
         var recommended=dev.lowEnd?'lite':'full';
+        var isDark=false;
+        try{ var ts=localStorage.getItem('lms_theme');
+            isDark = ts==='dark' || (ts!=='light' && document.documentElement.getAttribute('data-theme')==='dark');
+        }catch(e){ isDark=document.documentElement.getAttribute('data-theme')==='dark'; }
+        var C = isDark
+            ? {bg:'rgba(26,30,36,0.86)',bd:'rgba(255,255,255,0.14)',tx:'#e9eef5',tx2:'#b6c0cc',
+               card:'rgba(255,255,255,0.07)',btnbd:'rgba(255,255,255,0.16)',solid:'#5d6d82',
+               info:'rgba(255,255,255,0.06)'}
+            : {bg:'rgba(255,255,255,0.7)',bd:'rgba(255,255,255,0.8)',tx:'#3a4a5c',tx2:'#4a5a6e',
+               card:'rgba(255,255,255,0.6)',btnbd:'rgba(74,90,110,0.2)',solid:'#4a5a6e',
+               info:'rgba(201,138,138,0.08)'};
 
         var box=document.createElement('div');
         box.id='setupDialog';
         box.style.cssText='position:fixed;top:76px;right:16px;z-index:9999;width:340px;max-width:calc(100vw - 32px);'+
-            'background:rgba(255,255,255,0.7);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
-            'border:1px solid rgba(255,255,255,0.8);border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
-            'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:#3a4a5c;'+
+            'background:'+C.bg+';backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
+            'border:1px solid '+C.bd+';border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
+            'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:'+C.tx+';'+
             'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .5s cubic-bezier(.2,.9,.3,1.2);';
         box.innerHTML=
             '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
@@ -816,24 +827,24 @@ function resolveStatus(item){
                 '<strong style="font-size:16px;font-weight:800">欢迎使用老牧师航空</strong>'+
             '</div>'+
             // 环境提示
-            '<p style="font-size:12.5px;line-height:1.6;color:#4a5a6e;margin:0 0 14px;padding:8px 10px;border-radius:10px;background:rgba(201,138,138,0.08)"><i class="fa fa-exclamation-triangle mr-1"></i> 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
+            '<p style="font-size:12.5px;line-height:1.6;color:'+C.tx2+';margin:0 0 14px;padding:8px 10px;border-radius:10px;background:'+C.info+'"><i class="fa fa-exclamation-triangle mr-1"></i> 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
             // 设备类型
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">设备类型</p>'+
             '<div style="display:flex;gap:8px;margin-bottom:14px">'+
-                '<button id="setupPC" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-desktop mb-1"></i><br>电脑端</button>'+
-                '<button id="setupTouch" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-mobile mb-1"></i><br>触控端</button>'+
+                '<button id="setupPC" style="flex:1;background:'+C.card+';color:'+C.tx2+';border:1px solid '+C.btnbd+';border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-desktop mb-1"></i><br>电脑端</button>'+
+                '<button id="setupTouch" style="flex:1;background:'+C.card+';color:'+C.tx2+';border:1px solid '+C.btnbd+';border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-mobile mb-1"></i><br>触控端</button>'+
             '</div>'+
             // 性能模式
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">性能模式</p>'+
             '<div style="display:flex;gap:8px;margin-bottom:8px">'+
-                '<button id="setupFull" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-star mb-1"></i><br>完整版<br><span style="font-weight:400;font-size:11px">全部动效+玻璃</span></button>'+
-                '<button id="setupLite" style="flex:1;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-bolt mb-1"></i><br>节省性能版<br><span style="font-weight:400;font-size:11px">保留玻璃+减动画</span></button>'+
+                '<button id="setupFull" style="flex:1;background:'+C.card+';color:'+C.tx2+';border:1px solid '+C.btnbd+';border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-star mb-1"></i><br>完整版<br><span style="font-weight:400;font-size:11px">全部动效+玻璃</span></button>'+
+                '<button id="setupLite" style="flex:1;background:'+C.card+';color:'+C.tx2+';border:1px solid '+C.btnbd+';border-radius:14px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer"><i class="fa fa-bolt mb-1"></i><br>节省性能版<br><span style="font-weight:400;font-size:11px">保留玻璃+减动画</span></button>'+
             '</div>'+
             '<p style="font-size:12px;margin:0 0 14px;color:'+(dev.lowEnd?'#c98a8a':'#7ba89a')+'"><i class="fa fa-lightbulb-o mr-1"></i>'+(dev.lowEnd?'系统判断：您的设备推荐使用节省性能版':'系统判断：您的设备适合使用完整版')+'</p>'+
             // 确认按钮
             '<div style="display:flex;justify-content:flex-end;gap:8px">'+
-                '<a id="setupDetail" href="support.html" target="_blank" style="display:inline-block;background:rgba(255,255,255,0.6);color:#4a5a6e;border:1px solid rgba(74,90,110,0.2);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
-                '<button id="setupOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">开始体验</button>'+
+                '<a id="setupDetail" href="support.html" target="_blank" style="display:inline-block;background:'+C.card+';color:'+C.tx2+';border:1px solid '+C.btnbd+';border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:700;cursor:pointer;text-decoration:none">详细信息</a>'+
+                '<button id="setupOk" style="background:'+C.solid+';color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">开始体验</button>'+
             '</div>';
         document.body.appendChild(box);
         requestAnimationFrame(function(){
@@ -847,14 +858,14 @@ function resolveStatus(item){
         function refreshSel(){
             var pc=document.getElementById('setupPC'),tc=document.getElementById('setupTouch');
             var f=document.getElementById('setupFull'),l=document.getElementById('setupLite');
-            pc.style.background=selType==='pc'?'#4a5a6e':'rgba(255,255,255,0.6)';
-            pc.style.color=selType==='pc'?'#fff':'#4a5a6e';
-            tc.style.background=selType==='touch'?'#4a5a6e':'rgba(255,255,255,0.6)';
-            tc.style.color=selType==='touch'?'#fff':'#4a5a6e';
-            f.style.background=selPerf==='full'?'#4a5a6e':'rgba(255,255,255,0.6)';
-            f.style.color=selPerf==='full'?'#fff':'#4a5a6e';
-            l.style.background=selPerf==='lite'?'#4a5a6e':'rgba(255,255,255,0.6)';
-            l.style.color=selPerf==='lite'?'#fff':'#4a5a6e';
+            pc.style.background=selType==='pc'?C.solid:C.card;
+            pc.style.color=selType==='pc'?'#fff':C.tx2;
+            tc.style.background=selType==='touch'?C.solid:C.card;
+            tc.style.color=selType==='touch'?'#fff':C.tx2;
+            f.style.background=selPerf==='full'?C.solid:C.card;
+            f.style.color=selPerf==='full'?'#fff':C.tx2;
+            l.style.background=selPerf==='lite'?C.solid:C.card;
+            l.style.color=selPerf==='lite'?'#fff':C.tx2;
         }
         refreshSel();
 
@@ -891,21 +902,28 @@ function resolveStatus(item){
 // 活动结束公告弹窗（设置弹窗关闭后弹出）
 function showActivityNotice(){
     if(sessionStorage.getItem('activity_notice_seen')) return;
+    var isDark=false;
+    try{ var ts=localStorage.getItem('lms_theme');
+        isDark = ts==='dark' || (ts!=='light' && document.documentElement.getAttribute('data-theme')==='dark');
+    }catch(e){ isDark=document.documentElement.getAttribute('data-theme')==='dark'; }
+    var A = isDark
+        ? {bg:'rgba(26,30,36,0.86)',bd:'rgba(255,255,255,0.14)',tx:'#e9eef5',tx2:'#b6c0cc',solid:'#5d6d82'}
+        : {bg:'rgba(255,255,255,0.7)',bd:'rgba(255,255,255,0.8)',tx:'#3a4a5c',tx2:'#4a5a6e',solid:'#4a5a6e'};
     var box=document.createElement('div');
     box.id='activityNotice';
     box.style.cssText='position:fixed;top:76px;right:16px;z-index:9998;width:340px;max-width:calc(100vw - 32px);'+
-        'background:rgba(255,255,255,0.7);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
-        'border:1px solid rgba(255,255,255,0.8);border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
-        'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:#3a4a5c;'+
+        'background:'+A.bg+';backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
+        'border:1px solid '+A.bd+';border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
+        'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:'+A.tx+';'+
         'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .5s cubic-bezier(.2,.9,.3,1.2);';
     box.innerHTML=
         '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
             '<i class="fa fa-bullhorn" style="font-size:18px;color:#b8860b"></i>'+
             '<strong style="font-size:16px;font-weight:800">活动公告</strong>'+
         '</div>'+
-        '<p style="font-size:13px;line-height:1.7;color:#4a5a6e;margin:0 0 14px">「逐梦云天 · 定格航影」2026 原创航空视频征集活动已圆满结束，感谢所有参与者的热情投稿。获奖名单将在后续公布，敬请期待！</p>'+
+        '<p style="font-size:13px;line-height:1.7;color:'+A.tx2+';margin:0 0 14px">「逐梦云天 · 定格航影」2026 原创航空视频征集活动已圆满结束，感谢所有参与者的热情投稿。获奖名单将在后续公布，敬请期待！</p>'+
         '<div style="display:flex;justify-content:flex-end">'+
-            '<button id="activityNoticeOk" style="background:#4a5a6e;color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我知道了</button>'+
+            '<button id="activityNoticeOk" style="background:'+A.solid+';color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我知道了</button>'+
         '</div>';
     document.body.appendChild(box);
     requestAnimationFrame(function(){
