@@ -65,20 +65,36 @@
         el._t = setTimeout(function () { el.classList.remove('is-on'); }, 1800);
     }
 
+    /* 点击即切到“当前显示的相反面”，保证第一次点击就能看到明显变化 */
     function toggle() {
-        var next = state.mode === 'light' ? 'dark' : (state.mode === 'dark' ? 'auto' : 'light');
+        var next = state.real === 'dark' ? 'light' : 'dark';
         write(next);
         apply(next);
-        var msg = state.mode === 'auto'
-            ? TIP.auto + '（当前' + (state.real === 'dark' ? '深色' : '浅色') + '）'
-            : TIP[state.mode];
-        toast(msg);
+        toast(TIP[next]);
+    }
+
+    /* 兜底：若页面加载的是旧版 common.js（导航里没有按钮），自己补一个，避免用户无法切换 */
+    function ensureButton() {
+        if (document.getElementById('themeToggle')) return false;
+        var header = document.querySelector('header');
+        if (!header) return false;
+        var btn = document.createElement('button');
+        btn.id = 'themeToggle';
+        btn.type = 'button';
+        btn.innerHTML = '<i class="fa fa-adjust" aria-hidden="true"></i>';
+        var menuBtn = header.querySelector('#menuBtn');
+        if (menuBtn && menuBtn.parentNode) menuBtn.parentNode.insertBefore(btn, menuBtn);
+        else header.appendChild(btn);
+        btn.addEventListener('click', toggle);
+        syncUI();
+        return true;
     }
 
     /* 首屏立即上色 */
     apply(state.mode);
 
     function bind() {
+        ensureButton();
         var btn = document.getElementById('themeToggle');
         if (btn && !btn._bound) {
             btn._bound = true;
@@ -100,7 +116,7 @@
     /* 导航由 common.js 异步渲染，短轮询兜底绑定 */
     var tries = 0, timer = setInterval(function () {
         bind();
-        if ((document.getElementById('themeToggle') && document.getElementById('themeToggleMobile')) || ++tries > 20) clearInterval(timer);
+        if ((document.getElementById('themeToggle') && document.getElementById('themeToggleMobile')) || ++tries > 40) clearInterval(timer);
     }, 50);
 
     /* 跟随系统模式下，系统切换时同步 */
