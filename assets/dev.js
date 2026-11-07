@@ -147,11 +147,11 @@
             + '.dev-stats div{padding:10px 4px;border-radius:12px;background:rgba(216,223,230,0.5);}'
             + '.dev-stats b{display:block;font-size:17px;color:#1d1d1f;}'
             + '.dev-stats i{font-style:normal;font-size:11px;color:rgba(58,74,92,0.6);}'
-            + '.dev-kv{font-size:12px;line-height:1.7;max-height:150px;overflow:auto;border-radius:12px;'
+            + '.dev-kv{font-size:12px;line-height:1.7;max-height:192px;overflow:auto;border-radius:12px;'
             + 'background:rgba(216,223,230,0.4);padding:8px 10px;margin-bottom:8px;}'
             + '.dev-kv-row{display:flex;align-items:center;justify-content:space-between;gap:8px;}'
             + '.dev-kv-row .k{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#3a4a5c;}'
-            + '.dev-kv-row .v{color:rgba(58,74,92,0.55);flex:none;}'
+            + '.dev-kv-row .v{color:rgba(58,74,92,0.55);flex:none;max-width:54%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}'
             + '.dev-kv-del{border:none;background:none;cursor:pointer;color:#c0392b;font-size:14px;padding:0 2px;flex:none;line-height:1;}'
             + '.dev-links{display:flex;flex-wrap:wrap;gap:6px;}'
             + '.dev-links a{font-size:12px;padding:6px 10px;border-radius:999px;color:#4a5a6e;'
@@ -159,6 +159,21 @@
             + '.dev-danger{box-sizing:border-box;width:100%;padding:10px 0;border-radius:12px;font-size:13px;font-weight:600;'
             + 'cursor:pointer;border:1px solid rgba(192,57,43,0.4);background:rgba(192,57,43,0.08);color:#c0392b;margin-top:8px;}'
             + '.dev-danger:hover{background:rgba(192,57,43,0.14);}'
+            + '.dev-score{display:flex;align-items:center;justify-content:space-between;gap:10px;'
+            + 'padding:12px 14px;border-radius:14px;margin-bottom:10px;background:rgba(216,223,230,0.45);}'
+            + '.dev-score .s-lv{display:flex;flex-direction:column;gap:2px;}'
+            + '.dev-score .s-name{font-size:15px;font-weight:700;color:#1d1d1f;}'
+            + '.dev-score .s-hint{font-size:11px;color:rgba(58,74,92,0.65);}'
+            + '.dev-score .s-num{font-size:24px;font-weight:700;font-variant-numeric:tabular-nums;color:#1d1d1f;flex:none;white-space:nowrap;line-height:1.15;}'
+            + '.dev-score .s-num small{font-size:11px;font-weight:400;color:rgba(58,74,92,0.55);}'
+            + '.dev-score .s-badge{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600;}'
+            + '.dev-score.g-good .s-badge{background:rgba(63,124,106,0.16);color:#2f6b58;}'
+            + '.dev-score.g-mid .s-badge{background:rgba(176,138,72,0.18);color:#8a6a2f;}'
+            + '.dev-score.g-bad .s-badge{background:rgba(192,57,43,0.14);color:#b03a2c;}'
+            + '.dev-score .s-bar{height:4px;border-radius:999px;background:rgba(150,175,200,0.3);overflow:hidden;}'
+            + '.dev-score .s-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#3f7c6a,#8fc3af);}'
+            + '.dev-score.g-mid .s-bar i{background:linear-gradient(90deg,#b08a48,#dcc08a);}'
+            + '.dev-score.g-bad .s-bar i{background:linear-gradient(90deg,#b03a2c,#e09b90);}'
             + '.dev-foot-link{display:block;margin:10px auto 0;font-size:11px;letter-spacing:0.1em;'
             + 'color:rgba(58,74,92,0.45);background:none;border:none;cursor:pointer;transition:color .3s;}'
             + '.dev-foot-link:hover{color:#4a5a6e;}'
@@ -192,6 +207,13 @@
             + '.dev-kv-row .v{color:rgba(232,237,242,0.55);}'
             + '.dev-links a{color:#b9cfe2;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.18);}'
             + '.dev-danger{background:rgba(192,57,43,0.18);border-color:rgba(220,110,100,0.4);color:#f0a99e;}'
+            + '.dev-score{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.1);}'
+            + '.dev-score .s-name,.dev-score .s-num{color:#e8edf2;}'
+            + '.dev-score .s-hint,.dev-score .s-num small{color:rgba(232,237,242,0.72);}'
+            + '.dev-score.g-good .s-badge{background:rgba(123,168,154,0.24);color:#a5d8c8;}'
+            + '.dev-score.g-mid .s-badge{background:rgba(210,170,100,0.2);color:#e5c48a;}'
+            + '.dev-score.g-bad .s-badge{background:rgba(220,110,100,0.22);color:#f0a99e;}'
+            + '.dev-score .s-bar{background:rgba(255,255,255,0.18);}'
             + '.dev-foot-link{color:rgba(232,237,242,0.5);}'
             + '.dev-foot-link:hover{color:#e8edf2;}'
             + '}';
@@ -257,7 +279,8 @@
         panel.innerHTML = '<div class="dev-head"><span>开发者面板</span>'
             + '<button type="button" class="dev-exit" id="devPanelClose" title="关闭面板" aria-label="关闭面板"><i class="fa fa-times"></i></button></div>'
             + '<p class="dev-idline">测试账号 · LMSF9999 <span class="dev-tag" id="devCurLv">普卡</span></p>'
-            + sec('member', '会员等级与里程', true)
+            + sec('perf', '设备与性能', true)
+            + sec('member', '会员等级与里程', false)
             + sec('order', '测试订单', true)
             + sec('cart', '购物车与优惠券', false)
             + sec('account', '测试会员账号', false)
@@ -266,6 +289,7 @@
             + sec('danger', '危险操作', false);
         document.body.appendChild(panel);
 
+        buildPerfBody();
         buildMemberBody();
         buildOrderBody();
         buildCartBody();
@@ -379,6 +403,208 @@
         document.getElementById('devWipe').addEventListener('click', wipeData);
     }
 
+    /* --------- 设备与性能 --------- */
+    var PERF_LAST = null;
+
+    function gpuName() {
+        try {
+            var c = document.createElement('canvas');
+            var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+            if (!gl) return 'WebGL 不可用';
+            var ext = gl.getExtension('WEBGL_debug_renderer_info');
+            var r = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+            return r ? String(r).replace(/\s+/g, ' ').replace(/^ANGLE \(/, '').replace(/\)$/, '') : '未知';
+        } catch (e) { return '未知'; }
+    }
+    function parseUA() {
+        var ua = navigator.userAgent || '';
+        var os = '未知系统';
+        if (/Windows NT 10/.test(ua)) os = 'Windows 10/11';
+        else if (/Windows NT 6\.1/.test(ua)) os = 'Windows 7';
+        else if (/Android/.test(ua)) os = 'Android';
+        else if (/iPhone|iPad/.test(ua)) os = 'iOS/iPadOS';
+        else if (/Mac OS X/.test(ua)) os = 'macOS';
+        else if (/Linux/.test(ua)) os = 'Linux';
+        var br = '未知浏览器', m = null;
+        if ((m = /Edg\/(\d+)/.exec(ua))) br = 'Edge ' + m[1];
+        else if ((m = /Chrome\/(\d+)/.exec(ua))) br = 'Chrome ' + m[1];
+        else if ((m = /Firefox\/(\d+)/.exec(ua))) br = 'Firefox ' + m[1];
+        else if (/Safari/.test(ua) && (m = /Version\/(\d+[\d.]*)/.exec(ua))) br = 'Safari ' + m[1];
+        return { os: os, browser: br };
+    }
+    function netInfo() {
+        var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+        if (!c) return '未提供';
+        var parts = [];
+        if (c.effectiveType) parts.push(String(c.effectiveType).toUpperCase());
+        if (typeof c.downlink === 'number') parts.push(c.downlink.toFixed(1) + ' Mbps');
+        if (typeof c.rtt === 'number') parts.push('RTT ' + c.rtt + ' ms');
+        return parts.length ? parts.join(' · ') : '未提供';
+    }
+    function heapInfo() {
+        var m = performance.memory;
+        if (!m || !m.usedJSHeapSize) return '未提供';
+        return (m.usedJSHeapSize / 1048576).toFixed(1) + ' / ' + (m.jsHeapSizeLimit / 1048576).toFixed(0) + ' MB';
+    }
+    function loadMs() {
+        try {
+            var n = performance.getEntriesByType('navigation')[0];
+            if (n && n.loadEventEnd) return Math.round(n.loadEventEnd - n.startTime);
+            if (performance.timing && performance.timing.loadEventEnd) return performance.timing.loadEventEnd - performance.timing.navigationStart;
+        } catch (e) {}
+        return 0;
+    }
+    function measureFps(cb) {
+        if (document.hidden) { cb(null); return; }
+        var frames = 0, t0 = 0;
+        function step(ts) {
+            if (!t0) t0 = ts;
+            frames++;
+            if (ts - t0 < 1000) requestAnimationFrame(step);
+            else cb(Math.round(frames * 1000 / (ts - t0)));
+        }
+        requestAnimationFrame(step);
+    }
+    // 硬件偏低：核心少、内存小，或显卡为软件渲染
+    function hwIsLow(cfg) {
+        if (cfg.cores && cfg.cores <= 2) return true;
+        if (cfg.ram && cfg.ram <= 4) return true;
+        if (/swiftshader|software|llvmpipe|basic render/i.test(cfg.gpu || '')) return true;
+        return false;
+    }
+    function scoreOf(cfg) {
+        var score = 0;
+        var c = cfg.cores || 0;
+        score += c >= 8 ? 28 : (c >= 4 ? 20 : (c >= 2 ? 12 : 5));
+        var r = cfg.ram || 0;
+        score += r >= 8 ? 18 : (r >= 4 ? 12 : (r ? 6 : 9));
+        if (cfg.fps == null) score += 18;
+        else score += cfg.fps >= 55 ? 30 : (cfg.fps >= 40 ? 22 : (cfg.fps >= 25 ? 12 : 4));
+        var l = cfg.loadMs || 0;
+        score += l <= 1200 ? 15 : (l <= 2500 ? 11 : (l <= 5000 ? 6 : 2));
+        var n = cfg.net || '';
+        if (/4G/.test(n)) score += 9;
+        else if (/3G/.test(n)) score += 5;
+        else if (/2G|SLOW/.test(n)) score += 1;
+        else score += 7;
+        score = Math.min(100, score);
+        if (hwIsLow(cfg)) score = Math.min(score, 72);
+        return score;
+    }
+    function buildPerfBody() {
+        document.getElementById('devBody_perf').innerHTML =
+            '<div class="dev-score" id="devPerfScore">'
+            + '<div class="s-lv"><span class="s-name">待检测</span><span class="s-hint">打开面板即自动评估</span></div>'
+            + '<span class="s-num">—<small> /100</small></span></div>'
+            + '<div class="dev-kv" id="devPerfKv"><span style="opacity:.6">正在读取设备信息…</span></div>'
+            + '<div class="dev-acts"><button type="button" class="dev-mini" id="devPerfRun">重新检测</button>'
+            + '<button type="button" class="dev-mini" id="devPerfCopy">复制报告</button></div>'
+            + '<p style="font-size:11px;margin-top:8px;opacity:.65;">帧率为 1 秒实时采样；配置信息取自浏览器公开接口，无需授权。</p>';
+        document.getElementById('devPerfRun').addEventListener('click', runPerfCheck);
+        document.getElementById('devPerfCopy').addEventListener('click', copyPerfReport);
+    }
+    function gpuShort(g) {
+        var src = String(g || '未知');
+        if (src.length <= 30) return src;
+        var cut = src.slice(0, 30);
+        var sp = cut.lastIndexOf(' ');
+        return (sp > 12 ? cut.slice(0, sp) : cut) + '…';
+    }
+    function kvRow(k, v) {
+        return '<div class="dev-kv-row"><span class="k">' + k + '</span><span class="v">' + v + '</span></div>';
+    }
+    function renderPerf(cfg) {
+        var scoreBox = document.getElementById('devPerfScore');
+        var kv = document.getElementById('devPerfKv');
+        if (!scoreBox || !kv) return;
+        var score = scoreOf(cfg);
+        var low = hwIsLow(cfg);
+        var grade = score >= 75 ? 'good' : (score >= 50 ? 'mid' : 'bad');
+        var name = grade === 'good' ? '运行流畅' : (grade === 'mid' ? '基本流畅' : '性能偏弱');
+        var hint;
+        if (grade === 'bad') hint = '本页动效与滚动可能掉帧，建议关闭动效或换设备';
+        else if (low) hint = '当前页面运行尚可，但设备配置偏低，多任务或大型页面会吃力';
+        else if (grade === 'mid') hint = '日常浏览流畅，密集动效或低电量时可能轻微掉帧';
+        else hint = '配置充足，本页动效、滚动与动画可稳定运行';
+        scoreBox.className = 'dev-score g-' + grade;
+        scoreBox.innerHTML =
+            '<div class="s-lv"><span class="s-name">' + name + '</span>'
+            + '<span class="s-hint">' + hint + '</span>'
+            + '<div class="s-bar" style="margin-top:6px;width:100%;"><i style="width:' + score + '%;"></i></div></div>'
+            + '<span class="s-num">' + score + '<small> /100</small></span>';
+        var fpsText = cfg.fps == null ? '页面在后台，未采样' : (cfg.fps + ' fps' + (cfg.fps >= 55 ? '（约 60Hz）' : ''));
+        kv.innerHTML =
+            kvRow('处理器逻辑核心', cfg.cores ? cfg.cores + ' 核' : '未提供') +
+            kvRow('设备内存', cfg.ram ? cfg.ram + ' GB' : '未提供') +
+            kvRow('显卡 / GPU', gpuShort(cfg.gpu)) +
+            kvRow('系统', cfg.os) +
+            kvRow('浏览器', cfg.browser) +
+            kvRow('屏幕', cfg.screen) +
+            kvRow('网络', cfg.net) +
+            kvRow('实时帧率', fpsText) +
+            kvRow('JS 堆占用', cfg.heap) +
+            kvRow('DOM 节点', cfg.dom + ' 个') +
+            kvRow('页面加载耗时', cfg.loadMs ? (cfg.loadMs + ' ms') : '未提供');
+        PERF_LAST = cfg;
+    }
+    function runPerfCheck() {
+        var kv = document.getElementById('devPerfKv');
+        if (kv) kv.innerHTML = '<div class="dev-kv-row"><span class="k">正在采样帧率…</span><span class="v">1 秒</span></div>';
+        var ua = parseUA();
+        var cfg = {
+            cores: navigator.hardwareConcurrency || 0,
+            ram: navigator.deviceMemory || 0,
+            gpu: gpuName(),
+            os: ua.os,
+            browser: ua.browser,
+            screen: screen.width + '×' + screen.height + ' @' + (window.devicePixelRatio || 1).toFixed(1) + 'x',
+            net: netInfo(),
+            heap: heapInfo(),
+            dom: document.querySelectorAll('*').length,
+            loadMs: loadMs(),
+            fps: null
+        };
+        measureFps(function (fps) {
+            cfg.fps = fps;
+            renderPerf(cfg);
+        });
+    }
+    function copyPerfReport() {
+        if (!PERF_LAST) { toast('暂无检测结果，请先检测', 'error'); return; }
+        var c = PERF_LAST;
+        var txt = '老牧师航空 · 设备与性能报告\n'
+            + '流畅度评分：' + scoreOf(c) + '/100\n'
+            + '处理器核心：' + (c.cores || '未提供') + ' 核\n'
+            + '设备内存：' + (c.ram || '未提供') + ' GB\n'
+            + '显卡：' + c.gpu + '\n'
+            + '系统 / 浏览器：' + c.os + ' / ' + c.browser + '\n'
+            + '屏幕：' + c.screen + '\n'
+            + '网络：' + c.net + '\n'
+            + '实时帧率：' + (c.fps == null ? '未采样' : c.fps + ' fps') + '\n'
+            + 'JS 堆：' + c.heap + '\n'
+            + 'DOM 节点：' + c.dom + '\n'
+            + '加载耗时：' + (c.loadMs || '未提供') + ' ms\n'
+            + '采样时间：' + new Date().toLocaleString();
+        function fallback() {
+            try {
+                var t = document.createElement('textarea');
+                t.value = txt; t.style.position = 'fixed'; t.style.opacity = '0';
+                document.body.appendChild(t); t.select();
+                document.execCommand('copy');
+                t.remove();
+                toast('报告已复制到剪贴板', 'success');
+            } catch (e) { toast('复制失败，请手动记录', 'error'); }
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(txt).then(function () { toast('报告已复制到剪贴板', 'success'); }, fallback);
+        } else fallback();
+    }
+    function autoPerf() {
+        var s = document.querySelector('.dev-sec[data-sec="perf"]');
+        if (!s || !s.classList.contains('open')) return;
+        if (PERF_LAST) renderPerf(PERF_LAST); else runPerfCheck();
+    }
+
     /* ---------------- 事件绑定 ---------------- */
     function bindPwd() {
         var pwdMask = document.getElementById('devPwdMask');
@@ -427,6 +653,7 @@
                 if (s.classList.contains('open')) {
                     if (s.getAttribute('data-sec') === 'storage') renderStorage();
                     if (s.getAttribute('data-sec') === 'account') renderAccList();
+                    if (s.getAttribute('data-sec') === 'perf') autoPerf();
                 }
             });
         });
@@ -445,6 +672,7 @@
     function openPanel() {
         injectStyle(); ensureMasks();
         refreshPanel();
+        autoPerf();
         document.getElementById('devPanel').classList.add('dev-open');
         var fab = document.getElementById('devFab');
         if (fab) fab.style.opacity = '0.55';
