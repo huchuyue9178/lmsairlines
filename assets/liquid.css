@@ -1,179 +1,169 @@
 /* ============================================================
    老牧师航空 · 液态玻璃层（liquid glass）
-   叠加在 refresh.css 之后：把玻璃面重新打开，并做成
-   强高斯模糊 + 彩色环境光 + 曲面高光 + 内边缘折射的质感。
+   叠加在 refresh.css 之后：把玻璃面重新打开，做成
+   强高斯模糊 + 中性天光 + 曲面高光 + 内边缘折射的质感。
+   配色基调：中性灰白（浅）/ 近黑石墨（深），不使用彩色光晕。
    纯视觉层，不改结构与脚本。
    ============================================================ */
 
 :root{
     --lq-blur:28px;
-    --lq-sat:185%;
-    --lq-edge:rgba(255,255,255,0.66);
-    --lq-shadow:0 28px 56px -30px rgba(18,28,42,0.38), 0 2px 10px -6px rgba(18,28,42,0.12);
-    --lq-shadow-hover:0 38px 68px -32px rgba(18,28,42,0.46), 0 6px 16px -8px rgba(18,28,42,0.16);
+    --lq-sat:108%;
+    --lq-edge:rgba(15,23,32,0.055);
+    --lq-shadow:0 1px 2px rgba(15,23,32,0.04), 0 18px 40px -28px rgba(15,23,32,0.26);
+    --lq-shadow-hover:0 1px 2px rgba(15,23,32,0.05), 0 26px 52px -30px rgba(15,23,32,0.32);
     --lq-r:20px;
 }
 
-/* ---------- 背景：静置的彩色环境光，给玻璃提供折射内容 ---------- */
+/* ---------- 背景：中性天光，只靠明度层次，不带彩色 ---------- */
 body{
-    background-color:#eaeef5 !important;
+    background-color:#eff0f3 !important;
     background-image:
-        radial-gradient(820px 620px at 2% -12%, rgba(96,144,255,0.55), transparent 60%),
-        radial-gradient(760px 560px at 102% -4%, rgba(255,146,204,0.45), transparent 58%),
-        radial-gradient(620px 460px at 78% 34%, rgba(178,158,255,0.30), transparent 58%),
-        radial-gradient(1040px 720px at 46% 114%, rgba(92,220,206,0.40), transparent 60%),
-        linear-gradient(180deg, #f7fafd 0%, #eef2f8 46%, #e4ebf4 100%) !important;
+        radial-gradient(1280px 820px at 50% -32%, rgba(255,255,255,0.34), rgba(255,255,255,0) 72%),
+        radial-gradient(1100px 700px at 50% 126%, rgba(184,189,197,0.55), transparent 74%),
+        linear-gradient(180deg, #f8f9fa 0%, #eff0f3 48%, #e7e8ec 100%) !important;
     background-attachment:fixed !important;
+    background-size:cover !important;
 }
 
 /* ---------- 玻璃面：卡片 / 面板 ---------- */
 .bg-card, .card-gold, .shop-card, .glass, .svc-item, .deal-card{
-    background:
-        linear-gradient(155deg, rgba(255,255,255,0.40), rgba(255,255,255,0.12)),
-        radial-gradient(120% 72% at 18% -10%, rgba(255,255,255,0.48), rgba(255,255,255,0) 60%) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.94), rgba(255,255,255,0.72)) !important;
     -webkit-backdrop-filter:blur(var(--lq-blur)) saturate(var(--lq-sat)) !important;
     backdrop-filter:blur(var(--lq-blur)) saturate(var(--lq-sat)) !important;
-    border:1px solid var(--lq-edge) !important;
+    border:1px solid rgba(15,23,32,0.07) !important;
     border-radius:var(--lq-r) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.96),
-        inset 0 0 0 1px rgba(255,255,255,0.26),
-        inset 0 -14px 26px -22px rgba(255,255,255,0.55),
-        var(--lq-shadow) !important;
+        inset 0 1px 0 rgba(255,255,255,1),
+        0 1px 2px rgba(15,23,32,0.05),
+        0 18px 40px -26px rgba(15,23,32,0.30) !important;
     transition:transform .34s cubic-bezier(.22,1,.36,1), box-shadow .34s ease, border-color .34s ease !important;
 }
 .bg-card:hover, .card-gold:hover, .shop-card:hover, .svc-item:hover, .deal-card:hover{
     transform:translateY(-3px) !important;
-    border-color:rgba(255,255,255,0.82) !important;
+    border-color:rgba(15,23,32,0.10) !important;
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,1),
-        inset 0 0 0 1px rgba(255,255,255,0.34),
-        inset 0 -14px 26px -22px rgba(255,255,255,0.62),
-        var(--lq-shadow-hover) !important;
+        0 2px 6px rgba(15,23,32,0.06),
+        0 26px 54px -26px rgba(15,23,32,0.36) !important;
 }
 
 /* ---------- 导航：悬浮玻璃条 ---------- */
 #mainNav.nav-glass{
-    background:linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.32)) !important;
-    -webkit-backdrop-filter:blur(24px) saturate(195%) !important;
-    backdrop-filter:blur(24px) saturate(195%) !important;
-    border-bottom:1px solid rgba(255,255,255,0.60) !important;
+    background:linear-gradient(180deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78)) !important;
+    -webkit-backdrop-filter:blur(22px) saturate(115%) !important;
+    backdrop-filter:blur(22px) saturate(115%) !important;
+    border-bottom:1px solid rgba(15,23,32,0.055) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.92),
-        0 1px 0 rgba(16,24,32,0.05),
-        0 18px 44px -30px rgba(18,28,42,0.42) !important;
+        inset 0 1px 0 rgba(255,255,255,0.96),
+        0 12px 32px -26px rgba(15,23,32,0.34) !important;
 }
 
 /* ---------- 下拉菜单：更实一点的玻璃 ---------- */
 #moreMenu, #memberMenu{
-    background:rgba(255,255,255,0.88) !important;
-    -webkit-backdrop-filter:blur(30px) saturate(190%) !important;
-    backdrop-filter:blur(30px) saturate(190%) !important;
-    border:1px solid rgba(255,255,255,0.72) !important;
+    background:rgba(255,255,255,0.97) !important;
+    -webkit-backdrop-filter:blur(26px) saturate(115%) !important;
+    backdrop-filter:blur(26px) saturate(115%) !important;
+    border:1px solid rgba(15,23,32,0.06) !important;
     border-radius:16px !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.95),
-        0 24px 48px -20px rgba(18,28,42,0.32) !important;
+        inset 0 1px 0 rgba(255,255,255,0.98),
+        0 1px 2px rgba(15,23,32,0.05),
+        0 24px 48px -22px rgba(15,23,32,0.28) !important;
 }
 
 /* ---------- 按钮：主按钮深墨玻璃；次按钮清透玻璃 ---------- */
 .hero-btn-primary, .btn-solid-sm{
-    background:linear-gradient(180deg, #2d353f, #1d232a) !important;
-    border:1px solid rgba(255,255,255,0.12) !important;
+    background:linear-gradient(180deg, #2b323a, #1b2026) !important;
+    border:1px solid rgba(255,255,255,0.10) !important;
     border-radius:12px !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.20),
+        inset 0 -1px 0 rgba(0,0,0,0.36),
+        0 12px 26px -16px rgba(15,23,32,0.52) !important;
+}
+.hero-btn-primary:hover, .btn-solid-sm:hover{
+    background:linear-gradient(180deg, #3a434e, #242b33) !important;
+    transform:translateY(-1px) !important;
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.26),
         inset 0 -1px 0 rgba(0,0,0,0.36),
-        0 16px 30px -14px rgba(18,28,42,0.58) !important;
-}
-.hero-btn-primary:hover, .btn-solid-sm:hover{
-    background:linear-gradient(180deg, #3b4552, #262e37) !important;
-    transform:translateY(-1px) !important;
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.32),
-        inset 0 -1px 0 rgba(0,0,0,0.36),
-        0 22px 38px -16px rgba(18,28,42,0.60) !important;
+        0 18px 34px -18px rgba(15,23,32,0.56) !important;
 }
 .hero-btn-ghost, .deal-more{
-    background:
-        linear-gradient(155deg, rgba(255,255,255,0.60), rgba(255,255,255,0.28)),
-        radial-gradient(120% 80% at 20% -20%, rgba(255,255,255,0.5), rgba(255,255,255,0) 62%) !important;
-    -webkit-backdrop-filter:blur(18px) saturate(180%) !important;
-    backdrop-filter:blur(18px) saturate(180%) !important;
-    border:1px solid rgba(255,255,255,0.68) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.96), rgba(255,255,255,0.74)) !important;
+    -webkit-backdrop-filter:blur(16px) saturate(110%) !important;
+    backdrop-filter:blur(16px) saturate(110%) !important;
+    border:1px solid rgba(15,23,32,0.07) !important;
     border-radius:12px !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.94),
-        0 12px 24px -18px rgba(18,28,42,0.34) !important;
+        inset 0 1px 0 rgba(255,255,255,0.98),
+        0 1px 2px rgba(15,23,32,0.04),
+        0 10px 22px -18px rgba(15,23,32,0.24) !important;
 }
 .hero-btn-ghost:hover, .deal-more:hover{
-    background:linear-gradient(155deg, rgba(255,255,255,0.80), rgba(255,255,255,0.42)) !important;
-    border-color:rgba(255,255,255,0.88) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.94), rgba(255,255,255,0.66)) !important;
+    border-color:rgba(15,23,32,0.12) !important;
     transform:translateY(-1px) !important;
 }
 
 /* ---------- 输入控件：薄玻璃 ---------- */
 input, select, textarea{
-    background:rgba(255,255,255,0.46) !important;
-    -webkit-backdrop-filter:blur(14px) saturate(165%) !important;
-    backdrop-filter:blur(14px) saturate(165%) !important;
-    border:1px solid rgba(16,24,32,0.08) !important;
+    background:rgba(255,255,255,0.84) !important;
+    -webkit-backdrop-filter:blur(14px) saturate(105%) !important;
+    backdrop-filter:blur(14px) saturate(105%) !important;
+    border:1px solid rgba(15,23,32,0.075) !important;
     border-radius:12px !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.92),
-        0 0 0 1px rgba(255,255,255,0.45),
-        0 1px 2px rgba(16,24,32,0.05) !important;
+        inset 0 1px 0 rgba(255,255,255,0.95),
+        0 1px 2px rgba(15,23,32,0.04) !important;
 }
 input:focus, select:focus, textarea:focus{
-    background:rgba(255,255,255,0.82) !important;
-    border-color:rgba(32,38,46,0.32) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), 0 0 0 3px rgba(60,110,200,0.15) !important;
+    background:rgba(255,255,255,0.94) !important;
+    border-color:rgba(15,23,32,0.26) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.98), 0 0 0 3px rgba(15,23,32,0.08) !important;
 }
 
 /* ---------- 分段胶囊：玻璃底槽 ---------- */
 .airpods-tabs{
-    background:linear-gradient(160deg, rgba(255,255,255,0.50), rgba(255,255,255,0.20)) !important;
-    -webkit-backdrop-filter:blur(20px) saturate(175%) !important;
-    backdrop-filter:blur(20px) saturate(175%) !important;
-    border:1px solid rgba(255,255,255,0.64) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.92) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.90), rgba(255,255,255,0.62)) !important;
+    -webkit-backdrop-filter:blur(18px) saturate(110%) !important;
+    backdrop-filter:blur(18px) saturate(110%) !important;
+    border:1px solid rgba(15,23,32,0.06) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.98) !important;
 }
 
 /* ---------- 弹窗（浅色）：厚玻璃 ---------- */
 html:not([data-theme="dark"]) #setupDialog,
 html:not([data-theme="dark"]) #activityNotice{
-    background:
-        linear-gradient(160deg, rgba(255,255,255,0.78), rgba(255,255,255,0.46)),
-        radial-gradient(120% 70% at 20% -10%, rgba(255,255,255,0.6), rgba(255,255,255,0) 60%) !important;
-    -webkit-backdrop-filter:blur(34px) saturate(200%) !important;
-    backdrop-filter:blur(34px) saturate(200%) !important;
-    border:1px solid rgba(255,255,255,0.78) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.97), rgba(255,255,255,0.86)) !important;
+    -webkit-backdrop-filter:blur(30px) saturate(110%) !important;
+    backdrop-filter:blur(30px) saturate(110%) !important;
+    border:1px solid rgba(15,23,32,0.07) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.98),
-        inset 0 0 0 1px rgba(255,255,255,0.30),
-        0 34px 68px -30px rgba(18,28,42,0.42) !important;
+        inset 0 1px 0 rgba(255,255,255,1),
+        0 1px 2px rgba(15,23,32,0.05),
+        0 34px 68px -30px rgba(15,23,32,0.34) !important;
 }
 
 /* ---------- 页脚：玻璃底板 ---------- */
 #siteFooter > footer{
-    background:linear-gradient(160deg, rgba(255,255,255,0.48), rgba(255,255,255,0.18)) !important;
-    -webkit-backdrop-filter:blur(22px) saturate(170%) !important;
-    backdrop-filter:blur(22px) saturate(170%) !important;
-    border-top:1px solid rgba(255,255,255,0.58) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.92) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.82), rgba(255,255,255,0.58)) !important;
+    -webkit-backdrop-filter:blur(20px) saturate(105%) !important;
+    backdrop-filter:blur(20px) saturate(105%) !important;
+    border-top:1px solid rgba(15,23,32,0.055) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.96) !important;
 }
 
 /* ============================================================
-   深色：黑玻璃 + 更明显的彩色环境光
+   深色：石墨黑玻璃，只有明度层次，无彩色光
    ============================================================ */
 html[data-theme="dark"] body{
-    background-color:#070a0f !important;
+    background-color:#0a0b0d !important;
     background-image:
-        radial-gradient(680px 520px at 40px -120px, rgba(74,124,238,0.60), transparent 64%),
-        radial-gradient(620px 480px at calc(100% - 40px) -100px, rgba(168,72,196,0.52), transparent 62%),
-        radial-gradient(520px 400px at 82% 22%, rgba(76,88,176,0.28), transparent 62%),
-        radial-gradient(900px 640px at 44% 106%, rgba(28,150,160,0.32), transparent 62%),
-        linear-gradient(180deg, #070a0f 0%, #0a0f15 48%, #06090d 100%) !important;
+        radial-gradient(1400px 900px at 50% -34%, rgba(255,255,255,0.055), transparent 70%),
+        radial-gradient(1100px 720px at 50% 124%, rgba(0,0,0,0.55), transparent 74%),
+        linear-gradient(180deg, #0d0e11 0%, #0a0b0d 52%, #070809 100%) !important;
     background-attachment:fixed !important;
     background-size:cover !important;
 }
@@ -184,39 +174,39 @@ html[data-theme="dark"] .glass,
 html[data-theme="dark"] .svc-item,
 html[data-theme="dark"] .deal-card{
     background:
-        linear-gradient(155deg, rgba(255,255,255,0.085), rgba(255,255,255,0.018)),
-        radial-gradient(120% 72% at 18% -12%, rgba(255,255,255,0.12), rgba(255,255,255,0) 62%) !important;
-    border:1px solid rgba(255,255,255,0.14) !important;
+        linear-gradient(155deg, rgba(255,255,255,0.072), rgba(255,255,255,0.018)),
+        radial-gradient(120% 72% at 18% -12%, rgba(255,255,255,0.08), rgba(255,255,255,0) 62%) !important;
+    border:1px solid rgba(255,255,255,0.11) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.18),
-        inset 0 0 0 1px rgba(255,255,255,0.05),
-        0 28px 56px -32px rgba(0,0,0,0.92) !important;
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        0 1px 2px rgba(0,0,0,0.5),
+        0 26px 52px -32px rgba(0,0,0,0.92) !important;
+    transition:transform .34s cubic-bezier(.22,1,.36,1), box-shadow .34s ease, border-color .34s ease !important;
 }
 html[data-theme="dark"] .bg-card:hover,
 html[data-theme="dark"] .card-gold:hover,
 html[data-theme="dark"] .shop-card:hover,
 html[data-theme="dark"] .svc-item:hover,
 html[data-theme="dark"] .deal-card:hover{
-    border-color:rgba(255,255,255,0.22) !important;
+    border-color:rgba(255,255,255,0.20) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.26),
-        inset 0 0 0 1px rgba(255,255,255,0.08),
-        0 38px 68px -32px rgba(0,0,0,0.96) !important;
+        inset 0 1px 0 rgba(255,255,255,0.20),
+        0 2px 4px rgba(0,0,0,0.5),
+        0 36px 64px -32px rgba(0,0,0,0.96) !important;
 }
 html[data-theme="dark"] #mainNav.nav-glass{
-    background:linear-gradient(180deg, rgba(20,26,35,0.72), rgba(18,24,32,0.46)) !important;
-    border-bottom:1px solid rgba(255,255,255,0.11) !important;
+    background:linear-gradient(180deg, rgba(18,20,24,0.80), rgba(16,18,21,0.52)) !important;
+    border-bottom:1px solid rgba(255,255,255,0.09) !important;
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.10),
-        0 1px 0 rgba(255,255,255,0.04),
-        0 18px 44px -28px rgba(0,0,0,0.9) !important;
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 12px 32px -26px rgba(0,0,0,0.9) !important;
 }
 html[data-theme="dark"] #moreMenu,
 html[data-theme="dark"] #memberMenu{
     color:rgba(240,244,248,0.96) !important;
-    background:rgba(16,21,28,0.96) !important;
-    border:1px solid rgba(255,255,255,0.13) !important;
-    box-shadow:0 24px 48px -20px rgba(0,0,0,0.86), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    background:rgba(15,17,20,0.96) !important;
+    border:1px solid rgba(255,255,255,0.12) !important;
+    box-shadow:0 1px 2px rgba(0,0,0,0.6), 0 24px 48px -20px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 html[data-theme="dark"] #moreMenu a,
 html[data-theme="dark"] #moreMenu button,
@@ -228,39 +218,37 @@ html[data-theme="dark"] #moreMenu a:hover,
 html[data-theme="dark"] #moreMenu button:hover,
 html[data-theme="dark"] #memberMenu a:hover,
 html[data-theme="dark"] #memberMenu button:hover{
-    background:rgba(255,255,255,0.08) !important;
+    background:rgba(255,255,255,0.07) !important;
     color:#ffffff !important;
 }
 html[data-theme="dark"] input,
 html[data-theme="dark"] select,
 html[data-theme="dark"] textarea{
-    background:rgba(255,255,255,0.075) !important;
-    border:1px solid rgba(255,255,255,0.15) !important;
+    background:rgba(255,255,255,0.05) !important;
+    border:1px solid rgba(255,255,255,0.12) !important;
     color:#e8edf2 !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.13) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 html[data-theme="dark"] input:focus,
 html[data-theme="dark"] select:focus,
 html[data-theme="dark"] textarea:focus{
-    background:rgba(255,255,255,0.11) !important;
-    border-color:rgba(255,255,255,0.28) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.16), 0 0 0 3px rgba(110,160,255,0.18) !important;
+    background:rgba(255,255,255,0.09) !important;
+    border-color:rgba(255,255,255,0.26) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.14), 0 0 0 3px rgba(255,255,255,0.10) !important;
 }
 html[data-theme="dark"] .hero-btn-primary,
 html[data-theme="dark"] .btn-solid-sm{
     background:linear-gradient(180deg, #f2f5f8, #d9dfe6) !important;
     color:#12181f !important;
-    border:1px solid rgba(255,255,255,0.55) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), 0 16px 32px -16px rgba(0,0,0,0.75) !important;
+    border:1px solid rgba(255,255,255,0.50) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.95), 0 14px 30px -16px rgba(0,0,0,0.8) !important;
 }
 html[data-theme="dark"] .hero-btn-ghost,
 html[data-theme="dark"] .deal-more{
-    background:
-        linear-gradient(155deg, rgba(255,255,255,0.11), rgba(255,255,255,0.035)),
-        radial-gradient(120% 80% at 20% -20%, rgba(255,255,255,0.12), rgba(255,255,255,0) 62%) !important;
-    border:1px solid rgba(255,255,255,0.17) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03)) !important;
+    border:1px solid rgba(255,255,255,0.14) !important;
     color:#e8edf2 !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.16) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.12) !important;
 }
 html[data-theme="dark"] .airpods-tabs .deal-tab{color:rgba(232,237,242,0.72) !important;}
 html[data-theme="dark"] .airpods-tabs .deal-tab-on{
@@ -269,14 +257,14 @@ html[data-theme="dark"] .airpods-tabs .deal-tab-on{
     box-shadow:inset 0 1px 0 rgba(255,255,255,0.9), 0 8px 18px -12px rgba(0,0,0,0.8) !important;
 }
 html[data-theme="dark"] .airpods-tabs{
-    background:linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03)) !important;
-    border:1px solid rgba(255,255,255,0.13) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.13) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)) !important;
+    border:1px solid rgba(255,255,255,0.10) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.10) !important;
 }
 html[data-theme="dark"] #siteFooter > footer{
-    background:linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)) !important;
-    border-top:1px solid rgba(255,255,255,0.10) !important;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.09) !important;
+    background:linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)) !important;
+    border-top:1px solid rgba(255,255,255,0.08) !important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.07) !important;
 }
 
 /* ---------- 移动端：降低模糊半径，保性能与可读 ---------- */
@@ -284,21 +272,19 @@ html[data-theme="dark"] #siteFooter > footer{
     :root{--lq-blur:18px;--lq-r:16px;}
     body{
         background-image:
-            radial-gradient(560px 420px at 0% -8%, rgba(96,144,255,0.40), transparent 62%),
-            radial-gradient(520px 380px at 104% -4%, rgba(255,146,204,0.32), transparent 60%),
-            radial-gradient(760px 540px at 46% 112%, rgba(92,220,206,0.30), transparent 62%),
-            linear-gradient(180deg, #f8fafd 0%, #eff3f9 46%, #e7edf5 100%) !important;
+            radial-gradient(700px 460px at 50% -24%, rgba(255,255,255,0.36), transparent 72%),
+            radial-gradient(620px 420px at 50% 118%, rgba(188,193,201,0.40), transparent 74%),
+            linear-gradient(180deg, #f8f9fa 0%, #eff0f3 48%, #e7e8ec 100%) !important;
     }
     html[data-theme="dark"] body{
         background-image:
-            radial-gradient(560px 440px at 0% -10%, rgba(56,102,210,0.50), transparent 62%),
-            radial-gradient(520px 400px at 104% -6%, rgba(140,56,164,0.42), transparent 60%),
-            radial-gradient(780px 560px at 46% 114%, rgba(24,124,134,0.36), transparent 62%),
-            linear-gradient(180deg, #070a0f 0%, #0a0f15 48%, #06090d 100%) !important;
+            radial-gradient(700px 480px at 50% -20%, rgba(255,255,255,0.05), transparent 72%),
+            radial-gradient(620px 440px at 50% 118%, rgba(0,0,0,0.55), transparent 74%),
+            linear-gradient(180deg, #0d0e11 0%, #0a0b0d 52%, #070809 100%) !important;
     }
     #mainNav.nav-glass{
-        -webkit-backdrop-filter:blur(16px) saturate(180%) !important;
-        backdrop-filter:blur(16px) saturate(180%) !important;
+        -webkit-backdrop-filter:blur(16px) saturate(110%) !important;
+        backdrop-filter:blur(16px) saturate(110%) !important;
     }
 }
 
@@ -310,14 +296,14 @@ body.lite-mode .glass,
 body.lite-mode .svc-item,
 body.lite-mode .deal-card,
 body.lite-mode #mainNav.nav-glass{
-    -webkit-backdrop-filter:blur(10px) saturate(155%) !important;
-    backdrop-filter:blur(10px) saturate(155%) !important;
+    -webkit-backdrop-filter:blur(10px) saturate(105%) !important;
+    backdrop-filter:blur(10px) saturate(105%) !important;
 }
 
 /* ---------- 不支持 backdrop-filter 时回退为不透明面 ---------- */
 @supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){
     .bg-card, .card-gold, .shop-card, .glass, .svc-item, .deal-card{
-        background:rgba(255,255,255,0.90) !important;
+        background:rgba(255,255,255,0.96) !important;
     }
     html[data-theme="dark"] .bg-card,
     html[data-theme="dark"] .card-gold,
@@ -325,7 +311,7 @@ body.lite-mode #mainNav.nav-glass{
     html[data-theme="dark"] .glass,
     html[data-theme="dark"] .svc-item,
     html[data-theme="dark"] .deal-card{
-        background:rgba(24,30,38,0.94) !important;
+        background:rgba(22,24,27,0.96) !important;
     }
 }
 
