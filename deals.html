@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全部特价 | 老牧师航空</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="assets/favicon-180.png">
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
@@ -11,9 +13,7 @@
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="assets/tailwind-config.js?v=20261006perf"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/style.css?v=20261107r5">
-    <link rel="stylesheet" href="assets/refresh.css?v=20261107r5">
-    <link rel="stylesheet" href="assets/liquid.css?v=20261108r2">
+    <link rel="stylesheet" href="assets/app.css?v=20261109r1">
     <script src="assets/theme.js?v=20261107r5"></script>
 </head>
 <body class="text-textDark">
@@ -36,9 +36,9 @@
     </main>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261107r5"></script>
+    <script src="assets/common.js?v=20261109r1"></script>
     <script src="assets/owner.js?v=20261107owner"></script>
-    <script src="assets/dev.js?v=20261107r5"></script>
+    <script src="assets/dev.js?v=20261109r1"></script>
     <script>
         const DEALS={
             cn:[
@@ -66,7 +66,7 @@
         function dealCard(d,i){
             return '<button type="button" class="deal-card text-left overflow-hidden cursor-pointer group deal-in" style="animation-delay:'+(i*70)+'ms" onclick="location.href=\'booking.html?start=上海&end='+encodeURIComponent(d.city)+'\'">'+
                 '<div class="deal-imgwrap">'+
-                    '<img src="'+d.img+'" alt="'+d.city+'" class="deal-img" loading="lazy">'+
+                    '<img src="'+d.img+'" srcset="'+d.img.replace('.webp','-m.webp')+' 480w, '+d.img+' 760w" sizes="(max-width:767px) 46vw, 380px" decoding="async" alt="'+d.city+'" class="deal-img" loading="lazy">'+
                     '<div class="deal-mask"></div>'+
                     '<span class="deal-price">¥'+d.price+'起</span>'+
                     '<div class="deal-info">'+

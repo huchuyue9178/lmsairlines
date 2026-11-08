@@ -88,11 +88,21 @@
         const a=document.createElement('audio');
         a.id='bgmPlayer';
         a.loop=true;
-        a.preload='auto';
-        a.src='assets/bgm.mp3';
+        // 不在页面加载时预取音频：只在用户真正点击播放（或跨页续播）时才拉取
+        a.preload='none';
         a.volume=0.6;
         document.body.appendChild(a);
     }
+    // 首次需要时才挂载音频地址，避免每打开一个页面就下载 2MB
+    window.ensureBgmSrc=function(){
+        const p=document.getElementById('bgmPlayer');
+        if(!p)return null;
+        if(!p.getAttribute('src')){
+            p.setAttribute('src','assets/bgm.mp3');
+            p.load();
+        }
+        return p;
+    };
     window._bgmOn=false;
     window._bgmClickTimer=null;
 
@@ -125,7 +135,13 @@
                 }).catch(()=>{/* 浏览器拦截时保持暂停，用户点一下即继续 */});
             }
         };
-        if(p.readyState>=1)apply(); else p.addEventListener('loadedmetadata',apply,{once:true});
+        // 只有用户此前确实在听音乐时才加载音频；否则只恢复音量，不产生任何下载
+        if(st.playing){
+            window.ensureBgmSrc();
+            if(p.readyState>=1)apply(); else p.addEventListener('loadedmetadata',apply,{once:true});
+        }else if(st.volume!=null){
+            p.volume=st.volume;
+        }
     };
 
     function syncBgmUi(){
@@ -146,6 +162,7 @@
                 p.pause(); window._bgmOn=false;
                 syncBgmUi();
             }else{
+                window.ensureBgmSrc();
                 p.play().then(()=>{
                     window._bgmOn=true;
                     syncBgmUi();
@@ -159,6 +176,7 @@
     // 双击：弹出小播放栏
     window.openBgmPanel=function(){
         if(window._bgmClickTimer){clearTimeout(window._bgmClickTimer);window._bgmClickTimer=null;}
+        window.ensureBgmSrc();
         let panel=document.getElementById('bgmPanel');
         if(panel){panel.remove();return;}
         panel=document.createElement('div');

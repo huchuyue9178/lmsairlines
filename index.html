@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>老牧师航空 - 首页</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="assets/favicon-180.png">
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
@@ -11,8 +13,7 @@
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="assets/tailwind-config.js?v=20261006perf"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="preload" as="image" href="assets/hero_bg.webp">
-    <link rel="stylesheet" href="assets/style.css?v=20261107r5">
+    <link rel="stylesheet" href="assets/app.css?v=20261109r1">
     <style>
         /* ===== 首页专属布局样式（仅本页生效） ===== */
         /* Hero 按钮 */
@@ -172,8 +173,6 @@ html[data-theme="dark"] .hero-btn-primary, html[data-theme="dark"] .btn-solid-sm
 html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-item:focus-visible, html[data-theme="dark"] .deal-tab:focus-visible, html[data-theme="dark"] .hero-btn-primary:focus-visible, html[data-theme="dark"] .hero-btn-ghost:focus-visible, html[data-theme="dark"] .btn-solid-sm:focus-visible{
                 outline-color:rgba(232,237,242,0.8);}
     </style>
-    <link rel="stylesheet" href="assets/refresh.css?v=20261107r5">
-    <link rel="stylesheet" href="assets/liquid.css?v=20261108r2">
     <script src="assets/theme.js?v=20261107r5"></script>
 </head>
 <body class="text-textDark">
@@ -329,9 +328,9 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
     </main>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261107r5"></script>
+    <script src="assets/common.js?v=20261109r1"></script>
     <script src="assets/owner.js?v=20261107owner"></script>
-    <script src="assets/dev.js?v=20261107r5"></script>
+    <script src="assets/dev.js?v=20261109r1"></script>
     <script src="assets/routes-data.js?v=20261006perf"></script>
     <script>
         function quickSearch(start,end){location.href=`booking.html?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;}
@@ -366,7 +365,7 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
         function rtCard(d,i){
             return '<button type="button" class="deal-card text-left overflow-hidden cursor-pointer group deal-in" style="animation-delay:'+(i*70)+'ms" onclick="quickSearch(\''+d.from+'\',\''+d.to+'\')">'+
                 '<div class="deal-imgwrap" style="height:200px">'+
-                    '<img src="'+d.img+'" alt="'+d.to+'" class="deal-img" loading="lazy">'+
+                    '<img src="'+d.img+'" srcset="'+d.img.replace('.webp','-m.webp')+' 480w, '+d.img+' 760w" sizes="(max-width:767px) 46vw, 380px" decoding="async" alt="'+d.to+'" class="deal-img" loading="lazy">'+
                     '<div class="deal-mask"></div>'+
                     '<div class="deal-info">'+
                         '<p class="deal-from">'+d.from+' 出发 · '+d.info+'</p>'+
@@ -429,7 +428,7 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
         function dealCard(d,i){
             return '<button type="button" class="deal-card text-left overflow-hidden cursor-pointer group" style="animation-delay:'+(i*70)+'ms" onclick="location.href=\'booking.html?start=上海&end='+encodeURIComponent(d.city)+'\'">'+
                 '<div class="deal-imgwrap">'+
-                    '<img src="'+d.img+'" alt="'+d.city+'" class="deal-img" loading="lazy">'+
+                    '<img src="'+d.img+'" srcset="'+d.img.replace('.webp','-m.webp')+' 480w, '+d.img+' 760w" sizes="(max-width:767px) 46vw, 380px" decoding="async" alt="'+d.city+'" class="deal-img" loading="lazy">'+
                     '<div class="deal-mask"></div>'+
                     '<span class="deal-price">¥'+d.price+'起</span>'+
                     '<div class="deal-info">'+
