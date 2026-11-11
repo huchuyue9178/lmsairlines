@@ -555,7 +555,7 @@
         /* ---- 页脚与合作链接 ---- */
         '虔诚 · 严谨 · 安心': 'Discreet · Precise · Reassuring',
         '像牧师般严谨负责、温柔守护每一段航程': 'Every journey, watched over with care',
-        '客服通道：短信 · 邮箱 · GitHub（入口见快速链接）': 'Support: SMS · Email · GitHub (see Quick links)',
+        '客服通道：短信 · 邮箱 · GitHub': 'Support: SMS · Email · GitHub',
         '服务时间：07:00-23:00': 'Hours: 07:00-23:00',
         '企业地址：民航商务区A座': 'Address: Block A, Civil Aviation Business District',
         '兑换码：': 'Redeem code: ',
