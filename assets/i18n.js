@@ -48,6 +48,7 @@
         '输入兑换码': 'Coupon code',
         '兑换': 'Redeem',
         '版权所有': 'All rights reserved',
+        '站内城市与商品图片均为站方自制演示素材，仅用于界面展示，不作商业用途。': 'All city and product images on this site are demo assets made by the site owner, for interface display only and not for commercial use.',
         '个人制作网站仅供模拟、娱乐、学习使用，请勿用于非法用途': 'Personal demo site, for simulation, recreation and study only. Do not use for unlawful purposes.',
 
         /* ---- 首页 ---- */
@@ -554,7 +555,7 @@
         /* ---- 页脚与合作链接 ---- */
         '虔诚 · 严谨 · 安心': 'Discreet · Precise · Reassuring',
         '像牧师般严谨负责、温柔守护每一段航程': 'Every journey, watched over with care',
-        '官方邮箱：3686319507@qq.com': 'Email: 3686319507@qq.com',
+        '客服通道：短信 · 邮箱 · GitHub（入口见快速链接）': 'Support: SMS · Email · GitHub (see Quick links)',
         '服务时间：07:00-23:00': 'Hours: 07:00-23:00',
         '企业地址：民航商务区A座': 'Address: Block A, Civil Aviation Business District',
         '兑换码：': 'Redeem code: ',

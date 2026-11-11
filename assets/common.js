@@ -227,7 +227,7 @@
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">老牧师航空</h4><p class="text-sm leading-relaxed">虔诚 · 严谨 · 安心<br>像牧师般严谨负责、温柔守护每一段航程</p></div>'+
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">出行政策</h4><ul class="space-y-2 text-sm"><li><a href="policy.html" class="hover:underline">退改签政策</a></li><li><a href="policy.html" class="hover:underline">行李规定</a></li><li><a href="policy.html" class="hover:underline">登机须知</a></li></ul></div>'+
                 '<div><h4 class="font-semibold text-textDark text-base mb-4">快速链接</h4><ul class="space-y-2 text-sm"><li><a href="about.html" class="hover:underline">关于我们</a></li><li><a href="customer.html" class="hover:underline">客服中心</a></li><li><a href="javascript:void(0)" id="bgmFooterBtn" onclick="onBgmClick()" class="hover:underline"><i class="fa fa-music mr-1"></i>背景音乐：关</a></li></ul></div>'+
-                '<div><h4 class="font-semibold text-textDark text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">官方邮箱：3686319507@qq.com<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
+                '<div><h4 class="font-semibold text-textDark text-base mb-4">联系我们</h4><p class="text-sm leading-relaxed">客服通道：短信 · 邮箱 · GitHub（入口见快速链接）<br>服务时间：07:00-23:00<br>企业地址：民航商务区A座</p></div>'+
             '</div>'+
             '<div class="mb-8">'+
                 '<a href="updates.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-medium btn-hover" style="background:#4a5a6e"><i class="fa fa-bullhorn"></i>更新公告<i class="fa fa-arrow-right text-xs"></i></a>'+
@@ -245,7 +245,7 @@
                 '<a href="https://www.ceair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">中国东方航空</a>'+
                 '<a href="https://www.hnair.com/" target="_blank" rel="noopener" class="hover:underline mx-1">海南航空</a>'+
             '</div>'+
-            '<div class="text-xs opacity-70"><p>胡楚粤 · 老牧师航空 ©2026 版权所有 | 个人制作网站仅供模拟、娱乐、学习使用，请勿用于非法用途</p></div>'+
+            '<div class="text-xs opacity-70"><p>胡楚粤 · 老牧师航空 ©2026 版权所有 | 个人制作网站仅供模拟、娱乐、学习使用，请勿用于非法用途</p><p class="mt-1">站内城市与商品图片均为站方自制演示素材，仅用于界面展示，不作商业用途。</p></div>'+
         '</div>'+
     '</footer>';
 

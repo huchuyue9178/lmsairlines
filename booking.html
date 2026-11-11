@@ -13,10 +13,11 @@
     <script src="https://cdn.tailwindcss.com/3.4.16"></script>
     <script src="assets/tailwind-config.js?v=20261006perf"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/app.css?v=20261109r1">
+    <link rel="stylesheet" href="assets/app.css?v=20261111r1">
     <script src="assets/theme.js?v=20261107r5"></script>
 </head>
 <body class="text-textDark">
+    <datalist id="cityList"></datalist>
     <div id="siteHeader"></div>
     <main class="pt-24 pb-16 container mx-auto px-4">
         <h2 class="text-[26px] font-bold text-gold mb-4">出行预订</h2>
@@ -29,8 +30,8 @@
         <div id="flightPane">
             <div class="bg-card card-gold p-6 rounded-global shadow-lg mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div><label class="block mb-2">出发城市</label><input id="startCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
-                    <div><label class="block mb-2">到达城市</label><input id="endCity" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：纽约"></div>
+                    <div><label class="block mb-2">出发城市</label><input id="startCity" list="cityList" autocomplete="off" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：北京"></div>
+                    <div><label class="block mb-2">到达城市</label><input id="endCity" list="cityList" autocomplete="off" type="text" class="w-full border px-4 py-3 rounded-global" placeholder="例如：纽约"></div>
                     <div><label class="block mb-2">出发日期</label><input id="flyDate" type="date" class="w-full border px-4 py-3 rounded-global" style="height:48px"></div>
                 </div>
                 <button onclick="searchFlight()" class="btn-hover w-full mt-10 bg-gold text-primary font-bold py-3 rounded-global">搜索航班</button>
@@ -40,7 +41,7 @@
                 <h3 class="text-gold font-bold mb-1"><i class="fa fa-cloud-sun mr-2"></i>天气查询（模拟随机）</h3>
                 <p class="text-sm text-textGray mb-4">查询出发 / 到达城市的模拟天气（随机生成，同一天同一城市保持稳定）。若起降地出现恶劣天气（暴雨、雷暴、大雪、大风等），航班可能取消。恶劣天气航班仍可购票，若航班取消将自动提供免费改签或其他补偿方案。</p>
                 <div class="flex flex-wrap gap-3">
-                    <input id="weatherCity" type="text" class="flex-1 min-w-[220px] border px-4 py-3 rounded-global" placeholder="输入城市，如：北京 / 上海 / 广州 / 纽约">
+                    <input id="weatherCity" list="cityList" autocomplete="off" type="text" class="flex-1 min-w-[220px] border px-4 py-3 rounded-global" placeholder="输入城市，如：北京 / 上海 / 广州 / 纽约">
                     <button onclick="weatherQuery()" class="bg-gold text-primary font-bold px-6 py-3 rounded-global btn-hover"><i class="fa fa-search"></i> 查询天气</button>
                 </div>
                 <div id="weatherResult" class="mt-4"></div>
@@ -95,7 +96,7 @@
     </main>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261109r1"></script>
+    <script src="assets/common.js?v=20261111r1"></script>
     <script src="assets/owner.js?v=20261107owner"></script>
     <script src="assets/dev.js?v=20261109r1"></script>
     <script>
@@ -117,9 +118,44 @@
             bf.className=t==="flight"?"px-6 py-2 rounded-global font-bold btn-hover bg-gold text-primary":"px-6 py-2 rounded-global font-bold btn-hover bg-card text-gold border border-gold";
             br.className=t==="railair"?"px-6 py-2 rounded-global font-bold btn-hover bg-gold text-primary":"px-6 py-2 rounded-global font-bold btn-hover bg-card text-gold border border-gold";
         }
+        // 城市名归一化：容错“北京市”“上海浦东”“香港特别行政区”等写法
+        const CITY_ALIAS={'浦东':'上海','虹桥':'上海','首都机场':'北京','大兴':'北京','白云':'广州','宝安':'深圳',
+            '双流':'成都','天府':'成都','江北':'重庆','萧山':'杭州','咸阳':'西安','长水':'昆明','凤凰':'三亚',
+            '三义':'丽江','高崎':'厦门','胶东':'青岛','周水子':'大连','两江':'桂林','赤鱲角':'香港'};
+        function normalizeCity(v){
+            v=(v||'').replace(/\s+/g,'').trim();
+            if(!v)return '';
+            v=v.replace(/(特别行政区|自治州|地区|市|县|区)$/,'');
+            return CITY_ALIAS[v]||v;
+        }
+        // 城市联想候选（含常见国内与国际航点）
+        (function(){
+            const base=['北京','上海','广州','深圳','成都','重庆','杭州','西安','南京','武汉','长沙','昆明','三亚','丽江',
+                '厦门','青岛','大连','桂林','合肥','温州','宁波','郑州','天津','哈尔滨','沈阳','乌鲁木齐','拉萨','呼和浩特',
+                '香港','澳门','台北','东京','大阪','首尔','新加坡','曼谷','吉隆坡','雅加达','马尼拉','悉尼','墨尔本',
+                '伦敦','巴黎','法兰克福','阿姆斯特丹','罗马','迪拜','纽约','洛杉矶','旧金山','温哥华','多伦多'];
+            const set=new Set(base);
+            try{
+                Object.keys(ROUTES||{}).forEach(function(k){
+                    (ROUTES[k]||[]).forEach(function(r){set.add(r[0]);set.add(r[1]);});
+                });
+            }catch(e){}
+            const dl=document.getElementById('cityList');
+            if(dl)dl.innerHTML=Array.from(set).map(function(c){return '<option value="'+c+'"></option>';}).join('');
+        })();
+        // 输入后自动纠正为规范城市名，用户能立即看到结果
+        ['startCity','endCity','weatherCity'].forEach(function(id){
+            const el=document.getElementById(id);
+            if(!el)return;
+            el.addEventListener('blur',function(){
+                const n=normalizeCity(el.value);
+                if(n&&n!==el.value)el.value=n;
+            });
+        });
+
         // ============ 机票搜索 ============
         function searchFlight(){
-            let s=document.getElementById("startCity").value.trim(),e=document.getElementById("endCity").value.trim(),fd=document.getElementById("flyDate").value;
+            let s=normalizeCity(document.getElementById("startCity").value),e=normalizeCity(document.getElementById("endCity").value),fd=document.getElementById("flyDate").value;
             if(!s&&!e&&!fd){renderFlights(flightList,"全部虚拟航班");return;}
             let filter=searchFlights({start:s||undefined,end:e||undefined,date:fd||undefined});
             if(filter.length===0){
@@ -209,7 +245,7 @@
             return 'fa-cloud';
         }
         async function weatherQuery(){
-            const city=document.getElementById('weatherCity').value.trim();
+            const city=normalizeCity(document.getElementById('weatherCity').value);
             const box=document.getElementById('weatherResult');
             if(!city){box.innerHTML='<p class="text-textGray">请输入要查询的城市。</p>';return;}
             box.innerHTML='<p class="text-textGray"><i class="fa fa-spinner fa-spin"></i> 正在查询 '+esc(city)+' 天气...</p>';
@@ -384,6 +420,6 @@
         if(params.get('mode')==='railair'){switchTab('railair');searchRailAirUI();}
         else if(params.get('start')||params.get('end')){searchFlight();}
     </script>
-<script src="assets/i18n.js?v=20261107r5"></script>
+<script src="assets/i18n.js?v=20261111r1"></script>
 </body>
 </html>
