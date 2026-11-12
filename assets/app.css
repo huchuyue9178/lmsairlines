@@ -8,3 +8,6 @@ html[data-theme="dark"] .sec-eyebrow{color:#939ba7 !important}
 .cart-del-btn{align-self:center;height:auto;min-height:36px;white-space:nowrap;flex:0 0 auto}
 /* 航线卡首行（航班号与时刻）在深色图片上对比度增强 */
 .deal-from{opacity:.94 !important;font-size:12px;letter-spacing:.02em;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+
+footer .footer-strong{color:#3a4a5c}
+[data-theme="dark"] footer .footer-strong{color:#e8edf2}

@@ -249,7 +249,7 @@
         if (!footer || document.getElementById('devFootLink')) return;
         var last = footer.querySelector('.container > div:last-child');
         var wrap = document.createElement('div');
-        wrap.style.cssText = 'text-align:center;';
+        wrap.style.cssText = 'text-align:center;margin-top:16px;';
         wrap.innerHTML = '<button type="button" id="devFootLink" class="dev-foot-link">开发者模式</button>';
         (last ? last.parentNode : footer).appendChild(wrap);
         wrap.querySelector('#devFootLink').addEventListener('click', function () {

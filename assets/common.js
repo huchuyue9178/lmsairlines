@@ -232,13 +232,13 @@
             '<div class="mb-8">'+
                 '<a href="updates.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-medium btn-hover" style="background:#4a5a6e"><i class="fa fa-bullhorn"></i>更新公告<i class="fa fa-arrow-right text-xs"></i></a>'+
             '</div>'+
-            '<div class="border-t pt-6 mb-4" style="border-color:rgba(150,175,200,0.4)"><div class="text-sm leading-loose">'+
-                '<span class="font-semibold text-white mr-2"><i class="fa fa-gift"></i> 兑换码：</span>'+
+            '<div class="border-t pt-6 mb-4" style="border-color:rgba(74,90,110,0.16)"><div class="text-sm leading-loose">'+
+                '<span class="font-semibold footer-strong mr-2"><i class="fa fa-gift"></i> 兑换码：</span>'+
                 '<input id="redeemInput" type="text" placeholder="输入兑换码" class="px-3 py-1.5 rounded-full text-[#1d1d1f] text-sm outline-none" style="min-width:180px">'+
                 '<button onclick="redeemCode()" class="ml-2 px-4 py-1.5 rounded-full text-white text-sm font-semibold btn-hover" style="background:#4a5a6e">兑换</button>'+
             '</div></div>'+
             '<div class="mb-4 text-sm leading-loose">'+
-                '<span class="font-semibold text-white mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
+                '<span class="font-semibold footer-strong mr-2"><i class="fa fa-link"></i> 友情链接：</span>'+
                 '<a href="https://www.12306.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">12306 铁路官网</a>'+
                 '<a href="https://www.airchina.com.cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国国际航空</a>'+
                 '<a href="https://www.csair.com/cn/" target="_blank" rel="noopener" class="hover:underline mx-1">中国南方航空</a>'+

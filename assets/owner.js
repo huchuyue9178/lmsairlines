@@ -10,8 +10,9 @@
 (function () {
     'use strict';
 
-    /* 手机号分片（运行时拼接） */
-    var PH = ['18775', '38013', '0'];
+    /* 手机号摘要分片：只存加盐单向摘要，源码与存储中均无号码明文 */
+    var PH = ['h1wv', 'a2yi', '.18'];
+    var PHONE_SALT = 'lmsown:';
     /* 口令摘要分片（hashPwd 单向摘要，与全站账号体系同源） */
     var HW = ['hyjx', 'r7a', '.9'];
 
@@ -22,7 +23,13 @@
     var GIFT_VALUE = 200000;
     var GIFT_COUNT = 2;
 
-    function ownerPhone() { return PH.join(''); }
+    function ownerHash() { return PH.join(''); }
+
+    /* 只做摘要比对：F12 里看不到号码本身，也看不到可逆的拼接 */
+    function isOwnerPhone(p) {
+        if (!p || typeof hashPwd !== 'function') return false;
+        return hashPwd(PHONE_SALT + p) === ownerHash();
+    }
 
     function pwdOk(p) {
         var t = (p || '').trim();
@@ -46,41 +53,43 @@
         try { return sessionStorage.getItem(K_SHOWN) === '1'; } catch (e) { return false; }
     }
 
-    /* 会员记录里只留掩码号码，浏览器存储中不出现完整号码 */
-    function maskPhone(p) {
-        return p.slice(0, 3) + '****' + p.slice(7);
-    }
+    /* 会员档位里的号码字段只留占位文本，浏览器存储中不出现任何号码片段 */
+    var OWNER_PHONE = 'OWNER · 已隐藏';
 
     /* 站长首次登录时自动建档：黑钻卡 + 专属标记
-       不在账号注册表里留档，只靠摘要比对；历史遗留的明文记录一并清理 */
+       全程只用摘要比对，不写、不读号码明文；历史遗留的明文记录一并清理 */
     function ensureOwner() {
-        var phone = ownerPhone();
-        var phoneMask = maskPhone(phone);
         var members = getMembers();
-        var i;
+        var i, mem = null;
 
+        /* 账号注册表：按摘要识别站长旧记录并移除 */
         try {
             var accs = getAccounts();
-            var kept = accs.filter(function (a) { return a.phone !== phone; });
+            var kept = accs.filter(function (a) {
+                return !(a && a.phone && isOwnerPhone(String(a.phone)));
+            });
             if (kept.length !== accs.length) saveAccounts(kept);
         } catch (e) {}
 
-        // 清掉早期版本用完整号码建档的会员记录（owner 那条会改写成掩码）
-        members = members.filter(function (m) { return m && m.phone !== phone; });
-
-        var mem = null;
         for (i = 0; i < members.length; i++) {
-            if (members[i].owner === true) { mem = members[i]; break; }
+            if (members[i] && members[i].owner === true) { mem = members[i]; break; }
         }
+        /* 早期版本用完整号码建档的会员记录（无 owner 标记）按其摘要识别后移除 */
+        members = members.filter(function (m) {
+            if (!m) return false;
+            if (m.owner === true) return true;
+            return !(m.phone && isOwnerPhone(String(m.phone)));
+        });
+
         if (!mem) {
             mem = {
-                name: '站长', phone: phoneMask, cardNo: genCardNo(),
+                name: '站长', phone: OWNER_PHONE, cardNo: genCardNo(),
                 level: '黑钻卡', miles: 1200000, totalMiles: 1200000,
                 elite: true, balance: 0, joinedAt: Date.now(), owner: true
             };
             members.push(mem);
         } else {
-            mem.phone = phoneMask;
+            mem.phone = OWNER_PHONE;
             mem.owner = true;
             mem.elite = true;
             mem.level = '黑钻卡';
@@ -101,7 +110,7 @@
         var p = (phone || '').trim();
         var w = (pwd || '').trim();
 
-        if (p === ownerPhone() && pwdOk(w)) {
+        if (isOwnerPhone(p) && pwdOk(w)) {
             var mem = ensureOwner();
             if (typeof saveMember === 'function') saveMember(mem);
             try { sessionStorage.setItem(K_SESS, '1'); } catch (e) {}
