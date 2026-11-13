@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" href="assets/favicon-180.png">
     <link rel="stylesheet" href="assets/tw.css?v=20261112r1">
     <link href="assets/fa/css/font-awesome.min.css?v=20261112r1" rel="stylesheet">
-    <link rel="stylesheet" href="assets/app.css?v=20261114v2">
+    <link rel="stylesheet" href="assets/app.css?v=20261114v3">
     <link rel="stylesheet" href="assets/motion.css?v=20261114m2">
     <style>
         /* ===== 首页专属布局样式（仅本页生效） ===== */
@@ -336,7 +336,7 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
     </main>
     <div id="siteFooter"></div>
     <script src="assets/data.js?v=20261114p1"></script>
-    <script src="assets/common.js?v=20261114r3"></script>
+    <script src="assets/common.js?v=20261114r4"></script>
     <script src="assets/owner.js?v=20261112r1"></script>
     <script src="assets/dev-loader.js?v=20261114d1"></script>
     <script src="assets/routes-data.js?v=20261006perf"></script>
@@ -346,27 +346,27 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
         const RTE={
             cn:[
                 {from:"北京",to:"上海",fl:"LM1001",dep:"08:00",arr:"10:30",img:"assets/routes/shanghai.webp",info:"约 2.5 小时 · 每日多班"},
-                {from:"北京",to:"广州",fl:"LM1003",dep:"09:15",arr:"12:15",img:"assets/deals/guangzhou.webp",info:"约 3 小时 · 每日多班"},
+                {from:"上海",to:"广州",fl:"LM1003",dep:"09:15",arr:"12:15",img:"assets/deals/guangzhou.webp",info:"约 3 小时 · 每日多班"},
                 {from:"北京",to:"深圳",fl:"LM1005",dep:"07:40",arr:"11:10",img:"assets/routes/shenzhen.webp",info:"约 3.5 小时 · 每日多班"},
-                {from:"北京",to:"成都",fl:"LM1007",dep:"13:20",arr:"16:20",img:"assets/deals/chengdu.webp",info:"约 3 小时 · 每日多班"},
+                {from:"成都",to:"北京",fl:"LM1007",dep:"13:20",arr:"16:20",img:"assets/deals/chengdu.webp",info:"约 3 小时 · 每日多班"},
                 {from:"北京",to:"重庆",fl:"LM1009",dep:"10:05",arr:"12:35",img:"assets/routes/chongqing.webp",info:"约 2.5 小时 · 每日多班"},
-                {from:"北京",to:"杭州",fl:"LM1011",dep:"18:30",arr:"20:30",img:"assets/deals/hangzhou.webp",info:"约 2 小时 · 每日多班"}
+                {from:"广州",to:"杭州",fl:"LM1011",dep:"18:30",arr:"20:25",img:"assets/deals/hangzhou.webp",info:"约 2 小时 · 每日多班"}
             ],
             travel:[
-                {from:"北京",to:"三亚",fl:"LM1013",dep:"09:30",arr:"13:30",img:"assets/routes/sanya.webp",info:"约 4 小时 · 直飞"},
+                {from:"上海",to:"三亚",fl:"LM1013",dep:"09:30",arr:"12:05",img:"assets/routes/sanya.webp",info:"约 2.5 小时 · 每日多班"},
                 {from:"北京",to:"丽江",fl:"LM1015",dep:"11:10",arr:"14:40",img:"assets/routes/lijiang.webp",info:"约 3.5 小时 · 直飞"},
-                {from:"北京",to:"厦门",fl:"LM1017",dep:"15:20",arr:"17:50",img:"assets/routes/xiamen.webp",info:"约 2.5 小时 · 每日多班"},
+                {from:"杭州",to:"厦门",fl:"LM1017",dep:"15:20",arr:"16:55",img:"assets/routes/xiamen.webp",info:"约 1.5 小时 · 每日多班"},
                 {from:"北京",to:"青岛",fl:"LM1019",dep:"07:55",arr:"09:25",img:"assets/routes/qingdao.webp",info:"约 1.5 小时 · 每日多班"},
-                {from:"北京",to:"大连",fl:"LM1021",dep:"17:05",arr:"18:35",img:"assets/routes/dalian.webp",info:"约 1.5 小时 · 每日多班"},
-                {from:"北京",to:"桂林",fl:"LM1023",dep:"12:40",arr:"15:40",img:"assets/routes/guilin.webp",info:"约 3 小时 · 直飞"}
+                {from:"上海",to:"大连",fl:"LM1021",dep:"17:05",arr:"19:10",img:"assets/routes/dalian.webp",info:"约 2 小时 · 每日多班"},
+                {from:"广州",to:"桂林",fl:"LM1023",dep:"12:40",arr:"13:50",img:"assets/routes/guilin.webp",info:"约 1 小时 · 每日多班"}
             ],
             intl:[
-                {from:"上海",to:"纽约",fl:"LM2001",dep:"11:30",arr:"14:30",img:"assets/routes/newyork.webp",info:"约 14 小时 · 直飞"},
+                {from:"北京",to:"纽约",fl:"LM2001",dep:"11:30",arr:"14:30",img:"assets/routes/newyork.webp",info:"约 14 小时 · 直飞"},
                 {from:"上海",to:"洛杉矶",fl:"LM2003",dep:"13:15",arr:"10:15",img:"assets/routes/la.webp",info:"约 12 小时 · 直飞"},
                 {from:"上海",to:"伦敦",fl:"LM2005",dep:"09:40",arr:"14:40",img:"assets/deals/london.webp",info:"约 12 小时 · 直飞"},
-                {from:"上海",to:"巴黎",fl:"LM2007",dep:"10:20",arr:"15:20",img:"assets/deals/paris.webp",info:"约 12 小时 · 直飞"},
+                {from:"广州",to:"巴黎",fl:"LM2007",dep:"10:20",arr:"15:20",img:"assets/deals/paris.webp",info:"约 12 小时 · 直飞"},
                 {from:"上海",to:"迪拜",fl:"LM2009",dep:"23:30",arr:"05:00",img:"assets/deals/dubai.webp",info:"约 9.5 小时 · 直飞"},
-                {from:"上海",to:"法兰克福",fl:"LM2011",dep:"12:50",arr:"17:50",img:"assets/routes/frankfurt.webp",info:"约 11 小时 · 直飞"}
+                {from:"北京",to:"法兰克福",fl:"LM2011",dep:"12:50",arr:"17:50",img:"assets/routes/frankfurt.webp",info:"约 11 小时 · 直飞"}
             ]
         };
         let rtTab='cn';
@@ -440,7 +440,7 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
                     '<div class="deal-mask"></div>'+
                     '<span class="deal-price">¥'+d.price+'起</span>'+
                     '<div class="deal-info">'+
-                        '<p class="deal-from">'+d.from+' 出发</p>'+
+                        '<p class="deal-from">从'+d.from+'出发</p>'+
                         '<p class="deal-city">'+d.city+'</p>'+
                     '</div>'+
                 '</div>'+
@@ -541,7 +541,7 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
         }
         document.querySelectorAll('.airpods-tabs').forEach(setupAirpodTabs);
     </script>
-<script src="assets/i18n.js?v=20261114i3"></script>
+<script src="assets/i18n.js?v=20261114i4"></script>
 <script src="assets/motion.js?v=20261112m1"></script>
 </body>
 </html>

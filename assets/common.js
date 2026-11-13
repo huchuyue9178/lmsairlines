@@ -845,7 +845,7 @@ function resolveStatus(item){
                 '<strong style="font-size:16px;font-weight:800">欢迎使用老牧师航空</strong>'+
             '</div>'+
             // 环境提示
-            '<p style="font-size:12.5px;line-height:1.6;color:'+C.tx2+';margin:0 0 14px;padding:8px 10px;border-radius:10px;background:'+C.info+'"><i class="fa fa-exclamation-triangle mr-1"></i> 本站含大量液态玻璃与动效，建议设备内存 ≥ 4GB，Chrome 79+/Safari 13.1+</p>'+
+            '<p style="font-size:12.5px;line-height:1.6;color:'+C.tx2+';margin:0 0 14px;padding:8px 10px;border-radius:10px;background:'+C.info+'"><i class="fa fa-exclamation-triangle mr-1"></i> 本站含页面动效与过渡。低配设备可选「节省性能版」，减少动画与模糊以换取更流畅的滚动。</p>'+
             // 设备类型
             '<p style="font-size:13px;font-weight:700;margin:0 0 6px">设备类型</p>'+
             '<div style="display:flex;gap:8px;margin-bottom:14px">'+
@@ -909,8 +909,33 @@ function resolveStatus(item){
         if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn);
         else fn();
     }
-    window.__lmsShowSetup=function(){ready(show);};
-    // 仅当本会话已同意《用户使用须知》时才自动弹出，否则等须知确认后再调用
+    function isLowEnd(){
+        try{
+            var cs=navigator.hardwareConcurrency||8, mm=navigator.deviceMemory||8;
+            return (cs<4)||(mm<4);
+        }catch(e){ return false; }
+    }
+    // 高配设备不再打扰：静默采用完整版；仅低配设备才弹出选择器
+    function quietApply(){
+        var isM=/Android|iPhone|iPad|iPod|Mobile|SymbianOS|Windows Phone/i.test(navigator.userAgent);
+        try{
+            if(!sessionStorage.getItem('setup_done')){
+                sessionStorage.setItem('setup_done','1');
+                sessionStorage.setItem('device_mode',isM?'touch':'pc');
+                sessionStorage.setItem('perf_mode','full');
+            }
+        }catch(e){}
+        if(isM){ ready(function(){ document.body.classList.add('touch-mode'); }); }
+    }
+    window.__lmsShowSetup=function(){
+        if(!isLowEnd()){
+            quietApply();
+            if(typeof showActivityNotice==='function') showActivityNotice();
+            return;
+        }
+        ready(show);
+    };
+    // 仅当本会话已同意《用户使用须知》时才自动判断，否则等须知确认后再调用
     try{
         var termsOk=(document.cookie.indexOf('lms_terms=1')>-1)||!!sessionStorage.getItem('lms_terms_agreed');
         if(termsOk) window.__lmsShowSetup();
@@ -918,42 +943,39 @@ function resolveStatus(item){
 })();
 
 // 活动结束公告弹窗（设置弹窗关闭后弹出）
+// 活动结束公告（首页顶部页内横幅，不再弹窗遮挡）
 function showActivityNotice(){
     if(sessionStorage.getItem('activity_notice_seen')) return;
+    if(!/index\.html$|\/$/.test(location.pathname)) return;
     var isDark=false;
     try{ var ts=localStorage.getItem('lms_theme');
         isDark = ts==='dark' || (ts!=='light' && document.documentElement.getAttribute('data-theme')==='dark');
     }catch(e){ isDark=document.documentElement.getAttribute('data-theme')==='dark'; }
     var A = isDark
-        ? {bg:'rgba(26,30,36,0.86)',bd:'rgba(255,255,255,0.14)',tx:'#e9eef5',tx2:'#b6c0cc',solid:'#5d6d82'}
-        : {bg:'rgba(255,255,255,0.7)',bd:'rgba(255,255,255,0.8)',tx:'#3a4a5c',tx2:'#4a5a6e',solid:'#4a5a6e'};
-    var box=document.createElement('div');
-    box.id='activityNotice';
-    box.style.cssText='position:fixed;top:76px;right:16px;z-index:9998;width:340px;max-width:calc(100vw - 32px);'+
-        'background:'+A.bg+';backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);'+
-        'border:1px solid '+A.bd+';border-radius:22px;box-shadow:0 16px 48px rgba(74,90,110,0.22);'+
-        'padding:20px;font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;color:'+A.tx+';'+
-        'opacity:0;transform:translateY(-12px) scale(0.97);transition:all .5s cubic-bezier(.2,.9,.3,1.2);';
-    box.innerHTML=
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">'+
-            '<i class="fa fa-bullhorn" style="font-size:18px;color:#b8860b"></i>'+
-            '<strong style="font-size:16px;font-weight:800">活动公告</strong>'+
-        '</div>'+
-        '<p style="font-size:13px;line-height:1.7;color:'+A.tx2+';margin:0 0 14px">「逐梦云天 · 定格航影」2026 原创航空视频征集活动已圆满结束，感谢所有参与者的热情投稿。获奖名单将在后续公布，敬请期待！</p>'+
-        '<div style="display:flex;justify-content:flex-end">'+
-            '<button id="activityNoticeOk" style="background:'+A.solid+';color:#fff;border:none;border-radius:999px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(74,90,110,0.25)">我知道了</button>'+
-        '</div>';
-    document.body.appendChild(box);
-    requestAnimationFrame(function(){
-        box.style.opacity='1';
-        box.style.transform='translateY(0) scale(1)';
-    });
-    document.getElementById('activityNoticeOk').addEventListener('click',function(){
-        sessionStorage.setItem('activity_notice_seen','1');
-        box.style.opacity='0';
-        box.style.transform='translateY(-10px) scale(0.96)';
-        setTimeout(function(){ box.remove(); },350);
-    });
+        ? {bg:'rgba(255,255,255,0.055)',bd:'rgba(255,255,255,0.11)',tx:'#e8edf2',tx2:'rgba(232,237,242,0.72)',x:'rgba(232,237,242,0.45)',lk:'#e8edf2',lb:'rgba(255,255,255,0.28)',ic:'#c9a86a'}
+        : {bg:'#ffffff',bd:'rgba(16,24,32,0.08)',tx:'#1f242b',tx2:'#6c7380',x:'#9aa0a9',lk:'#20262e',lb:'rgba(16,24,32,0.22)',ic:'#8a6f34'};
+    function mount(){
+        var main=document.querySelector('main');
+        if(!main || document.getElementById('activityBanner')) return;
+        var bar=document.createElement('div');
+        bar.id='activityBanner';
+        bar.style.cssText='max-width:1216px;margin:0 auto 12px;box-sizing:border-box;display:flex;align-items:center;gap:10px;'+
+            'padding:10px 14px;background:'+A.bg+';border:1px solid '+A.bd+';border-radius:12px;font-size:13px;line-height:1.6;color:'+A.tx2+';'+
+            'transition:opacity .2s ease;';
+        bar.innerHTML=
+            '<i class="fa fa-bullhorn" style="font-size:13px;color:'+A.ic+';flex:none"></i>'+
+            '<span style="flex:1 1 auto;min-width:0"><strong style="color:'+A.tx+';font-weight:600">「逐梦云天 · 定格航影」航空影像征集活动已结束</strong>　获奖名单待官方公布，敬请期待。</span>'+
+            '<a href="special.html" style="flex:none;color:'+A.lk+';font-weight:600;text-decoration:none;border-bottom:1px solid '+A.lb+'">查看</a>'+
+            '<button type="button" aria-label="关闭公告" style="flex:none;border:none;background:transparent;color:'+A.x+';font-size:17px;line-height:1;cursor:pointer;padding:4px 6px">&times;</button>';
+        main.insertBefore(bar,main.firstChild);
+        bar.querySelector('button').addEventListener('click',function(){
+            try{sessionStorage.setItem('activity_notice_seen','1');}catch(e){}
+            bar.style.opacity='0';
+            setTimeout(function(){ if(bar.parentNode)bar.parentNode.removeChild(bar); },220);
+        });
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount);
+    else mount();
 }
 
 // 已选过模式：立刻给 body 加 class
@@ -1160,8 +1182,8 @@ function showActivityNotice(){
             'font-family:"Baloo 2","Nunito","PingFang SC",sans-serif;opacity:0;transition:opacity .3s ease;';
 
         var card=document.createElement('div');
-        card.style.cssText='width:min(780px, calc(100vw - 28px));max-height:min(88vh, 900px);display:flex;flex-direction:column;box-sizing:border-box;'+
-            'background:'+C.card+';color:'+C.text+';border:1px solid '+C.line+';border-radius:24px;overflow:hidden;'+
+        card.style.cssText='width:min(720px, calc(100vw - 28px));max-height:min(88vh, 900px);display:flex;flex-direction:column;box-sizing:border-box;'+
+            'background:'+C.card+';color:'+C.text+';border:1px solid '+C.line+';border-radius:18px;overflow:hidden;'+
             'box-shadow:0 30px 80px rgba(10,16,24,0.35);transform:translateY(14px) scale(0.98);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);';
 
         card.innerHTML=
@@ -1170,22 +1192,34 @@ function showActivityNotice(){
                     '<i class="fa fa-shield" style="font-size:19px;color:#b8860b"></i>'+
                     '<strong id="termsTitle" style="font-size:22px;font-weight:800">用户使用须知</strong>'+
                 '</div>'+
-                '<p style="margin:0;font-size:12.5px;color:'+C.sub+'">老牧师航空 LMS Airlines · 演示站点　生效日期 2026 年 11 月 7 日　版本 v1.0</p>'+
+                '<p style="margin:0;font-size:12.5px;color:'+C.sub+'">老牧师航空 LMS Airlines · 演示站点　生效日期 2026 年 11 月 7 日　版本 v1.1</p>'+
             '</div>'+
             '<div id="termsBody" style="flex:1 1 auto;min-height:0;overflow-y:auto;padding:18px 26px 14px;scrollbar-width:thin;font-size:13.5px;line-height:1.85;color:'+C.body+'">'+
-                '<p style="margin:0 0 16px;padding:10px 12px;background:'+(dark?'rgba(232,237,242,0.06)':'rgba(74,90,110,0.05)')+';border-radius:12px;font-size:13px">'+
-                '本须知共十个部分、约 3,500 字。烦请向下滑动阅读至底部，再点击「我同意，遵守此规」开始使用。'+
-                '</p>'+
-                renderSections()+
-                '<p style="margin:4px 0 10px;padding:12px 14px;border-radius:12px;background:'+(dark?'rgba(201,168,106,0.12)':'rgba(201,168,106,0.10)')+';font-size:13px;line-height:1.8">'+
-                '以上内容我们已尽量写得清楚直白。点击下方按钮，即表示您已阅读、理解并自愿遵守本须知；若仍有疑问，欢迎通过 GitHub 仓库的 Issue 与我们沟通。'+
-                '</p>'+
+                '<div id="termsSummary">'+
+                    '<p style="margin:0 0 12px;padding:10px 12px;background:'+(dark?'rgba(232,237,242,0.06)':'rgba(74,90,110,0.05)')+';border-radius:12px;font-size:13px">'+
+                    '为节省您的时间，先列出要点摘要。完整条款共十部分、约 3,500 字，可随时点「展开全文」查看。'+
+                    '</p>'+
+                    '<ol style="margin:0 0 14px;padding-left:20px;font-size:13.5px;line-height:1.95;list-style:decimal outside">'+
+                        '<li style="margin-bottom:6px">本站为个人开发的演示站点，不是真实航空公司，不提供航班查询、售票、值机等任何实际航空服务。</li>'+
+                        '<li style="margin-bottom:6px">账号、密码、会员等级、里程、余额与订单只保存在您本机浏览器，清理浏览器数据后无法找回。</li>'+
+                        '<li style="margin-bottom:6px">充值与购票均为模拟流程，不会产生真实扣款；恳请勿填写真实的银行卡号、支付密码或短信验证码。</li>'+
+                        '<li style="margin-bottom:6px">本站不设后端、不做统计，不收集、不上传、不向任何第三方提供您的个人信息。</li>'+
+                        '<li style="margin-bottom:6px">本站仅供浏览、学习与交流，不得冒用本站名义招揽旅客或收费，也不得用于任何违反法律法规的用途。</li>'+
+                        '<li>若您不同意以下任一约定，恳请直接关闭页面，停止使用本站。</li>'+
+                    '</ol>'+
+                    '<button id="termsExpand" type="button" style="display:block;margin:0 auto 6px;padding:10px 22px;border-radius:999px;border:1px solid '+C.line+';background:transparent;color:'+C.text+';font-size:13px;font-weight:700;cursor:pointer">展开全文（约 3,500 字）</button>'+
+                '</div>'+
+                '<div id="termsFull" style="display:none">'+renderSections()+
+                    '<p style="margin:4px 0 10px;padding:12px 14px;border-radius:12px;background:'+(dark?'rgba(201,168,106,0.12)':'rgba(201,168,106,0.10)')+';font-size:13px;line-height:1.8">'+
+                    '以上为完整条款。点击下方按钮，即表示您已阅读、理解并自愿遵守本须知；若仍有疑问，欢迎通过 GitHub 仓库的 Issue 与我们沟通。'+
+                    '</p>'+
+                '</div>'+
             '</div>'+
             '<div style="padding:14px 26px 20px;border-top:1px solid '+C.line+'">'+
-                '<p id="termsHint" style="margin:0 0 9px;font-size:12.5px;color:'+C.sub+'">请向下滑动阅读至底部</p>'+
-                '<button id="termsAgree" type="button" disabled style="width:100%;padding:14px;border:none;border-radius:999px;'+
-                    'font-size:15px;font-weight:800;letter-spacing:0.02em;background:'+(dark?'rgba(232,237,242,0.16)':'#4a5a6e')+';'+
-                    'color:'+(dark?'rgba(232,237,242,0.72)':'#fff')+';opacity:.85;cursor:not-allowed;transition:all .25s ease">请阅读至底部</button>'+
+                '<p id="termsHint" style="margin:0 0 9px;font-size:12.5px;color:'+C.sub+'">阅读要点摘要后即可同意；完整条款可在本窗口内随时展开。</p>'+
+                '<button id="termsAgree" type="button" style="width:100%;padding:14px;border:none;border-radius:999px;'+
+                    'font-size:15px;font-weight:800;letter-spacing:0.02em;background:'+(dark?'#e6e9ec':'#20262e')+';color:'+(dark?'#12181f':'#fff')+';cursor:pointer;'+
+                    'box-shadow:'+(dark?'none':'0 10px 26px rgba(74,90,110,0.28)')+';transition:all .25s ease">我同意，遵守此规</button>'+
                 '<p style="margin:9px 0 0;font-size:12px;color:'+C.sub+';text-align:center">若不同意，请直接关闭页面，不要继续使用本站。</p>'+
             '</div>';
 
@@ -1194,34 +1228,20 @@ function showActivityNotice(){
 
         var bodyEl=document.getElementById('termsBody');
         var btn=document.getElementById('termsAgree');
-        var hint=document.getElementById('termsHint');
-        var unlocked=false;
-
-        function unlock(){
-            if(unlocked)return;
-            unlocked=true;
-            btn.disabled=false;
-            btn.style.opacity='1';
-            btn.style.cursor='pointer';
-            btn.style.background='#4a5a6e';
-            btn.style.color='#fff';
-            btn.style.boxShadow='0 10px 26px rgba(74,90,110,0.3)';
-            btn.textContent='我同意，遵守此规';
-            hint.textContent='已阅读完毕，同意后即可开始使用本站全部功能。';
-        }
-        function check(){
-            if(!bodyEl||!btn)return;
-            var atBottom=(bodyEl.scrollTop+bodyEl.clientHeight>=bodyEl.scrollHeight-12);
-            var noScroll=(bodyEl.scrollHeight<=bodyEl.clientHeight+4);
-            if(atBottom||noScroll)unlock();
-        }
-        bodyEl.addEventListener('scroll',check);
+        var fullEl=document.getElementById('termsFull');
+        var sumEl=document.getElementById('termsSummary');
+        var expBt=document.getElementById('termsExpand');
+        expBt.addEventListener('click',function(){
+            var opened=fullEl.style.display!=='none';
+            fullEl.style.display=opened?'none':'block';
+            sumEl.style.display=opened?'block':'none';
+            expBt.textContent=opened?'展开全文（约 3,500 字）':'收起全文，返回要点摘要';
+            if(bodyEl)bodyEl.scrollTop=0;
+        });
 
         requestAnimationFrame(function(){
             mask.style.opacity='1';
             card.style.transform='translateY(0) scale(1)';
-            check();
-            setTimeout(check,240);
         });
 
         btn.addEventListener('click',function(){

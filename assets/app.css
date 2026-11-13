@@ -54,7 +54,7 @@ html[data-theme="dark"] .deal-card{
 }
 
 /* 图片统一降饱和：夜景照片不再抢色 */
-.deal-img,.shop-img{filter:saturate(.72) contrast(1.02)}
-.deal-imgwrap:hover .deal-img{filter:saturate(.95) contrast(1.02)}
+.deal-img,.shop-img{filter:saturate(.62) contrast(1.02)}
+.deal-imgwrap:hover .deal-img{filter:saturate(.88) contrast(1.02)}
 /* 中文界面隐藏英文小标（英文模式保留，作为节奏元素） */
 html[lang="zh-CN"] .sec-eyebrow{display:none}
