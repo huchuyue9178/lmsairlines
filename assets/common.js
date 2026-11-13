@@ -1285,3 +1285,83 @@ function showActivityNotice(){
     if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount);
     else mount();
 })();
+
+// 鸿蒙适配提示：右上角小卡，每次浏览器会话首次进入首页弹一次
+function showHarmonyTip(){
+    if(sessionStorage.getItem('harmony_tip_seen')) return;
+    if(!/index\.html$|\/$/.test(location.pathname)) return;
+    var en=false;
+    try{ en=(localStorage.getItem('lms_lang')||'zh')==='en'; }catch(e){}
+    if(!en) en = document.documentElement.lang==='en';
+    var isDark=false;
+    try{ var ts=localStorage.getItem('lms_theme');
+        isDark = ts==='dark' || (ts!=='light' && document.documentElement.getAttribute('data-theme')==='dark');
+    }catch(e){ isDark=document.documentElement.getAttribute('data-theme')==='dark'; }
+    var A = isDark
+        ? {bg:'rgba(255,255,255,0.06)',bd:'rgba(255,255,255,0.11)',tx:'#e8edf2',tx2:'rgba(232,237,242,0.72)',x:'rgba(232,237,242,0.45)',ic:'#c9a86a',ib:'rgba(255,255,255,0.07)'}
+        : {bg:'#ffffff',bd:'rgba(16,24,32,0.08)',tx:'#1f242b',tx2:'#6c7380',x:'#9aa0a9',ic:'#8a6f34',ib:'rgba(16,24,32,0.05)'};
+    function mount(){
+        if(document.getElementById('harmonyTip')) return;
+        var topPx=78, rightPx=16, cardW=304;
+        var vw=document.documentElement.clientWidth||window.innerWidth;
+        if(vw<=520){ rightPx=12; cardW=vw-24; }
+        var bn=document.getElementById('activityBanner');
+        if(bn){ var rb=bn.getBoundingClientRect(); if(rb.height>0) topPx=Math.round(rb.bottom+12); }
+        var d=document.createElement('div');
+        d.id='harmonyTip';
+        d.style.cssText='position:fixed;right:'+rightPx+'px;top:'+topPx+'px;z-index:1300;box-sizing:border-box;'+
+            'width:'+cardW+'px;padding:14px 14px 14px 16px;background:'+A.bg+';'+
+            'border:1px solid '+A.bd+';border-radius:14px;box-shadow:0 10px 28px rgba(16,24,32,0.12);'+
+            'font-size:13px;line-height:1.62;color:'+A.tx2+';opacity:0;transform:translateY(-10px);'+
+            'transition:opacity .3s ease,transform .3s ease;';
+        d.innerHTML='<div style="display:flex;align-items:flex-start;gap:10px">'+
+            '<span style="flex:none;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:'+A.ib+';color:'+A.ic+'"><i class="fa fa-mobile" aria-hidden="true" style="font-size:16px"></i></span>'+
+            '<div style="flex:1 1 auto;min-width:0">'+
+            '<p style="margin:0;color:'+A.tx+';font-weight:600;font-size:13.5px;letter-spacing:-0.01em">'+(en?'HarmonyOS Ready':'已适配鸿蒙系统')+'</p>'+
+            '<p style="margin:4px 0 0">'+(en?'This site is tested to run smoothly on HarmonyOS NEXT and Huawei devices.':'本网站已适配纯血鸿蒙系统及华为设备，在 HarmonyOS NEXT 与华为浏览器下同样流畅。')+'</p>'+
+            '</div>'+
+            '<button type="button" aria-label="关闭提示" style="flex:none;border:none;background:transparent;color:'+A.x+';font-size:17px;line-height:1;cursor:pointer;padding:2px 4px">&times;</button>'+
+            '</div>';
+        document.body.appendChild(d);
+        requestAnimationFrame(function(){ d.style.opacity='1'; d.style.transform='translateY(0)'; });
+        var closed=false;
+        function close(){
+            if(closed) return; closed=true;
+            try{sessionStorage.setItem('harmony_tip_seen','1');}catch(e){}
+            d.style.opacity='0'; d.style.transform='translateY(-10px)';
+            setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); },320);
+        }
+        d.querySelector('button').addEventListener('click',close);
+        setTimeout(close,12000);
+    }
+    var tries=0;
+    var iv=setInterval(function(){
+        tries++;
+        var ag=document.getElementById('termsAgree'), open=false;
+        if(ag){ var r=ag.getBoundingClientRect(); open=r.width>0 && r.height>0; }
+        if(open && tries<70) return;
+        clearInterval(iv); mount();
+    },400);
+}
+
+// 鸿蒙提示启动器：等须知/设置浮层都关闭后再弹，最多轮询 25 次
+(function(){
+    function blocked(id){
+        var el=document.getElementById(id);
+        if(!el) return false;
+        var r=el.getBoundingClientRect();
+        return r.width>0 && r.height>0;
+    }
+    var n=0;
+    function tick(){
+        n++;
+        if(n>25) return;
+        if(blocked('termsAgree') || blocked('setupOk')){
+            setTimeout(tick,1200); return;
+        }
+        if(typeof showHarmonyTip==='function') showHarmonyTip();
+    }
+    function boot(){ setTimeout(tick,900); }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+    else boot();
+})();
