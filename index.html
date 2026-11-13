@@ -20,7 +20,7 @@
     <link rel="apple-touch-icon" href="assets/favicon-180.png">
     <link rel="stylesheet" href="assets/tw.css?v=20261112r1">
     <link href="assets/fa/css/font-awesome.min.css?v=20261112r1" rel="stylesheet">
-    <link rel="stylesheet" href="assets/app.css?v=20261114v3">
+    <link rel="stylesheet" href="assets/app.css?v=20261114v6">
     <link rel="stylesheet" href="assets/motion.css?v=20261114m2">
     <style>
         /* ===== 首页专属布局样式（仅本页生效） ===== */
@@ -297,20 +297,31 @@ html[data-theme="dark"] .deal-more:focus-visible, html[data-theme="dark"] .svc-i
             </div>
         </section>
 
-        <!-- 航空活动：窄条公告 -->
+        <!-- 航空活动 -->
         <section class="px-3 md:px-5 mb-4 md:mb-5 reveal">
-            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:28px 26px">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
-                    <div id="activityList" class="flex items-start gap-4">
-                        <span class="svc-icon" style="width:46px;height:46px;border-radius:16px;font-size:18px"><i class="fa fa-film" aria-hidden="true"></i></span>
-                        <div>
-                            <span class="notice-tag">视频征集 · 已结束</span>
-                            <h4 class="font-bold text-textDark mt-2" style="font-size:19px;letter-spacing:-0.02em">逐梦云天 · 定格航影</h4>
-                            <p class="text-sm text-textGray mt-1.5">活动已结束，后续获奖名单等待官方公布。</p>
-                            <p class="mt-2 sec-note">2026.09.19 — 10.19</p>
+            <div class="bg-card card-gold rounded-big shadow-xl" style="padding:26px">
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                    <div id="activityList" class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-7 flex-1 min-w-0">
+                        <a href="activity-3.html" class="flex items-start gap-4">
+                            <span class="svc-icon" style="width:46px;height:46px;border-radius:16px;font-size:18px;flex:none"><i class="fa fa-star" aria-hidden="true"></i></span>
+                            <div style="min-width:0">
+                                <span class="notice-tag">里程活动 · 进行中</span>
+                                <h4 class="font-bold text-textDark mt-2" style="font-size:19px;letter-spacing:-0.02em">牧者之约 · 双倍里程周</h4>
+                                <p class="text-sm text-textGray mt-1.5">活动期内购票，会员里程按双倍累计。</p>
+                                <p class="mt-2 sec-note">2026.11.14 — 11.21</p>
+                            </div>
+                        </a>
+                        <div class="flex items-start gap-4">
+                            <span class="svc-icon" style="width:46px;height:46px;border-radius:16px;font-size:18px;flex:none"><i class="fa fa-film" aria-hidden="true"></i></span>
+                            <div style="min-width:0">
+                                <span class="notice-tag">视频征集 · 已结束</span>
+                                <h4 class="font-bold text-textDark mt-2" style="font-size:19px;letter-spacing:-0.02em">逐梦云天 · 定格航影</h4>
+                                <p class="text-sm text-textGray mt-1.5">活动已结束，后续获奖名单等待官方公布。</p>
+                                <p class="mt-2 sec-note">2026.09.19 — 10.19</p>
+                            </div>
                         </div>
                     </div>
-                    <a href="updates.html" class="anim-link shrink-0 md:ml-6 sec-link">更多活动 <i class="fa fa-angle-right ml-1"></i></a>
+                    <a href="updates.html" class="anim-link shrink-0 md:ml-2 sec-link activity-more">更多活动 <i class="fa fa-angle-right ml-1"></i></a>
                 </div>
             </div>
         </section>

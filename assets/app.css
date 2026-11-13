@@ -58,3 +58,8 @@ html[data-theme="dark"] .deal-card{
 .deal-imgwrap:hover .deal-img{filter:saturate(.88) contrast(1.02)}
 /* 中文界面隐藏英文小标（英文模式保留，作为节奏元素） */
 html[lang="zh-CN"] .sec-eyebrow{display:none}
+#activityList .svc-icon{background:var(--rf-surface-2)!important;border:1px solid var(--rf-line)!important;color:var(--rf-accent)!important;width:44px!important;height:44px!important;border-radius:12px!important;font-size:17px!important}
+html[data-theme="dark"] #activityList .svc-icon{background:#20252c!important;border-color:rgba(255,255,255,0.09)!important;color:#cbd3dc!important}
+@media(min-width:768px){#activityList>*:nth-child(2){border-left:1px solid var(--rf-line);padding-left:28px}}
+@media(max-width:767px){#activityList>*+*{border-top:1px solid var(--rf-line);padding-top:20px}}
+@media(max-width:767px){.activity-more{align-self:flex-end;justify-content:flex-end}}
