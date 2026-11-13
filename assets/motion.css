@@ -1,0 +1,198 @@
+/* ============================================================
+   老牧师航空 · 动效层 + 移动端适配层
+   原则：位移小、时长短、曲线统一；只动 transform / opacity。
+   桌面沿用 macOS 的减速曲线与轻微抬升，移动端沿用 iOS 的按压回弹。
+   本文件在 app.css 之后引入，用于统一覆盖各页内联样式里的过渡。
+   ============================================================ */
+
+:root {
+    --m-mac: cubic-bezier(.22, 1, .36, 1);
+    --m-spring: cubic-bezier(.34, 1.56, .64, 1);
+    --m-ios: cubic-bezier(.32, .72, 0, 1);
+}
+
+/* ---------- 1. 入场：位移收敛到 16px，去掉模糊与旋转 ---------- */
+.reveal-up {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    filter: none;
+    transition: opacity .46s var(--m-mac), transform .5s var(--m-mac);
+    will-change: opacity, transform;
+}
+.reveal-up.in {
+    opacity: 1;
+    transform: none;
+    filter: none;
+}
+.reveal {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    transition: opacity .46s var(--m-mac), transform .5s var(--m-mac);
+}
+.reveal.visible {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---------- 2. 桌面端：hover 抬升 + 导航下划线从中心展开 ---------- */
+@media (hover: hover) and (pointer: fine) {
+    .svc-item, .deal-card, .card, .card-gold, .shop-card, .route-card, .order-card {
+        transition: transform .26s var(--m-mac), box-shadow .26s var(--m-mac),
+                    background-color .26s var(--m-mac), border-color .26s var(--m-mac);
+    }
+    .svc-item:hover, .deal-card:hover, .shop-card:hover {
+        transform: translateY(-3px);
+    }
+    /* 卡片配图缓慢推近，制造轻微景深 */
+    .deal-card .deal-img, .route-card .deal-img, .shop-card img {
+        transition: transform .55s var(--m-mac);
+        will-change: transform;
+    }
+    .deal-card:hover .deal-img, .route-card:hover .deal-img, .shop-card:hover img {
+        transform: scale(1.045);
+    }
+    .nav-link {
+        position: relative;
+        transition: color .2s linear;
+    }
+    .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 10px;
+        right: 10px;
+        bottom: 3px;
+        height: 1.5px;
+        border-radius: 2px;
+        background: currentColor;
+        opacity: 0;
+        transform: scaleX(.35);
+        transform-origin: 50% 50%;
+        transition: opacity .18s linear, transform .3s var(--m-spring);
+    }
+    .nav-link:hover::after,
+    .nav-link[aria-expanded="true"]::after {
+        opacity: .7;
+        transform: scaleX(1);
+    }
+    .hero-btn-primary, .hero-btn-ghost {
+        transition-timing-function: var(--m-mac);
+        transition-duration: .26s;
+    }
+}
+
+/* ---------- 3. 触控端：按压回弹，抑制 hover 粘滞 ---------- */
+@media (hover: none), (pointer: coarse) {
+    .svc-item:hover, .deal-card:hover, .card:hover, .route-card:hover,
+    .shop-card:hover, .order-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .svc-item:active, .deal-card:active, .card:active, .route-card:active,
+    .shop-card:active, .order-card:active, .deal-tab:active,
+    .hero-btn-primary:active, .hero-btn-ghost:active, button:active {
+        transform: scale(.972);
+        transition: transform .12s var(--m-ios);
+    }
+    a, button, .svc-item, .deal-card, .deal-tab {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* ---------- 4. 提示条：只做淡入，不碰 transform（避免与定位冲突） ---------- */
+.toast, [class*="toast"] {
+    animation: mFade .22s var(--m-ios) both;
+}
+
+/* ---------- 5. 弹层：蒙层淡入 ---------- */
+[role="dialog"] {
+    animation: mFade .18s var(--m-ios) both;
+}
+
+@keyframes mFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ---------- 6. 移动端适配 ---------- */
+@media (max-width: 767px) {
+    html, body {
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+    }
+    img, video {
+        max-width: 100%;
+        height: auto;
+    }
+    .svc-item, .deal-tab {
+        min-height: 44px;
+    }
+    .modal-body {
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+    }
+    body {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+}
+
+/* iOS 独有：输入框字号低于 16px 会在聚焦时自动放大页面 */
+@supports (-webkit-touch-callout: none) {
+    @media (max-width: 767px) {
+        input:not([type="checkbox"]):not([type="radio"]), select, textarea {
+            font-size: 16px;
+        }
+        [role="dialog"] > div {
+            max-height: 86dvh;
+            overscroll-behavior: contain;
+        }
+    }
+}
+
+/* ---------- 7. 尊重系统“减弱动态效果” ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal-up {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+    }
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}
+
+/* ---------- 8. 移动端触控命中区：扩大点击范围，不改变视觉尺寸 ---------- */
+@media (max-width: 767px) {
+    .nav-link, footer a, .fmeta a {
+        position: relative;
+    }
+    .nav-link::before {
+        content: "";
+        position: absolute;
+        left: -6px;
+        right: -6px;
+        top: 50%;
+        height: 44px;
+        transform: translateY(-50%);
+    }
+    /* 页脚为次要入口：只做适度加高，避免把页脚撑得过于松散 */
+    footer a, .fmeta a {
+        display: inline-block;
+        line-height: 1.5;
+        padding: .34rem .1rem;
+    }
+    .icon-btn, button[aria-label] {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* ---------- 9. 服务卡箭头随卡片一起向右让位 ---------- */
+@media (hover: hover) and (pointer: fine) {
+    .svc-item:hover .svc-arrow {
+        transform: translateX(3px);
+        color: rgba(74, 90, 110, .85);
+    }
+}
