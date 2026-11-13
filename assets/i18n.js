@@ -53,6 +53,8 @@
 
         /* ---- 首页 ---- */
         'Hello, Welcome to': 'Hello, welcome to',
+        '以牧者之心': 'With a shepherd\'s care,',
+        '守护每一段航程': 'guarding every journey.',
         '虔诚 · 严谨 · 安心，像牧师般守护每一段飞行': 'Discreet, precise, reassuring — every flight, watched over.',
         '查询航班': 'Search flights',
         '了解更多': 'Learn more',
