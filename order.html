@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的订单 | 老牧师航空</title>
+    <meta name="description" content="查看订单状态、在线值机、免费改签与退票退款记录。">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="老牧师航空 Laomusi Airlines">
+    <meta property="og:title" content="我的订单 | 老牧师航空">
+    <meta property="og:description" content="查看订单状态、在线值机、免费改签与退票退款记录。">
+    <meta property="og:url" content="https://huchuyue9178.github.io/lmsairlines/order.html">
+    <meta property="og:image" content="https://huchuyue9178.github.io/lmsairlines/assets/favicon-512.png">
+    <meta property="og:locale" content="zh_CN">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="我的订单 | 老牧师航空">
+    <meta name="twitter:description" content="查看订单状态、在线值机、免费改签与退票退款记录。">
+    <meta name="twitter:image" content="https://huchuyue9178.github.io/lmsairlines/assets/favicon-512.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
     <link rel="apple-touch-icon" href="assets/favicon-180.png">
     <link rel="stylesheet" href="assets/tw.css?v=20261112r1">
     <link href="assets/fa/css/font-awesome.min.css?v=20261112r1" rel="stylesheet">
     <link rel="stylesheet" href="assets/app.css?v=20261112r1">
-    <link rel="stylesheet" href="assets/motion.css?v=20261112m1">
+    <link rel="stylesheet" href="assets/motion.css?v=20261114m2">
     <script src="assets/theme.js?v=20261107r5"></script>
 </head>
 <body class="text-textDark">
@@ -77,10 +89,10 @@
         </div>
     </div>
     <div id="siteFooter"></div>
-    <script src="assets/data.js?v=20261006perf"></script>
-    <script src="assets/common.js?v=20261112r2"></script>
+    <script src="assets/data.js?v=20261114p1"></script>
+    <script src="assets/common.js?v=20261114r3"></script>
     <script src="assets/owner.js?v=20261112r1"></script>
-    <script src="assets/dev.js?v=20261112r1"></script>
+    <script src="assets/dev-loader.js?v=20261114d1"></script>
     <script>
         let changeIdx=null,changeFree=false;
         let cabinIdx=null,cabinTargetKey=null;
@@ -90,8 +102,9 @@
         const CABIN_NAME={eco:'经济舱',superEco:'超级经济舱',business:'商务舱',first:'头等舱'};
         // 按起飞时间窗口计算手续费比例（与政策页一致）
         function refundRate(item){
-            const depMs=parseFlightTime(item.date,item.time).depMs;
+            const depMs=parseFlightTime(item.date||'',item.time||'').depMs;
             const hoursLeft=(depMs-Date.now())/3600000;
+            if(!isFinite(hoursLeft)||depMs<=0)return 0.50;
             if(hoursLeft>24)return 0.15;
             if(hoursLeft>4)return 0.30;
             return 0.50;
@@ -122,6 +135,16 @@
             orders.forEach(({item,index})=>{
                 const isRA=item.type==="railair";
                 const status=resolveStatus(item);
+                // 展示用：未值机的"已完成"实为已出票，值机后才是行程完成
+                const statusLabel=(status==='支付处理中')?'出票中':(status==='已完成'&&!item.checkedIn)?'已出票':status;
+                let statusHint='';
+                if(status==='支付处理中'){
+                    statusHint='支付已确认，正在出票，约 5 秒后自动出票成功。';
+                }else if(status==='已完成'&&!item.checkedIn){
+                    statusHint='已出票，可在下方在线值机，或在起飞前申请退票。';
+                }else if(status==='已完成'&&item.checkedIn){
+                    statusHint='已出票并完成值机，请按时到达登机口。';
+                }
                 const sc=(status==='已退票'||status==='恶劣天气取消')?'text-danger':(status==='已完成')?'text-success':(status==='已补偿')?'text-textGray':'text-orange-500';
                 let actions='';
                 let riskNote='';
@@ -178,7 +201,8 @@
                     :'<p>航班：'+esc(item.flightNo)+' &nbsp;&nbsp; '+esc(item.start)+'→'+esc(item.end)+'</p>'+
                     '<p>日期：'+esc(item.date)+' '+esc(item.time)+'</p>';
                 h+='<div class="bg-card card-gold p-6 rounded-global shadow-lg mb-4">'+
-                    '<div class="flex justify-between"><span>订单号：'+esc(item.orderId)+'</span><span class="'+sc+'">'+status+'</span></div>'+
+                    '<div class="flex justify-between"><span>订单号：'+esc(item.orderId)+'</span><span class="'+sc+'">'+statusLabel+'</span></div>'+
+                    (statusHint?'<p class="text-xs text-textGray mt-1">'+statusHint+'</p>':'')+
                     '<hr class="my-3">'+
                     routeInfo+
                     '<p>舱位：'+esc(item.cabin)+'</p>'+
@@ -441,7 +465,7 @@
         // 天气倒计时每秒刷新
         setInterval(tickRisk,1000);
     </script>
-<script src="assets/i18n.js?v=20261111r1"></script>
+<script src="assets/i18n.js?v=20261114r2"></script>
 <script src="assets/motion.js?v=20261112m1"></script>
 </body>
 </html>

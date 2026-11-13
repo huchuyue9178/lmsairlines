@@ -196,3 +196,30 @@
         color: rgba(74, 90, 110, .85);
     }
 }
+
+/* ---------- 10. 移动端底部快捷栏 ---------- */
+.m-dock{display:none}
+@media (max-width:768px){
+  .m-dock{
+    display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;
+    padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));
+    background:rgba(247,248,250,.88);
+    -webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%);
+    border-top:1px solid rgba(74,90,110,.14);
+    box-shadow:0 -8px 24px -18px rgba(31,36,43,.4);
+  }
+  html[data-theme="dark"] .m-dock{background:rgba(16,19,24,.88);border-top-color:rgba(255,255,255,.10);box-shadow:0 -8px 24px -18px rgba(0,0,0,.8)}
+  .m-dock a{
+    flex:1 1 0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    min-height:44px;padding:7px 0 6px;text-decoration:none;color:#6b7686;font-size:11px;
+    -webkit-tap-highlight-color:transparent;
+    transition:color .18s cubic-bezier(.22,1,.36,1),transform .12s cubic-bezier(.22,1,.36,1);
+  }
+  .m-dock a i{font-size:16px;line-height:1}
+  .m-dock a.on{color:#1b3a5c}
+  .m-dock a:active{transform:scale(.96)}
+  html[data-theme="dark"] .m-dock a{color:#8f9aa8}
+  html[data-theme="dark"] .m-dock a.on{color:#e8edf2}
+  body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0px))}
+}
+@media (prefers-reduced-motion:reduce){.m-dock a{transition:none}}

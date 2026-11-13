@@ -246,17 +246,25 @@
     /* ---------------- 页脚入口 ---------------- */
     function ensureFooterEntry() {
         var footer = document.querySelector('#siteFooter footer');
-        if (!footer || document.getElementById('devFootLink')) return;
-        var last = footer.querySelector('.container > div:last-child');
-        var wrap = document.createElement('div');
-        wrap.style.cssText = 'text-align:center;margin-top:16px;';
-        wrap.innerHTML = '<button type="button" id="devFootLink" class="dev-foot-link">开发者模式</button>';
-        (last ? last.parentNode : footer).appendChild(wrap);
-        wrap.querySelector('#devFootLink').addEventListener('click', function () {
+        if (!footer) return;
+        var btn = document.getElementById('devFootLink');
+        if (!btn) {
+            var last = footer.querySelector('.container > div:last-child');
+            var wrap = document.createElement('div');
+            wrap.style.cssText = 'text-align:center;margin-top:16px;';
+            wrap.innerHTML = '<button type="button" id="devFootLink" class="dev-foot-link">开发者模式</button>';
+            (last ? last.parentNode : footer).appendChild(wrap);
+            btn = document.getElementById('devFootLink');
+        }
+        if (!btn || btn.__lmsDevBound) { syncFooterLabel(); return; }
+        btn.__lmsDevBound = true;
+        btn.addEventListener('click', function () {
             if (isDev()) openPanel(); else openPwd();
         });
         syncFooterLabel();
     }
+    // 供按需加载的入口脚本调用（dev.js 未加载前入口按钮由 dev-loader.js 创建）
+    window.__lmsDevOpen = function () { if (isDev()) openPanel(); else openPwd(); };
     function syncFooterLabel() {
         var b = document.getElementById('devFootLink');
         if (b) b.textContent = isDev() ? '开发者模式 · 已开启（点击打开面板）' : '开发者模式';

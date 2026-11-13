@@ -50,12 +50,16 @@ function searchFlights(opt){opt=opt||{};return flightList.filter(f=>(!opt.start|
 
 // 解析起飞/到达时间戳（支持跨天 +1/+2）
 function parseFlightTime(dateStr,timeStr){
-    const parts=timeStr.split("-");
-    const depMs=new Date(dateStr+"T"+parts[0].trim()+":00").getTime();
-    const arrRaw=parts[1].trim();
-    let arrMs=new Date(dateStr+"T"+arrRaw.replace(/\+[0-9]+$/,'')+":00").getTime();
+    const raw=(timeStr==null?'':String(timeStr)).trim();
+    const parts=raw.split("-");
+    const dep=(parts[0]||'').trim();
+    const arrRaw=(parts[1]||dep).trim();
+    let depMs=new Date((dateStr||'')+"T"+dep+":00").getTime();
+    let arrMs=new Date((dateStr||'')+"T"+arrRaw.replace(/\+[0-9]+$/,'')+":00").getTime();
     const plus=/\+([0-9]+)$/.exec(arrRaw);
     if(plus)arrMs+=Number(plus[1])*86400000;
+    if(!isFinite(depMs)){depMs=0;}
+    if(!isFinite(arrMs)){arrMs=depMs;}
     return {depMs,arrMs};
 }
 

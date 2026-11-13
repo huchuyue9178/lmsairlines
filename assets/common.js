@@ -1238,3 +1238,30 @@ function showActivityNotice(){
         });
     });
 })();
+
+/* ---- 移动端底部快捷栏 ---- */
+(function(){
+    function mount(){
+        if(document.getElementById('mobileDock')) return;
+        var items=[
+            ['booking.html','fa-plane','订票','Book'],
+            ['order.html','fa-list-alt','订单','Orders'],
+            ['member.html','fa-diamond','会员','Member'],
+            ['customer.html','fa-comments-o','客服','Support']
+        ];
+        var path=(location.pathname.split('/').pop()||'index.html');
+        var en=false;
+        try{ en = (localStorage.getItem('lms_lang')||'zh')==='en'; }catch(e){}
+        var html='<nav class="m-dock" id="mobileDock" aria-label="快捷导航">';
+        for(var i=0;i<items.length;i++){
+            var it=items[i], on=(path===it[0])?' on':'';
+            html+='<a href="'+it[0]+'"'+(' class="'+on.trim()+'"')+'>'
+                +'<i class="fa '+it[1]+'" aria-hidden="true"></i>'
+                +'<span>'+ (en?it[3]:it[2]) +'</span></a>';
+        }
+        html+='</nav>';
+        document.body.insertAdjacentHTML('beforeend',html);
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',mount);
+    else mount();
+})();
