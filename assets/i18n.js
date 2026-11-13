@@ -57,7 +57,7 @@
         '查询航班': 'Search flights',
         '了解更多': 'Learn more',
         '全球通航城市': 'Cities served',
-        '在役机队': 'Aircraft',
+        '在役机队': 'In service',
         '航班准点率': 'On-time rate',
         '年承运旅客': 'Guests per year',
         '以上为演示数据': 'Illustrative figures only',
@@ -925,14 +925,56 @@
         }
     }
 
+    // 英文页标题：整串精确映射，避免出现半中半英
+    var TITLE_EN = {
+        '老牧师航空 - 首页': 'Laomusi Airlines — Home',
+        '页面未找到 | 老牧师航空': 'Page not found | Laomusi Airlines',
+        '关于我们 | 老牧师航空': 'About us | Laomusi Airlines',
+        '光影星踪·影像创作计划 | 老牧师航空': 'Light & Shadow · Image Creation | Laomusi Airlines',
+        '出行预订 | 老牧师航空': 'Book a flight | Laomusi Airlines',
+        '购物车 | 老牧师航空': 'Cart | Laomusi Airlines',
+        '在线值机 | 老牧师航空': 'Online check-in | Laomusi Airlines',
+        '在线客服 | 老牧师航空': 'Support | Laomusi Airlines',
+        '全部特价 | 老牧师航空': 'All fares | Laomusi Airlines',
+        '神秘彩蛋 | 老牧师航空': 'Easter egg | Laomusi Airlines',
+        '航班动态 | 老牧师航空': 'Flight status | Laomusi Airlines',
+        '账号登录 | 老牧师航空': 'Sign in | Laomusi Airlines',
+        '会员中心 | 老牧师航空': 'Member centre | Laomusi Airlines',
+        '我的订单 | 老牧师航空': 'My orders | Laomusi Airlines',
+        '服务指南 | 老牧师航空': 'Service guide | Laomusi Airlines',
+        '全部航线 | 老牧师航空': 'All routes | Laomusi Airlines',
+        '牧师商城 | 老牧师航空': 'Laomusi shop | Laomusi Airlines',
+        '特殊服务申请 | 老牧师航空': 'Special assistance | Laomusi Airlines',
+        '访问环境说明 | 老牧师航空': 'Browser support | Laomusi Airlines',
+        '更新公告 | 老牧师航空': 'Announcements | Laomusi Airlines'
+    };
+
+    // 统计数字在英文下按量级重写（"1,200万+" 应为 12M+，不能直译成 1,200M+）
+    function statEn() {
+        document.querySelectorAll('.stat-num[data-en-num]').forEach(function (el) {
+            var n = el.getAttribute('data-en-num'), u = el.getAttribute('data-en-unit') || '';
+            if (!n) return;
+            el.textContent = n;
+            if (u) {
+                var s = document.createElement('span');
+                s.textContent = u;
+                el.appendChild(s);
+            }
+        });
+    }
+
     function apply() {
+        try { document.documentElement.lang = (lang === 'en' ? 'en' : 'zh-CN'); } catch (e) {}
         if (lang !== 'en') return;
         try {
-            document.documentElement.lang = 'en';
             walk(document.body);
-        attrPass();
-            if (document.title) {
-                var dt = translate(document.title);
+            attrPass();
+            statEn();
+            var t = (document.title || '').trim();
+            if (TITLE_EN[t]) {
+                document.title = TITLE_EN[t];
+            } else {
+                var dt = translate(t);
                 if (dt !== null) document.title = dt;
             }
         } catch (e) {}
